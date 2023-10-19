@@ -2,108 +2,102 @@
   <v-container>
     <v-app-bar
         app
-        color="f5f5f5"
+        color="#ffffff"
+        elevation=0
       >
         <div class="d-flex align-center">
           <v-img
-            
             class="shrink mr-2"
             contain
             :src="require('../assets/IS-logo.png')"
             transition="scale-transition"
             width="40"
           />
-          Instructor Scheduler
+          <h1>Instructor Scheduler</h1>
         </div>
-
         <v-spacer></v-spacer>
       </v-app-bar>
-    <v-row class="text-center">
-      <v-col cols="12">
-        <v-img
-          :src="require('../assets/logo.svg')"
-          class="my-3"
-          contain
-          height="200"
-        />
-      </v-col>
 
-      <v-col class="mb-4">
-        <h1 class="display-2 font-weight-bold mb-3">
-          Faiza
-        </h1>
-
-        <p class="subheading font-weight-regular">
-          For help and collaboration with other Vuetify developers,
-          <br>please join our online
-          <a
-            href="https://community.vuetifyjs.com"
-            target="_blank"
-          >Discord Community</a>
-        </p>
+    <v-row >
+    <v-row><br><br></v-row>
+      <v-col
+        cols="5"
+        md="5"
+        class="ml-md-auto"
+        align=left
+      >
+      <br><br><br><br>
+        <v-card
+          class="pa-2"
+          elevation=0
+          align="left"
+        >
+          <v-img
+           :src="require('../assets/utd-logo.png')"
+           class="my-3"
+           contain
+           height="350"
+         />
+        </v-card>
       </v-col>
 
       <v-col
-        class="mb-5"
-        cols="12"
+        cols="1"
+        md="1"
+        class="ml-md-auto"
+        align=left
       >
-        <h2 class="headline font-weight-bold mb-3">
-          What's next?
-        </h2>
 
-        <v-row justify="center">
-          <a
-            v-for="(next, i) in whatsNext"
-            :key="i"
-            :href="next.href"
-            class="subheading mx-3"
-            target="_blank"
-          >
-            {{ next.text }}
-          </a>
-        </v-row>
+      <br><br><br><br><br>
+        <v-card
+        >
+        </v-card>
       </v-col>
-
+      
       <v-col
-        class="mb-5"
         cols="12"
+        sm="6"
+        md="6"
       >
-        <h2 class="headline font-weight-bold mb-3">
-          Important Links
-        </h2>
+      <br><br><br><br><br>
+        <v-card
+          class="pa-10 rounded-xl"
+          elevation="2"
+          outlined
+          
+        >
+        <h2>Welcome!</h2> <br>
+    
+          <v-text-field
+            label="UTD email"
+            prepend-inner-icon="mdi-account"
+            filled
+            rounded
+            dense
+          ></v-text-field>
 
-        <v-row justify="center">
-          <a
-            v-for="(link, i) in importantLinks"
-            :key="i"
-            :href="link.href"
-            class="subheading mx-3"
-            target="_blank"
-          >
-            {{ link.text }}
-          </a>
-        </v-row>
-      </v-col>
-
-      <v-col
-        class="mb-5"
-        cols="12"
-      >
-        <h2 class="headline font-weight-bold mb-3">
-          Ecosystem
-        </h2>
-
-        <v-row justify="center">
-          <a
-            v-for="(eco, i) in ecosystem"
-            :key="i"
-            :href="eco.href"
-            class="subheading mx-3"
-            target="_blank"
-          >
-            {{ eco.text }}
-          </a>
-        </v-row>
+          <v-text-field
+            label="Password"
+            prepend-inner-icon="mdi-lock"
+            v-model="password"
+            :type="show1 ? 'text' : 'password'"
+            name="input-10-1"
+            @click:append="show1 = !show1"
+            filled
+            rounded
+            dense
+          ></v-text-field>
+          
+          <div class="text-center">
+            <v-btn
+              rounded
+              color="#5C9970"
+              dark
+            >
+              LOGIN
+            </v-btn>
+          </div>
+        </v-card>
       </v-col>
     </v-row>
   </v-container>
@@ -114,56 +108,7 @@
     name: 'LoginPage',
 
     data: () => ({
-      ecosystem: [
-        {
-          text: 'vuetify-loader',
-          href: 'https://github.com/vuetifyjs/vuetify-loader',
-        },
-        {
-          text: 'github',
-          href: 'https://github.com/vuetifyjs/vuetify',
-        },
-        {
-          text: 'awesome-vuetify',
-          href: 'https://github.com/vuetifyjs/awesome-vuetify',
-        },
-      ],
-      importantLinks: [
-        {
-          text: 'Documentation',
-          href: 'https://vuetifyjs.com',
-        },
-        {
-          text: 'Chat',
-          href: 'https://community.vuetifyjs.com',
-        },
-        {
-          text: 'Made with Vuetify',
-          href: 'https://madewithvuejs.com/vuetify',
-        },
-        {
-          text: 'Twitter',
-          href: 'https://twitter.com/vuetifyjs',
-        },
-        {
-          text: 'Articles',
-          href: 'https://medium.com/vuetify',
-        },
-      ],
-      whatsNext: [
-        {
-          text: 'Explore components',
-          href: 'https://vuetifyjs.com/components/api-explorer',
-        },
-        {
-          text: 'Select a layout',
-          href: 'https://vuetifyjs.com/getting-started/pre-made-layouts',
-        },
-        {
-          text: 'Frequently Asked Questions',
-          href: 'https://vuetifyjs.com/getting-started/frequently-asked-questions',
-        },
-      ],
+      
     }),
   }
 </script>
