@@ -3,8 +3,13 @@ const Course = require('./models/course_info')
 const app = express();
 const mongoose = require('mongoose')
 
+const dotenv = require('dotenv');
+dotenv.config();
+
+uri = process.env.URI
+
 mongoose
-.connect('REPLACE BEFORE RUNNING')
+.connect(uri)
 .then(() => console.log("Connected to db"))
 .catch((error) => console.error(error))
 
@@ -34,5 +39,4 @@ app.post('/course', async(req, res) => {
 //3) Collection to store instructor preferences,
 //4) Methods to get, post, patch instructor preferences
 
-
-app.listen(3000, () => console.log('Server has started on port 3000'))
+app.listen(process.env.PORT, () => console.log('Server has started on port 3000'))
