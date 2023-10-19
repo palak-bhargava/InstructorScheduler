@@ -44,6 +44,6 @@ const instructorPreferenceSchema = mongoose.Schema(
     }
 )
 
-const Course = mongoose.model('InstructorPreferences', courseSchema)
+const Course = mongoose.model('InstructorPreferences', instructorPreferenceSchema)
 
 module.exports = Course
