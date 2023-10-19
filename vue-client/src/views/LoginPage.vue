@@ -3,7 +3,7 @@
     <v-app-bar
         app
         color="#ffffff"
-        elevation=0
+        elevation=1
       >
         <div class="d-flex align-center">
           <v-img
@@ -13,7 +13,7 @@
             transition="scale-transition"
             width="40"
           />
-          <h1>Instructor Scheduler</h1>
+          <h2>Instructor Scheduler</h2>
         </div>
         <v-spacer></v-spacer>
       </v-app-bar>
@@ -26,7 +26,7 @@
         class="ml-md-auto"
         align=left
       >
-      <br><br><br><br>
+      <br><br><br><br><br>
         <v-card
           class="pa-2"
           elevation=0
@@ -59,7 +59,7 @@
         sm="6"
         md="6"
       >
-      <br><br><br><br><br>
+      <br><br><br><br><br><br>
         <v-card
           class="pa-10 rounded-xl"
           elevation="2"
