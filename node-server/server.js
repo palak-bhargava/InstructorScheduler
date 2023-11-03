@@ -1,5 +1,5 @@
 const express = require('express')
-const Course = require('./models/course_info')
+const { Course } = require('./models/course_info')
 const app = express();
 const mongoose = require('mongoose')
 
@@ -23,6 +23,39 @@ app.post('/course', async(req, res) => {
         res.status(500).json({message: error.message})
     }
 })
+
+//GET all courses
+app.get('/courses', async(req, res) => {
+    try {
+        const courses = await Course.find({});
+        res.status(200).json(courses);
+    } catch (error) {
+        res.status(500).json({message: error.message})
+    }
+})
+
+//GET courses by course number
+app.get('/courses/number/:course_number', async(req, res) =>{
+    try {
+        const {course_number} = req.params;
+        const courses = await Course.find({course_number: course_number});
+        res.status(200).json(courses);
+    } catch (error) {
+        res.status(500).json({message: error.message})
+    }
+})
+
+//GET courses by day
+app.get('/courses/day/:days', async(req, res) =>{
+    try {
+        const days = [req.params.days.split(',')]; 
+        const courses = await Course.find({days: { $in: days }});
+        res.status(200).json(courses);
+    } catch (error) {
+        res.status(500).json({message: error.message})
+    }
+})
+
 
 
 //DEMO:
