@@ -1,19 +1,19 @@
 <template>
   <v-app>
     <v-main>
-      <PastSchedules/>
+      <AvailableCourses/>
     </v-main>
   </v-app>
 </template>
 
 <script>
-import PastSchedules from './views/PastSchedules';
+import AvailableCourses from './views/AvailableCourses';
 
 export default {
   name: 'App',
 
   components: {
-    PastSchedules,
+    AvailableCourses,
   },
 
   data: () => ({
