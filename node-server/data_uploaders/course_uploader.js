@@ -1,9 +1,9 @@
-const { Course } = require('./models/course_info');
+const { Course } = require('../models/course_info');
 const fs = require('fs');
 const axios = require('axios');
 
 // Read the JSON data from coursebook.json
-fs.readFile('coursebook.json', 'utf8', (err, data) => {
+fs.readFile('../json_data/coursebook.json', 'utf8', (err, data) => {
     if (err) {
         console.error('Error reading coursebook.json:', err);
         return;

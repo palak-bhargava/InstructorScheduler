@@ -85,4 +85,4 @@ const instructorScheduleSchema = mongoose.Schema(
 
 const InstructorSchedule = mongoose.model('InstructorSchedule', instructorScheduleSchema)
 
-module.exports = InstructorSchedule
+module.exports = {InstructorSchedule}

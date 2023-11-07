@@ -1,0 +1,40 @@
+[
+    {
+        "instructor_name": "Pushpa Kumar",
+        "courses": [
+            {
+                "course_prefix": "cs",
+                "course_number":" 1134"
+            },
+            {
+                "course_prefix": "cs",
+                "course_number":" 2336"
+            },
+            {
+                "course_prefix": "cs",
+                "course_number":" 3305"
+            }
+        ],
+        "days" : ["Monday", "Wednesday"],
+        "times": ["10:00am - 5:00pm"]
+    },
+    {
+        "instructor_name": "Anjum Chida",
+        "courses": [
+            {
+                "course_prefix": "cs",
+                "course_number":" 1134"
+            },
+            {
+                "course_prefix": "cs",
+                "course_number":" 2336"
+            },
+            {
+                "course_prefix": "cs",
+                "course_number":" 3305"
+            }
+        ],
+        "days" : ["Monday", "Wednesday"],
+        "times": ["10:00am - 5:00pm"]
+    }
+]

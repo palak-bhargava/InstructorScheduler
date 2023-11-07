@@ -1,7 +1,8 @@
 const express = require('express');
-var router = express.Router();
 
-var { Course } = require('../models/course_info');
+
+const test = require('dotenv').config()
+console.log(test)
 
 // router.post('/course', async(req, res) => {
 //     try{

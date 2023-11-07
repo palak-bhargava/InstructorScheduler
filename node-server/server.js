@@ -1,5 +1,7 @@
 const express = require('express')
 const { Course } = require('./models/course_info')
+const { InstructorPreference } = require('./models/instructor_preferences');
+const { InstructorSchedule } = require('./models/instructor_schedule');
 const app = express();
 const mongoose = require('mongoose')
 
@@ -15,13 +17,34 @@ mongoose
 
 app.use(express.json())
 
-app.get('/', (req, res) => {
-    res.send("Hello from Palak")
-})
 app.post('/course', async(req, res) => {
     try{
         const course = await Course.create(req.body)
         res.status(200).json(course)
+    }
+    catch (error) { 
+        console.error(error.message)
+        res.status(500).json({message: error.message})
+    }
+})
+
+//POST TO PREFERENCES
+app.post('/instructorpreferences', async(req, res) => {
+    try{
+        const preference = await InstructorPreference.create(req.body)
+        res.status(200).json(preference)
+    }
+    catch (error) { 
+        console.error(error.message)
+        res.status(500).json({message: error.message})
+    }
+})
+
+//POST TO SCHEDULES
+app.post('/instructorschedules', async(req, res) => {
+    try{
+        const schedules = await InstructorSchedule.create(req.body)
+        res.status(200).json(schedules)
     }
     catch (error) { 
         console.error(error.message)
