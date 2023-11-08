@@ -61,7 +61,12 @@
                         class="mb-2"
                         >
                             Fall 2023 
-                        </v-btn>
+                            <v-spacer></v-spacer>
+                            <v-icon right>
+                            mdi-arrow-right-thick
+                            </v-icon>
+                        </v-btn> 
+                        
                     
                         <v-btn
                         color="white"
@@ -72,6 +77,10 @@
                         class="mb-2"
                         >
                             Spring 2022
+                            <v-spacer></v-spacer>
+                            <v-icon right>
+                            mdi-arrow-right-thick
+                            </v-icon>
                         </v-btn> 
                         <v-btn
                         color="white"
@@ -81,6 +90,10 @@
                         outlined
                         >
                             Fall 2022
+                            <v-spacer></v-spacer>
+                            <v-icon right>
+                            mdi-arrow-right-thick
+                            </v-icon>
                         </v-btn> 
                     </v-container>
                 </v-card> 
@@ -187,12 +200,8 @@
         </v-card>
 
         <div class="text-h5 mb-2 mt-15">Generate Schedules</div>
-        <v-card
-            color="#FFFFFF"
-            class="rounded-xl"
-        >
-            <v-container class="spacing-playground pa-3">
-                <v-row justify-center class="mb-0 mt-0">
+            <v-container class="spacing-playground pa-6">
+                <v-row justify-center class="mb-0">
                     <v-btn
                         color="#5C9970"
                         elevation="2"
@@ -202,6 +211,35 @@
                         &nbsp&nbsp&nbspGenerate&nbsp&nbsp&nbsp
                     </v-btn> 
                 </v-row>
+            </v-container>
+
+        <div class="text-h5 mb-2 mt-15">Generate Schedules</div>
+        <v-card
+            color="#5C9970"
+            class="rounded-xl"
+        >
+            <v-container class="spacing-playground pa-6">
+                <v-card
+                color="#FFFFFF"
+                class="rounded-xl"
+                >
+                    <v-sheet height="400">
+                        <v-calendar
+                        ref="calendar"
+                        :events="events"
+                        color="green lighten-1"
+                        type="week"
+                        first-time=07:00
+                        last-time=10:00
+                        interval-count=15
+                        ></v-calendar>
+                    </v-sheet>
+
+                    <v-button>
+
+                    </v-button>
+                    
+                </v-card>
             </v-container>
         </v-card>
 
