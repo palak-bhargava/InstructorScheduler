@@ -39,7 +39,262 @@
         color="#5C9970"
         rounded
       >
-        insert calendar here
+      <br>
+      <v-row>
+        <v-col 
+          cols="8" 
+          class="spacing-playground pa-0"
+        >
+          <v-card
+            class="mx-auto"
+            color="#ffffff"
+            light
+            outlined
+          >
+            <v-list-item three-line>
+              <v-list-item-content>
+                <v-list-item-title class="text-h7">
+                  Data Structures
+                </v-list-item-title>
+                <v-list-item-title class="text-h7">
+                  CS3345.001
+                </v-list-item-title>
+                <v-list-item-subtitle>
+                  MW 5:30PM - 6:45PM
+                </v-list-item-subtitle>
+              </v-list-item-content>
+            </v-list-item>
+            </v-card>
+          </v-col>
+
+          <v-col 
+            cols="4"
+            class="spacing-playground pa-0"
+          >
+            <v-card
+              color="#FFB86F"
+              light
+              outlined
+            >
+              <div class="pt-2 pl-1 ml-12">
+                Teach This Class Again?
+              </div>
+              <v-card-actions>
+                <v-btn
+                  color="#ffffff"
+                  elevation="2"
+                  rounded
+                  light
+                  class="mr-3 mb-1 ml-13"
+                >
+                  Yes 
+                </v-btn> 
+                <v-btn
+                  color="#ffffff"
+                  elevation="2"
+                  rounded
+                  light
+                  class="mb-1"
+                >
+                  Maybe
+                </v-btn> 
+              </v-card-actions>
+            </v-card>
+          </v-col>
+         </v-row> 
+        <br><br>
+
+         <v-row>
+        <v-col 
+          cols="8" 
+          class="spacing-playground pa-0"
+        >
+          <v-card
+            class="mx-auto"
+            color="#ffffff"
+            light
+            outlined
+          >
+            <v-list-item three-line>
+              <v-list-item-content>
+                <v-list-item-title class="text-h7">
+                  Data Structures
+                </v-list-item-title>
+                <v-list-item-title class="text-h7">
+                  CS3345.001
+                </v-list-item-title>
+                <v-list-item-subtitle>
+                  MW 5:30PM - 6:45PM
+                </v-list-item-subtitle>
+              </v-list-item-content>
+            </v-list-item>
+            </v-card>
+          </v-col>
+
+          <v-col 
+            cols="4"
+            class="spacing-playground pa-0"
+          >
+            <v-card
+              color="#FFB86F"
+              light
+              outlined
+            >
+              <div class="pt-2 pl-1 ml-12">
+                Teach This Class Again?
+              </div>
+              <v-card-actions>
+                <v-btn
+                  color="#ffffff"
+                  elevation="2"
+                  rounded
+                  light
+                  class="mr-3 mb-1 ml-13"
+                >
+                  Yes 
+                </v-btn> 
+                <v-btn
+                  color="#ffffff"
+                  elevation="2"
+                  rounded
+                  light
+                  class="mb-1"
+                >
+                  Maybe
+                </v-btn> 
+              </v-card-actions>
+            </v-card>
+          </v-col>
+         </v-row> 
+        <br><br>
+
+         <v-row>
+        <v-col 
+          cols="8" 
+          class="spacing-playground pa-0"
+        >
+          <v-card
+            class="mx-auto"
+            color="#ffffff"
+            light
+            outlined
+          >
+            <v-list-item three-line>
+              <v-list-item-content>
+                <v-list-item-title class="text-h7">
+                  Data Structures
+                </v-list-item-title>
+                <v-list-item-title class="text-h7">
+                  CS3345.001
+                </v-list-item-title>
+                <v-list-item-subtitle>
+                  MW 5:30PM - 6:45PM
+                </v-list-item-subtitle>
+              </v-list-item-content>
+            </v-list-item>
+            </v-card>
+          </v-col>
+
+          <v-col 
+            cols="4"
+            class="spacing-playground pa-0"
+          >
+            <v-card
+              color="#FFB86F"
+              light
+              outlined
+            >
+              <div class="pt-2 pl-1 ml-12">
+                Teach This Class Again?
+              </div>
+              <v-card-actions>
+                <v-btn
+                  color="#ffffff"
+                  elevation="2"
+                  rounded
+                  light
+                  class="mr-3 mb-1 ml-13"
+                >
+                  Yes 
+                </v-btn> 
+                <v-btn
+                  color="#ffffff"
+                  elevation="2"
+                  rounded
+                  light
+                  class="mb-1"
+                >
+                  Maybe
+                </v-btn> 
+              </v-card-actions>
+            </v-card>
+          </v-col>
+         </v-row> 
+         <br><br>
+
+         <v-row>
+        <v-col 
+          cols="8" 
+          class="spacing-playground pa-0"
+        >
+          <v-card
+            class="mx-auto"
+            color="#ffffff"
+            light
+            outlined
+          >
+            <v-list-item three-line>
+              <v-list-item-content>
+                <v-list-item-title class="text-h7">
+                  Data Structures
+                </v-list-item-title>
+                <v-list-item-title class="text-h7">
+                  CS3345.001
+                </v-list-item-title>
+                <v-list-item-subtitle>
+                  MW 5:30PM - 6:45PM
+                </v-list-item-subtitle>
+              </v-list-item-content>
+            </v-list-item>
+            </v-card>
+          </v-col>
+
+          <v-col 
+            cols="4"
+            class="spacing-playground pa-0"
+          >
+            <v-card
+              color="#FFB86F"
+              light
+              outlined
+            >
+              <div class="pt-2 pl-1 ml-12">
+                Teach This Class Again?
+              </div>
+              <v-card-actions>
+                <v-btn
+                  color="#ffffff"
+                  elevation="2"
+                  rounded
+                  light
+                  class="mr-3 mb-1 ml-13"
+                >
+                  Yes 
+                </v-btn> 
+                <v-btn
+                  color="#ffffff"
+                  elevation="2"
+                  rounded
+                  light
+                  class="mb-1"
+                >
+                  Maybe
+                </v-btn> 
+              </v-card-actions>
+            </v-card>
+          </v-col>
+         </v-row> 
+         <br>
       </v-expansion-panel-content>
     </v-expansion-panel>
   </v-expansion-panels>
