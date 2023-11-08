@@ -17,6 +17,18 @@ mongoose
 
 app.use(express.json())
 
+//-------------Functions using controllers-------------
+
+//var getAllCourses = require('./controllers/course_info_controller')
+//getAllCourses();
+
+//var getCoursesByNumber = require('./controllers/course_info_controller')
+//getCoursesByNumber("1200");
+
+//var getCoursesByPrefix = require('./controllers/course_info_controller')
+//getCoursesByPrefix("xy");
+
+
 app.post('/course', async(req, res) => {
     try{
         const course = await Course.create(req.body)
@@ -83,6 +95,18 @@ app.get('/courses/day/:days', async(req, res) =>{
         res.status(500).json({message: error.message})
     }
 })
+
+//GET courses by prefix
+app.get('/courses/prefix/:course_prefix', async(req, res) =>{
+    try {
+        const course_prefix = req.params.course_prefix; 
+        const courses = await Course.find({course_prefix: course_prefix});
+        res.status(200).json(courses);
+    } catch (error) {
+        res.status(500).json({message: error.message})
+    }
+})
+
 
 
 
