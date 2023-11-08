@@ -148,15 +148,63 @@
                 >
                     class info
                 </v-btn> 
+                <v-row justify-center class="mb-0 mt-3"> 
+                            <v-btn
+                            color="#FFB86F"
+                            elevation="2"
+                            rounded
+                            class="mx-auto"
+                            >
+                                View Available Classes
+                            </v-btn> 
+                        </v-row> 
             </v-container>
         </v-card> 
             
-        <v-row>
-            <v-card
+        <div class="text-h5 mb-2 mt-15">My Current Schedule</div>
+        <v-card
             color="#5C9970"
-            class="rounded-xl">
-            </v-card>
-        </v-row> 
+            class="rounded-xl"
+        >
+            <v-container class="spacing-playground pa-5">
+                <v-row>
+                    <v-col>
+                    <v-sheet height="400">
+                        <v-calendar
+                        ref="calendar"
+                        :events="events"
+                        color="green lighten-1"
+                        type="week"
+                        first-time=07:00
+                        last-time=10:00
+                        interval-count=15
+                        >
+                        </v-calendar>
+                    </v-sheet>
+                    </v-col>
+                </v-row>
+            </v-container>
+        </v-card>
+
+        <div class="text-h5 mb-2 mt-15">Generate Schedules</div>
+        <v-card
+            color="#FFFFFF"
+            class="rounded-xl"
+        >
+            <v-container class="spacing-playground pa-3">
+                <v-row justify-center class="mb-0 mt-0">
+                    <v-btn
+                        color="#5C9970"
+                        elevation="2"
+                        rounded
+                        class="mx-auto"
+                        >
+                        &nbsp&nbsp&nbspGenerate&nbsp&nbsp&nbsp
+                    </v-btn> 
+                </v-row>
+            </v-container>
+        </v-card>
+
     </v-container>
 </template>
 
