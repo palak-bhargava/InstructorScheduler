@@ -74,8 +74,9 @@
             filled
             rounded
             dense
+            v-model="email"
           ></v-text-field>
-
+  
           <v-text-field
             label="Password"
             prepend-inner-icon="mdi-lock"
@@ -93,6 +94,7 @@
               rounded
               color="#5C9970"
               dark
+              @click="saveUserInfo"
             >
               LOGIN
             </v-btn>
@@ -104,11 +106,21 @@
 </template>
 
 <script>
+const getUserEmail = require('../../../node-server/controllers/sign_in_controller.js')
   export default {
-    name: 'LoginPage',
+  data() {
+    return {
+      email: '',
+      password: ''
+    };
+  },
+  
+  methods: {
+    saveUserInfo() {
+      console.log('Email value:', this.email);
+      console.log('Password value:', this.password);
+    }
+  },
 
-    data: () => ({
-      
-    }),
-  }
+};
 </script>
