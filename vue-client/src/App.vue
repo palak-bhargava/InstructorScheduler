@@ -1,19 +1,19 @@
 <template>
   <v-app>
     <v-main>
-      <PastSchedules/>
+      <LoginPage/>
     </v-main>
   </v-app>
 </template>
 
 <script>
-import PastSchedules from './views/PastSchedules';
+import LoginPage from './views/LoginPage';
 
 export default {
   name: 'App',
 
   components: {
-    PastSchedules,
+    LoginPage,
   },
 
   data: () => ({
