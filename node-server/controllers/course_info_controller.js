@@ -36,6 +36,17 @@ function getCoursesByPrefix(course_prefix){
 }
 module.exports = getCoursesByPrefix;
 
+function getCoursesByTitle(title){
+    axios.get(`http://localhost:3000/courses/title/${title}`)
+        .then(function (response) {
+            console.log(response);
+    })
+        .catch(function (error) {
+            console.log(error);
+  });
+}
+module.exports = getCoursesByTitle;
+
 
 //class number -- done
 //course name

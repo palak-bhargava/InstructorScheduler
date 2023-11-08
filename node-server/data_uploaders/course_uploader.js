@@ -31,6 +31,10 @@ fs.readFile('../json_data/coursebook.json', 'utf8', (err, data) => {
             jsonEntry.textbooks = jsonEntry.textbooks.split(',').map(textbook => textbook.trim());
         }
 
+        if (jsonEntry.title && typeof jsonEntry.title === 'string' && jsonEntry.title.trim() !== '') {
+            jsonEntry.title = jsonEntry.title.trim();
+        }
+
         return new Course(jsonEntry);
     };
 

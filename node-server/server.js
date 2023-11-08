@@ -30,6 +30,12 @@ app.use(express.json())
 //var getCoursesByPrefix = require('./controllers/course_info_controller')
 //getCoursesByPrefix("xy");
 
+// var getCoursesByTitle = require('./controllers/course_info_controller')
+// getCoursesByTitle("Computer Science Laboratory");
+
+var getUserEmail = require('./controllers/sign_in_controller')
+getUserEmail("bobby2@gmail.com", "123");
+
 
 //POST TO USERS
 app.post('/signup', async(req, res) => {
@@ -238,6 +244,29 @@ app.get('/courses/prefix/:course_prefix', async(req, res) =>{
         const course_prefix = req.params.course_prefix; 
         const courses = await Course.find({course_prefix: course_prefix});
         res.status(200).json(courses);
+    } catch (error) {
+        res.status(500).json({message: error.message})
+    }
+})
+
+
+//GET courses by title
+app.get('/courses/title/:title', async(req, res) =>{
+    try {
+        const title = req.params.title; 
+        const courses = await Course.find({title: title});
+        res.status(200).json(courses);
+    } catch (error) {
+        res.status(500).json({message: error.message})
+    }
+})
+
+//GET user by email
+app.get('/users/email/:email', async(req, res) =>{
+    try {
+        const email = req.params.email; 
+        const user = await User.find({email: email});
+        res.status(200).json(user);
     } catch (error) {
         res.status(500).json({message: error.message})
     }
