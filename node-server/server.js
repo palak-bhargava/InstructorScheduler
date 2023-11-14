@@ -33,8 +33,8 @@ app.use(express.json())
 // var getCoursesByTitle = require('./controllers/course_info_controller')
 // getCoursesByTitle("Computer Science Laboratory");
 
-var getUserEmail = require('./controllers/sign_in_controller')
-getUserEmail("bobby2@gmail.com", "123");
+// var getUserEmail = require('./controllers/sign_in_controller')
+// getUserEmail("bobby2@gmail.com", "123");
 
 
 //POST TO USERS
