@@ -94,7 +94,7 @@
               rounded
               color="#5C9970"
               dark
-              @click="saveUserInfo"
+              @click="login"
             >
               LOGIN
             </v-btn>
@@ -104,6 +104,8 @@
     </v-row>
   </v-container>
 </template>
+
+
 
 <script>
 const getUserEmail = require('../../../node-server/controllers/sign_in_controller.js')
@@ -116,11 +118,21 @@ const getUserEmail = require('../../../node-server/controllers/sign_in_controlle
   },
   
   methods: {
-    saveUserInfo() {
-      console.log('Email value:', this.email);
-      console.log('Password value:', this.password);
-    }
-  },
+    async login() {
+      try {
+        let email = this.email?.trim();
+        let password = this.password?.trim();
 
+        // Assuming getUserEmail returns a promise
+        const response = await getUserEmail(email, password);
+
+        // Handle the response
+        console.log('Response:', response);
+      } catch (error) {
+        // Handle errors
+        console.error('Error:', error);
+      }
+    }
+  }
 };
 </script>
