@@ -19,6 +19,13 @@ mongoose
 
 app.use(express.json())
 
+app.use((req, res, next) => {
+    res.header('Access-Control-Allow-Origin', 'http://localhost:8080'); // Replace with the appropriate origin.
+    res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+    res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+    next();
+  });
+
 //-------------Functions using controllers-------------
 
 //var getAllCourses = require('./controllers/course_info_controller')
@@ -33,8 +40,8 @@ app.use(express.json())
 // var getCoursesByTitle = require('./controllers/course_info_controller')
 // getCoursesByTitle("Computer Science Laboratory");
 
-var getUserEmail = require('./controllers/sign_in_controller')
-getUserEmail("bobby2@gmail.com", "123");
+// var getUserEmail = require('./controllers/sign_in_controller')
+// getUserEmail("bobby2@gmail.com", "123");
 
 
 //POST TO USERS
@@ -271,6 +278,7 @@ app.get('/users/email/:email', async(req, res) =>{
         res.status(500).json({message: error.message})
     }
 })
+
 
 
 

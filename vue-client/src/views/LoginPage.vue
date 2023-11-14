@@ -74,8 +74,9 @@
             filled
             rounded
             dense
+            v-model="email"
           ></v-text-field>
-
+  
           <v-text-field
             label="Password"
             prepend-inner-icon="mdi-lock"
@@ -93,6 +94,7 @@
               rounded
               color="#5C9970"
               dark
+              @click="login"
             >
               LOGIN
             </v-btn>
@@ -103,12 +105,40 @@
   </v-container>
 </template>
 
-<script>
-  export default {
-    name: 'LoginPage',
 
-    data: () => ({
-      
-    }),
+<script>
+import axios from "axios";
+const bcryptjs = require('bcryptjs');
+
+export default {
+  name: "LoginPage",
+  data() {
+    return {
+      email: '',
+      password: ''
+    };
+  },
+  methods: {
+    login(){
+        const email = this.email?.trim();
+        const password = this.password?.trim();
+        axios.get(`http://localhost:3000/users/email/${email}`)
+        .then(function (response) {
+            const hashedPassword = response.data[0].password;
+            bcryptjs.compare(password, hashedPassword). then(result => {
+                if (result){
+                    console.log("SUCCESS");
+                }
+                else{
+                    console.log("FAILURE");
+                }
+            })
+          })
+              .catch(function (error) {
+                  console.log(error);
+        });
+    }
   }
+}
+
 </script>
