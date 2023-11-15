@@ -5,7 +5,6 @@ const { InstructorSchedule } = require('./models/instructor_schedule');
 const { User } = require('./models/user')
 const app = express();
 const mongoose = require('mongoose')
-const bcrypt = require('bcrypt')
 
 const dotenv = require('dotenv');
 dotenv.config();
@@ -18,6 +17,13 @@ mongoose
 .catch((error) => console.error(error))
 
 app.use(express.json())
+
+app.use((req, res, next) => {
+    res.header('Access-Control-Allow-Origin', 'http://localhost:8080'); // Replace with the appropriate origin.
+    res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+    res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+    next();
+  });
 
 //-------------Functions using controllers-------------
 
