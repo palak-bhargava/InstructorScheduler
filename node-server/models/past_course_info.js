@@ -1,6 +1,6 @@
 const mongoose = require('mongoose')
 
-const courseSchema = mongoose.Schema(
+const pastCourseSchema = mongoose.Schema(
     {
         section_address: {
             type: String,
@@ -107,6 +107,6 @@ const courseSchema = mongoose.Schema(
     }
 )
 
-const Course = mongoose.model('Course', courseSchema)
+const PastCourses = mongoose.model('PastCourses', pastCourseSchema)
 
-module.exports = { Course };
+module.exports = { PastCourses };

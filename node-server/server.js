@@ -1,5 +1,5 @@
 const express = require('express')
-const { Course } = require('./models/course_info')
+const { PastCourses } = require('./models/past_course_info')
 const { InstructorPreference } = require('./models/instructor_preferences');
 const { InstructorSchedule } = require('./models/instructor_schedule');
 const { User } = require('./models/user')
@@ -33,8 +33,8 @@ app.use(express.json())
 // var getCoursesByTitle = require('./controllers/course_info_controller')
 // getCoursesByTitle("Computer Science Laboratory");
 
-var getUserEmail = require('./controllers/sign_in_controller')
-getUserEmail("bobby2@gmail.com", "123");
+// var getUserEmail = require('./controllers/sign_in_controller')
+// getUserEmail("bobby2@gmail.com", "123");
 
 
 //POST TO USERS
@@ -171,10 +171,10 @@ app.post('/signin', async(req, res) => {
 
 
 
-app.post('/course', async(req, res) => {
+app.post('/pastcourses', async(req, res) => {
     try{
-        const course = await Course.create(req.body)
-        res.status(200).json(course)
+        const past_course = await PastCourses.create(req.body)
+        res.status(200).json(past_course)
     }
     catch (error) { 
         console.error(error.message)
@@ -207,43 +207,43 @@ app.post('/instructorschedules', async(req, res) => {
 })
 
 //GET all courses
-app.get('/courses', async(req, res) => {
+app.get('/pastcourses', async(req, res) => {
     try {
-        const courses = await Course.find({});
-        res.status(200).json(courses);
+        const past_courses = await PastCourses.find({});
+        res.status(200).json(past_courses);
     } catch (error) {
         res.status(500).json({message: error.message})
     }
 })
 
 //GET courses by course number
-app.get('/courses/number/:course_number', async(req, res) =>{
+app.get('/pastcourses/number/:course_number', async(req, res) =>{
     try {
         const {course_number} = req.params;
-        const courses = await Course.find({course_number: course_number});
-        res.status(200).json(courses);
+        const pastcourses = await PastCourses.find({course_number: course_number});
+        res.status(200).json(pastcourses);
     } catch (error) {
         res.status(500).json({message: error.message})
     }
 })
 
 //GET courses by day
-app.get('/courses/day/:days', async(req, res) =>{
+app.get('/pastcourses/day/:days', async(req, res) =>{
     try {
         const days = [req.params.days.split(',')]; 
-        const courses = await Course.find({days: { $in: days }});
-        res.status(200).json(courses);
+        const pastcourses = await PastCourses.find({days: { $in: days }});
+        res.status(200).json(pastcourses);
     } catch (error) {
         res.status(500).json({message: error.message})
     }
 })
 
 //GET courses by prefix
-app.get('/courses/prefix/:course_prefix', async(req, res) =>{
+app.get('/pastcourses/prefix/:course_prefix', async(req, res) =>{
     try {
         const course_prefix = req.params.course_prefix; 
-        const courses = await Course.find({course_prefix: course_prefix});
-        res.status(200).json(courses);
+        const past_courses = await PastCourses.find({course_prefix: course_prefix});
+        res.status(200).json(past_courses);
     } catch (error) {
         res.status(500).json({message: error.message})
     }
@@ -251,11 +251,11 @@ app.get('/courses/prefix/:course_prefix', async(req, res) =>{
 
 
 //GET courses by title
-app.get('/courses/title/:title', async(req, res) =>{
+app.get('/pastcourses/title/:title', async(req, res) =>{
     try {
         const title = req.params.title; 
-        const courses = await Course.find({title: title});
-        res.status(200).json(courses);
+        const pastcourses = await PastCourses.find({title: title});
+        res.status(200).json(pastcourses);
     } catch (error) {
         res.status(500).json({message: error.message})
     }
