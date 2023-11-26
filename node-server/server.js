@@ -1,5 +1,6 @@
 const express = require('express')
 const { PastCourses } = require('./models/past_course_info')
+const { CurrentCourses } = require('./models/current_course_info')
 const { InstructorPreference } = require('./models/instructor_preferences');
 const { InstructorSchedule } = require('./models/instructor_schedule');
 const { User } = require('./models/user')
@@ -175,6 +176,17 @@ app.post('/pastcourses', async(req, res) => {
     try{
         const past_course = await PastCourses.create(req.body)
         res.status(200).json(past_course)
+    }
+    catch (error) { 
+        console.error(error.message)
+        res.status(500).json({message: error.message})
+    }
+})
+
+app.post('/currentcourses', async(req, res) => {
+    try{
+        const current_course = await CurrentCourses.create(req.body)
+        res.status(200).json(current_course)
     }
     catch (error) { 
         console.error(error.message)
