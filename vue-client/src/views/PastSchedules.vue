@@ -76,7 +76,7 @@
               light
               outlined
             >
-              <div class="pt-2 pl-1 ml-12">
+              <div class="pt-2 pl-15 ml-12">
                 Teach This Class Again?
               </div>
               <v-card-actions>
@@ -85,7 +85,7 @@
                   elevation="2"
                   rounded
                   light
-                  class="mr-3 mb-1 ml-13"
+                  class="mr-3 mb-1 ml-15"
                 >
                   Yes 
                 </v-btn> 
@@ -94,9 +94,18 @@
                   elevation="2"
                   rounded
                   light
-                  class="mb-1"
+                  class="mb-1 mr-3"
                 >
                   Maybe
+                </v-btn> 
+                <v-btn
+                  color="#ffffff"
+                  elevation="2"
+                  rounded
+                  light
+                  class="mb-1"
+                >
+                  No
                 </v-btn> 
               </v-card-actions>
             </v-card>
@@ -140,7 +149,7 @@
               light
               outlined
             >
-              <div class="pt-2 pl-1 ml-12">
+              <div class="pt-2 pl-15 ml-12">
                 Teach This Class Again?
               </div>
               <v-card-actions>
@@ -149,7 +158,7 @@
                   elevation="2"
                   rounded
                   light
-                  class="mr-3 mb-1 ml-13"
+                  class="mr-3 mb-1 ml-15"
                 >
                   Yes 
                 </v-btn> 
@@ -158,9 +167,18 @@
                   elevation="2"
                   rounded
                   light
-                  class="mb-1"
+                  class="mb-1 mr-3"
                 >
                   Maybe
+                </v-btn> 
+                <v-btn
+                  color="#ffffff"
+                  elevation="2"
+                  rounded
+                  light
+                  class="mb-1"
+                >
+                  No
                 </v-btn> 
               </v-card-actions>
             </v-card>
@@ -204,7 +222,7 @@
               light
               outlined
             >
-              <div class="pt-2 pl-1 ml-12">
+              <div class="pt-2 pl-15 ml-12">
                 Teach This Class Again?
               </div>
               <v-card-actions>
@@ -213,7 +231,7 @@
                   elevation="2"
                   rounded
                   light
-                  class="mr-3 mb-1 ml-13"
+                  class="mr-3 mb-1 ml-15"
                 >
                   Yes 
                 </v-btn> 
@@ -222,9 +240,18 @@
                   elevation="2"
                   rounded
                   light
-                  class="mb-1"
+                  class="mb-1 mr-3"
                 >
                   Maybe
+                </v-btn> 
+                <v-btn
+                  color="#ffffff"
+                  elevation="2"
+                  rounded
+                  light
+                  class="mb-1"
+                >
+                  No
                 </v-btn> 
               </v-card-actions>
             </v-card>
@@ -268,7 +295,7 @@
               light
               outlined
             >
-              <div class="pt-2 pl-1 ml-12">
+              <div class="pt-2 pl-15 ml-12">
                 Teach This Class Again?
               </div>
               <v-card-actions>
@@ -277,7 +304,7 @@
                   elevation="2"
                   rounded
                   light
-                  class="mr-3 mb-1 ml-13"
+                  class="mr-3 mb-1 ml-15"
                 >
                   Yes 
                 </v-btn> 
@@ -286,9 +313,18 @@
                   elevation="2"
                   rounded
                   light
-                  class="mb-1"
+                  class="mb-1 mr-3"
                 >
                   Maybe
+                </v-btn> 
+                <v-btn
+                  color="#ffffff"
+                  elevation="2"
+                  rounded
+                  light
+                  class="mb-1"
+                >
+                  No
                 </v-btn> 
               </v-card-actions>
             </v-card>
