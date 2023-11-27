@@ -251,6 +251,23 @@ app.get('/pastcourses/title/:title', async(req, res) =>{
     }
 })
 
+//GET courses by number and prefix
+app.get('/pastcourses/:course_prefix/:course_number', async(req, res) =>{
+    try {
+        const course_prefix = req.params.course_prefix; 
+        const course_number = req.params.course_number; 
+        const past_courses = await PastCourses.find(
+            {
+                course_prefix: course_prefix, 
+                course_number: course_number
+            });
+        res.status(200).json(past_courses);
+    } catch (error) {
+        res.status(500).json({message: error.message})
+    }
+})
+
+
 //----------------------API FOR CURRENT COURSES----------------------
 app.post('/currentcourses', async(req, res) => {
     try{
