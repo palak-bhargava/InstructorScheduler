@@ -8,7 +8,6 @@
 
 <script>
 import PastSchedules from './views/PastSchedules';
-import LoginPage from './views/LoginPage';
 
 export default {
   name: 'App',
