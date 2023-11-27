@@ -38,6 +38,19 @@ app.use(express.json())
 // getUserEmail("bobby2@gmail.com", "123");
 
 
+//----------------------API FOR INSTRUCTOR SIGN IN----------------------
+//GET user by email
+app.get('/users/email/:email', async(req, res) =>{
+    try {
+        const email = req.params.email; 
+        const user = await User.find({email: email});
+        res.status(200).json(user);
+    } catch (error) {
+        res.status(500).json({message: error.message})
+    }
+})
+
+
 //POST TO USERS
 app.post('/signup', async(req, res) => {
     console.log('HELLO')
@@ -171,46 +184,11 @@ app.post('/signin', async(req, res) => {
 
 
 
-
+//----------------------API FOR PAST COURSES----------------------
 app.post('/pastcourses', async(req, res) => {
     try{
         const past_course = await PastCourses.create(req.body)
         res.status(200).json(past_course)
-    }
-    catch (error) { 
-        console.error(error.message)
-        res.status(500).json({message: error.message})
-    }
-})
-
-app.post('/currentcourses', async(req, res) => {
-    try{
-        const current_course = await CurrentCourses.create(req.body)
-        res.status(200).json(current_course)
-    }
-    catch (error) { 
-        console.error(error.message)
-        res.status(500).json({message: error.message})
-    }
-})
-
-//POST TO PREFERENCES
-app.post('/instructorpreferences', async(req, res) => {
-    try{
-        const preference = await InstructorPreference.create(req.body)
-        res.status(200).json(preference)
-    }
-    catch (error) { 
-        console.error(error.message)
-        res.status(500).json({message: error.message})
-    }
-})
-
-//POST TO SCHEDULES
-app.post('/instructorschedules', async(req, res) => {
-    try{
-        const schedules = await InstructorSchedule.create(req.body)
-        res.status(200).json(schedules)
     }
     catch (error) { 
         console.error(error.message)
@@ -227,6 +205,7 @@ app.get('/pastcourses', async(req, res) => {
         res.status(500).json({message: error.message})
     }
 })
+
 
 //GET courses by course number
 app.get('/pastcourses/number/:course_number', async(req, res) =>{
@@ -261,7 +240,6 @@ app.get('/pastcourses/prefix/:course_prefix', async(req, res) =>{
     }
 })
 
-
 //GET courses by title
 app.get('/pastcourses/title/:title', async(req, res) =>{
     try {
@@ -273,16 +251,42 @@ app.get('/pastcourses/title/:title', async(req, res) =>{
     }
 })
 
-//GET user by email
-app.get('/users/email/:email', async(req, res) =>{
-    try {
-        const email = req.params.email; 
-        const user = await User.find({email: email});
-        res.status(200).json(user);
-    } catch (error) {
+//----------------------API FOR CURRENT COURSES----------------------
+app.post('/currentcourses', async(req, res) => {
+    try{
+        const current_course = await CurrentCourses.create(req.body)
+        res.status(200).json(current_course)
+    }
+    catch (error) { 
+        console.error(error.message)
         res.status(500).json({message: error.message})
     }
 })
+
+//----------------------API FOR INSTRUCTOR PREFERENCES----------------------
+app.post('/instructorpreferences', async(req, res) => {
+    try{
+        const preference = await InstructorPreference.create(req.body)
+        res.status(200).json(preference)
+    }
+    catch (error) { 
+        console.error(error.message)
+        res.status(500).json({message: error.message})
+    }
+})
+
+//----------------------API FOR NEW INSTRUCTOR SCHEDULES----------------------
+app.post('/instructorschedules', async(req, res) => {
+    try{
+        const schedules = await InstructorSchedule.create(req.body)
+        res.status(200).json(schedules)
+    }
+    catch (error) { 
+        console.error(error.message)
+        res.status(500).json({message: error.message})
+    }
+})
+
 
 
 
