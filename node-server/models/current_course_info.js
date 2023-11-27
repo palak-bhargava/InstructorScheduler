@@ -1,7 +1,11 @@
 const mongoose = require('mongoose')
 
-const courseSchema = mongoose.Schema(
+const currentCourseSchema = mongoose.Schema(
     {
+        class_assigned: {
+            type: Boolean,
+            required: [true]
+        },
         section_address: {
             type: String,
             required: [true]
@@ -11,11 +15,11 @@ const courseSchema = mongoose.Schema(
             required: [true]
         },
         course_number: {
-            type: Number,
+            type: String,
             required: [true]
         },
         section: {
-            type: Number,
+            type: String,
             required: [true]
         },
         class_number: {
@@ -59,8 +63,8 @@ const courseSchema = mongoose.Schema(
             required: [true]
         },
         session: {
-            type: Number,
-            required: [true]
+            type: String,
+            required: [false]
         },
         days: {
             type: Array,
@@ -76,7 +80,7 @@ const courseSchema = mongoose.Schema(
         },
         location: {
             type: String,
-            required: [true]
+            required: [false]
         },
         core_area: {
             type: String,
@@ -99,13 +103,14 @@ const courseSchema = mongoose.Schema(
             required: [false]
         },
         textbooks: {
-            type: String,
-            required: [false]
+            type: Array,
+            required: [false],
+            default: []
         }
 
     }
 )
 
-const Course = mongoose.model('Course', courseSchema)
+const CurrentCourses = mongoose.model('CurrentCourses', currentCourseSchema)
 
-module.exports = Course
+module.exports = { CurrentCourses };
