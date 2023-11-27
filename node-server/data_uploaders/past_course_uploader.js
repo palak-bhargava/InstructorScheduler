@@ -1,4 +1,4 @@
-const { Course } = require('../models/course_info');
+const { PastCourses } = require('../models/past_course_info');
 const fs = require('fs');
 const axios = require('axios');
 
@@ -35,20 +35,20 @@ fs.readFile('../json_data/coursebook.json', 'utf8', (err, data) => {
             jsonEntry.title = jsonEntry.title.trim();
         }
 
-        return new Course(jsonEntry);
+        return new PastCourses(jsonEntry);
     };
 
-    const apiUrl = 'http://localhost:3000/course';
+    const apiUrl = 'http://localhost:3000/pastcourses';
 
     // Iterate through each entry in report_data and post it to the database
     for (const data of reportData) {
-        const course = mapJsonToSchema(data);
-        postToDb(course, apiUrl);
+        const past_course = mapJsonToSchema(data);
+        postToDb(past_course, apiUrl);
     }
 });
 
-const postToDb = (course, apiUrl) => {
-    axios.post(apiUrl, course)
+const postToDb = (past_course, apiUrl) => {
+    axios.post(apiUrl, past_course)
         .then(response => {
             // Handle the response data here
             console.log('Response data:', response.data);

@@ -1,5 +1,6 @@
 const express = require('express')
-const { Course } = require('./models/course_info')
+const { PastCourses } = require('./models/past_course_info')
+const { CurrentCourses } = require('./models/current_course_info')
 const { InstructorPreference } = require('./models/instructor_preferences');
 const { InstructorSchedule } = require('./models/instructor_schedule');
 const { User } = require('./models/user')
@@ -41,6 +42,20 @@ app.use((req, res, next) => {
 
 // var getUserEmail = require('./controllers/sign_in_controller')
 // getUserEmail("bobby2@gmail.com", "123");
+
+
+//----------------------API FOR INSTRUCTOR SIGN IN----------------------
+//GET user by email
+app.get('/users/email/:email', async(req, res) =>{
+    try {
+        const email = req.params.email; 
+        const user = await User.find({email: email});
+        res.status(200).json(user);
+    } catch (error) {
+        res.status(500).json({message: error.message})
+    }
+})
+
 
 
 //POST TO USERS
@@ -176,11 +191,11 @@ app.post('/signin', async(req, res) => {
 
 
 
-
-app.post('/course', async(req, res) => {
+//----------------------API FOR PAST COURSES----------------------
+app.post('/pastcourses', async(req, res) => {
     try{
-        const course = await Course.create(req.body)
-        res.status(200).json(course)
+        const past_course = await PastCourses.create(req.body)
+        res.status(200).json(past_course)
     }
     catch (error) { 
         console.error(error.message)
@@ -188,7 +203,91 @@ app.post('/course', async(req, res) => {
     }
 })
 
-//POST TO PREFERENCES
+//GET all courses
+app.get('/pastcourses', async(req, res) => {
+    try {
+        const past_courses = await PastCourses.find({});
+        res.status(200).json(past_courses);
+    } catch (error) {
+        res.status(500).json({message: error.message})
+    }
+})
+
+
+//GET courses by course number
+app.get('/pastcourses/number/:course_number', async(req, res) =>{
+    try {
+        const {course_number} = req.params;
+        const pastcourses = await PastCourses.find({course_number: course_number});
+        res.status(200).json(pastcourses);
+    } catch (error) {
+        res.status(500).json({message: error.message})
+    }
+})
+
+//GET courses by day
+app.get('/pastcourses/day/:days', async(req, res) =>{
+    try {
+        const days = [req.params.days.split(',')]; 
+        const pastcourses = await PastCourses.find({days: { $in: days }});
+        res.status(200).json(pastcourses);
+    } catch (error) {
+        res.status(500).json({message: error.message})
+    }
+})
+
+//GET courses by prefix
+app.get('/pastcourses/prefix/:course_prefix', async(req, res) =>{
+    try {
+        const course_prefix = req.params.course_prefix; 
+        const past_courses = await PastCourses.find({course_prefix: course_prefix});
+        res.status(200).json(past_courses);
+    } catch (error) {
+        res.status(500).json({message: error.message})
+    }
+})
+
+//GET courses by title
+app.get('/pastcourses/title/:title', async(req, res) =>{
+    try {
+        const title = req.params.title; 
+        const pastcourses = await PastCourses.find({title: title});
+        res.status(200).json(pastcourses);
+    } catch (error) {
+        res.status(500).json({message: error.message})
+    }
+})
+
+//GET courses by number and prefix
+app.get('/pastcourses/:course_prefix/:course_number', async(req, res) =>{
+    try {
+        const course_prefix = req.params.course_prefix; 
+        const course_number = req.params.course_number; 
+        const past_courses = await PastCourses.find(
+            {
+                course_prefix: course_prefix, 
+                course_number: course_number
+            });
+        res.status(200).json(past_courses);
+    } catch (error) {
+        res.status(500).json({message: error.message})
+    }
+})
+
+
+//----------------------API FOR CURRENT COURSES----------------------
+app.post('/currentcourses', async(req, res) => {
+    try{
+        const current_course = await CurrentCourses.create(req.body)
+        res.status(200).json(current_course)
+    }
+    catch (error) { 
+        console.error(error.message)
+        res.status(500).json({message: error.message})
+    }
+})
+
+//----------------------API FOR INSTRUCTOR PREFERENCES----------------------
 app.post('/instructorpreferences', async(req, res) => {
     try{
         const preference = await InstructorPreference.create(req.body)
@@ -200,7 +299,7 @@ app.post('/instructorpreferences', async(req, res) => {
     }
 })
 
-//POST TO SCHEDULES
+//----------------------API FOR NEW INSTRUCTOR SCHEDULES----------------------
 app.post('/instructorschedules', async(req, res) => {
     try{
         const schedules = await InstructorSchedule.create(req.body)
@@ -212,71 +311,6 @@ app.post('/instructorschedules', async(req, res) => {
     }
 })
 
-//GET all courses
-app.get('/courses', async(req, res) => {
-    try {
-        const courses = await Course.find({});
-        res.status(200).json(courses);
-    } catch (error) {
-        res.status(500).json({message: error.message})
-    }
-})
-
-//GET courses by course number
-app.get('/courses/number/:course_number', async(req, res) =>{
-    try {
-        const {course_number} = req.params;
-        const courses = await Course.find({course_number: course_number});
-        res.status(200).json(courses);
-    } catch (error) {
-        res.status(500).json({message: error.message})
-    }
-})
-
-//GET courses by day
-app.get('/courses/day/:days', async(req, res) =>{
-    try {
-        const days = [req.params.days.split(',')]; 
-        const courses = await Course.find({days: { $in: days }});
-        res.status(200).json(courses);
-    } catch (error) {
-        res.status(500).json({message: error.message})
-    }
-})
-
-//GET courses by prefix
-app.get('/courses/prefix/:course_prefix', async(req, res) =>{
-    try {
-        const course_prefix = req.params.course_prefix; 
-        const courses = await Course.find({course_prefix: course_prefix});
-        res.status(200).json(courses);
-    } catch (error) {
-        res.status(500).json({message: error.message})
-    }
-})
-
-
-//GET courses by title
-app.get('/courses/title/:title', async(req, res) =>{
-    try {
-        const title = req.params.title; 
-        const courses = await Course.find({title: title});
-        res.status(200).json(courses);
-    } catch (error) {
-        res.status(500).json({message: error.message})
-    }
-})
-
-//GET user by email
-app.get('/users/email/:email', async(req, res) =>{
-    try {
-        const email = req.params.email; 
-        const user = await User.find({email: email});
-        res.status(200).json(user);
-    } catch (error) {
-        res.status(500).json({message: error.message})
-    }
-})
 
 
 

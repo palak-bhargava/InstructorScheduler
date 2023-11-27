@@ -6,33 +6,16 @@ const instructorPreferenceSchema = mongoose.Schema(
             type: String,
             required: [true]
         },
-        courses: [
+        courses: {
+            type: [
             {
                 course_prefix: String,
                 course_number: Number,
-                required: [false]
-            },
-            {
-                course_prefix: String,
-                course_number: Number,
-                required: [false]
-            },
-            {
-                course_prefix: String,
-                course_number: Number,
-                required: [false]
-            },
-            {
-                course_prefix: String,
-                course_number: Number,
-                required: [false]
-            },
-            {
-                course_prefix: String,
-                course_number: Number,
-                required: [false]
+                teaching_preference: String,
             }
         ],
+        required: [false]
+    },
         days: {
             type: Array,
             required: [false]
