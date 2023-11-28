@@ -375,15 +375,34 @@
 </template>
 
 <script>
+import axios from "axios"
 
-  export default {
-    name: 'PastSchedules',
-
-    data: () => ({
-      
-    }),
-  }
+export default {
+  data() {
+    return {
+      name: '',
+    };
+  },
+  created() {
+    this.getCourses();
+  },
+  methods: {
+    async getCourses() {
+      let name = "Karen%20Mazidi"
+      axios.get(`http://localhost:3000/pastcourses/instructors?name=${name}`)
+        .then(response => {
+          console.log(response.data); // Log the data property of the response
+          //resolve(response.data); // Resolve with the data
+        })
+        .catch(error => {
+          console.error(error);
+          //reject(error);
+        });
+    },
+  },
+};
 </script>
+
 
 <style>
 </style>
