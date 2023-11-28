@@ -1,5 +1,5 @@
 <template>
-    <v-container class="mt-15">
+    <v-container class="mt-10">
         <v-row>
             <v-col cols="7">
                 <div class="text-h5 mb-2">My Preferences</div>
@@ -110,57 +110,93 @@
                     class = "mb-2 pa-2 rounded-xl font-weight-medium"
                     color="#FFFFFF"
                 >
-                    &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
-                    Class #
-                    &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
-                    &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
-                    &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
-                    Course Name 
-                    &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
-                    &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
-                    &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
-                    &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
-                    Section
-                    &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
-                    &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
-                    &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
-                    Location
-                    &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
-                    &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
-                    &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
-                    &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
-                    Days & Time
+                    <v-row>
+                        <v-col 
+                        cols="2">
+                        Course Number
+                        </v-col>
+                        <v-col cols="3">
+                            Course Name
+                        </v-col>
+                        <v-col cols="1.5">
+                            Section
+                        </v-col>
+                        <v-col cols="1.5">
+                            Location
+                        </v-col>
+                        <v-col cols="2.5">
+                            Days & Time
+                        </v-col>
+                    </v-row>
                 </v-card>
-                <v-btn
+                <v-card
+                    class="rounded-xl mb-2 pa-2"
                     color="#FFFFFF"
-                    elevation="2"
-                    rounded
-                    block
-                    outlined
-                    class="mb-2"
                 >
-                    class info
-                </v-btn>
+                    <v-row>
+                        <v-col cols="2">
+                        CS 3345
+                        </v-col>
+                        <v-col cols="3">
+                            Data Structures
+                        </v-col>
+                        <v-col cols="1.5">
+                            003
+                        </v-col>
+                        <v-col cols="1.5">
+                            ECSS 2.415
+                        </v-col>
+                        <v-col cols="2.5">
+                            MW 4:00 PM - 5:15 PM
+                        </v-col>
+                    </v-row>
+                </v-card>
                 
-                <v-btn
-                    color="white"
-                    elevation="2"
-                    rounded
-                    block
-                    outlined
-                    class="mb-2"
+                <v-card
+                class="rounded-xl mb-2 pa-2"
+                    color="#FFFFFF"
                 >
-                    class info
-                </v-btn> 
-                <v-btn
-                    color="white"
-                    elevation="2"
-                    rounded
-                    block
-                    outlined
+                    <v-row>
+                        <v-col cols="2">
+                        CS 2340
+                        </v-col>
+                        <v-col cols="3">
+                            Computer Architecture
+                        </v-col>
+                        <v-col cols="1.5">
+                            001
+                        </v-col>
+                        <v-col cols="1.5">
+                            ECSS 2.501
+                        </v-col>
+                        <v-col cols="2.5">
+                            MW 7:00 PM - 8:15 PM
+                        </v-col>
+                    </v-row>
+                </v-card> 
+                <v-card
+                class="rounded-xl mb-2 pa-2"
+                    color="#FFFFFF"
                 >
-                    class info
-                </v-btn> 
+                    <v-row>
+                        <v-col cols="2">
+                        CS 2336
+                        </v-col>
+                        <v-col cols="3">
+                            Computer Science II
+                        </v-col>
+                        <v-col cols="1.5">
+                            006
+                        </v-col>
+                        <v-col cols="1.5">
+                            ECSW 1.365
+                        </v-col>
+                        <v-col cols="2.5">
+                            TTH 1:00 PM - 2:15 PM
+                        </v-col>
+                    </v-row>
+                </v-card> 
+
                 <v-row justify-center class="mb-0 mt-3"> 
                             <v-btn
                             color="#FFB86F"
@@ -177,7 +213,7 @@
         <div class="text-h5 mb-2 mt-15">My Current Schedule</div>
         <v-card
             color="#5C9970"
-            class="rounded-xl"
+            class="rounded-xl mb-10"
         >
             <v-container class="spacing-playground pa-5">
                 <v-row>
@@ -185,69 +221,56 @@
                     <v-sheet height="400">
                         <v-calendar
                         ref="calendar"
+                        :value="today"
                         :events="events"
-                        color="green lighten-1"
+                        :today="now"
                         type="week"
                         first-time=07:00
                         last-time=10:00
                         interval-count=15
                         >
+                        <template v-slot:day-label-header="{}">{{ " " }}</template>
                         </v-calendar>
                     </v-sheet>
                     </v-col>
                 </v-row>
             </v-container>
         </v-card>
-
-        <div class="text-h5 mb-2 mt-15">Generate Schedules</div>
-            <v-container class="spacing-playground pa-6">
-                <v-row justify-center class="mb-0">
-                    <v-btn
-                        color="#5C9970"
-                        elevation="2"
-                        rounded
-                        class="mx-auto"
-                        >
-                        &nbsp&nbsp&nbspGenerate&nbsp&nbsp&nbsp
-                    </v-btn> 
-                </v-row>
-            </v-container>
-
-        <div class="text-h5 mb-2 mt-15">Generate Schedules</div>
-        <v-card
-            color="#5C9970"
-            class="rounded-xl"
-        >
-            <v-container class="spacing-playground pa-6">
-                <v-card
-                color="#FFFFFF"
-                class="rounded-xl"
-                >
-                    <v-sheet height="400">
-                        <v-calendar
-                        ref="calendar"
-                        :events="events"
-                        color="green lighten-1"
-                        type="week"
-                        first-time=07:00
-                        last-time=10:00
-                        interval-count=15
-                        ></v-calendar>
-                    </v-sheet>
-
-                    <v-button>
-
-                    </v-button>
-                    
-                </v-card>
-            </v-container>
-        </v-card>
-
     </v-container>
 </template>
 
 <script>
-export default {
-  methods: {},
-};
+  export default {
+    data: () => ({
+      events: [
+        {
+          name: 'CS 4384',
+          start: '2023-11-27 10:00',
+          end: '2023-11-27 11:15',
+          color: '#FFB86F'
+
+        },
+        {
+          name: 'CS 4384',
+          start: '2023-11-29 10:00',
+          end: '2023-11-29 11:15',
+          color: '#FFB86F',
+          textcolor: '#000000'
+
+        },
+        {
+          name: 'CS 4375',
+          start: '2023-11-28 16:00',
+          end: '2023-11-28 17:15',
+          color: '#FFB86F'
+        },
+        {
+          name: 'CS 4375',
+          start: '2023-11-30 16:00',
+          end: '2023-11-30 17:15',
+          color: '#FFB86F'
+        },
+      ],
+    }),
+  }
 </script>
