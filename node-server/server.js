@@ -272,7 +272,22 @@ app.get('/pastcourses/:course_prefix/:course_number', async(req, res) =>{
     } catch (error) {
         res.status(500).json({message: error.message})
     }
-})
+});
+
+//GET courses by instructor name
+app.get('/pastcourses/instructors', async (req, res) => {
+    try {
+        const instructorName = req.query.name;
+
+        // Use Mongoose find to query the database based on the provided instructor name
+        const filteredEntries = await PastCourses.find({ instructors: instructorName });
+
+        // Send the filtered entries as a response
+        res.status(200).json(filteredEntries);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+});
 
 
 //----------------------API FOR CURRENT COURSES----------------------
