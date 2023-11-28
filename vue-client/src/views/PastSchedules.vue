@@ -77,7 +77,7 @@
               outlined
             >
               <div class="pt-2 pl-15 ml-12">
-                Teach This Class Again?
+                Faiza Teach This Class Again?
               </div>
               <v-card-actions>
                 <v-btn
