@@ -314,6 +314,54 @@ app.post('/instructorpreferences', async(req, res) => {
     }
 })
 
+app.get('/instructorpreferences/:instructor_name', async(req, res) =>{
+    try {
+        const instructor_name = req.params.instructor_name; 
+        const instructor_preferences = await InstructorPreference.find(
+            {
+                instructor_name: instructor_name
+            });
+        res.status(200).json(instructor_preferences);
+    } catch (error) {
+        res.status(500).json({message: error.message})
+    }
+});
+
+app.put('/instructorpreferences/:instructor_name/:course_prefix/:course_number', async (req, res) => {
+    try {
+      const instructor_name = req.params.instructor_name;
+      const course_prefix = req.params.course_prefix;
+      const course_number = req.params.course_number;
+      const teaching_preference = req.body.teaching_preference; // Change from req.params to req.body
+  
+      // Find instructor preferences based on instructor_name
+      const instructor_preferences = await InstructorPreference.findOne({ instructor_name: instructor_name });
+  
+      if (instructor_preferences) {
+        // Find the course in the instructor's preferences
+        const courseIndex = instructor_preferences.courses.findIndex(course => {
+          return course.course_prefix === course_prefix && course.course_number == course_number;
+        });
+  
+        if (courseIndex !== -1) {
+          // Update teaching_preference for the specified course
+          instructor_preferences.courses[courseIndex].teaching_preference = teaching_preference;
+  
+          // Save the updated document
+          await instructor_preferences.save();
+  
+          res.status(200).json({ message: 'Teaching preference updated successfully' });
+        } else {
+          res.status(404).json({ message: 'Course not found for the specified instructor' });
+        }
+      } else {
+        res.status(404).json({ message: 'Instructor not found' });
+      }
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
+  });
+  
 //----------------------API FOR NEW INSTRUCTOR SCHEDULES----------------------
 app.post('/instructorschedules', async(req, res) => {
     try{

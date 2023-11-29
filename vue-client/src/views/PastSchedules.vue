@@ -381,6 +381,8 @@ export default {
   data() {
     return {
       name: '',
+      preference: '',
+      instructor_name: ''
     };
   },
   created() {
@@ -399,6 +401,31 @@ export default {
           //reject(error);
         });
     },
+
+    //if preferences already exist, then put based on course_prefix, course_number and preference
+    //else post the course into preferences
+
+    //TODO: if a preference from this page is added, remove course time from availability
+
+    async upadtePreferences(){
+      let preference = "No"; //this.preference.trim();
+      let instructor_name = "Pushpa%20Kumar"; //this.instructor_name.trim();
+      let course_number = "1134"; //this.course_number.trim();
+      let course_prefix = "CS"; //this.course_prefix.trim();
+
+      const data_update = {
+        teaching_preference: preference
+      }
+
+      axios.put(`http://localhost:3000/instructorpreferences/${instructor_name}/${course_prefix}/${course_number}`, data_update)
+      .then(response => {
+          console.log('Response:', response.data.message);
+      })
+      .catch(error => {
+          console.error('Error:', error.message);
+      });
+      
+    }
   },
 };
 </script>
