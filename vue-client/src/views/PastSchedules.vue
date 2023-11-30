@@ -24,7 +24,7 @@
 
     <v-expansion-panels
         dark
-        rounded=30
+        rounded="30"
     >
     <v-expansion-panel
         rounded
@@ -33,14 +33,14 @@
         color="#5C9970"
         rounded
       >
-        <h2>Spring 2023</h2>
+        <h2>Fall 2022</h2>
       </v-expansion-panel-header>
       <v-expansion-panel-content
         color="#5C9970"
         rounded
       >
       <br>
-      <v-row>
+      <v-row v-for="item in pastClasses" :key="item.id">
         <v-col 
           cols="8" 
           class="spacing-playground pa-0"
@@ -53,19 +53,15 @@
           >
             <v-list-item three-line>
               <v-list-item-content>
-                <v-list-item-title class="text-h7">
-                  Data Structures
-                </v-list-item-title>
-                <v-list-item-title class="text-h7">
-                  CS3345.001
-                </v-list-item-title>
-                <v-list-item-subtitle>
-                  MW 5:30PM - 6:45PM
-                </v-list-item-subtitle>
+              <v-list-item-title class="text-h7">{{ item.course_prefix.toUpperCase() }}{{ item.course_number }}</v-list-item-title>
+              <v-list-item-title class="text-h7">{{ item.title }}</v-list-item-title>
+              <v-list-item-subtitle>{{ displayDays(item.days) }}</v-list-item-subtitle>
+              <v-list-item-subtitle>{{ item.times_12h }}</v-list-item-subtitle>
               </v-list-item-content>
             </v-list-item>
-            </v-card>
-          </v-col>
+          </v-card>
+          <br>
+        </v-col>
 
           <v-col 
             cols="4"
@@ -76,12 +72,13 @@
               light
               outlined
             >
-              <div class="pt-2 pl-15 ml-12">
+              <div class="pt-3 pl-14 ml-12">
                 Teach This Class Again?
               </div>
               <v-card-actions>
                 <v-btn
-                  color="#ffffff"
+                  :style="{ backgroundColor: item.yesButtonColor }"
+                  @click="changeColor(item, 'yesButtonColor')"
                   elevation="2"
                   rounded
                   light
@@ -90,7 +87,8 @@
                   Yes 
                 </v-btn> 
                 <v-btn
-                  color="#ffffff"
+                  :style="{ backgroundColor: item.maybeButtonColor }"
+                  @click="changeColor(item, 'maybeButtonColor')"
                   elevation="2"
                   rounded
                   light
@@ -99,11 +97,12 @@
                   Maybe
                 </v-btn> 
                 <v-btn
-                  color="#ffffff"
+                  :style="{ backgroundColor: item.noButtonColor }"
+                  @click="changeColor(item, 'noButtonColor')"
                   elevation="2"
                   rounded
                   light
-                  class="mb-1"
+                  class="mb-2 mt-1"
                 >
                   No
                 </v-btn> 
@@ -111,266 +110,10 @@
             </v-card>
           </v-col>
          </v-row> 
-        <br><br>
-
-         <v-row>
-        <v-col 
-          cols="8" 
-          class="spacing-playground pa-0"
-        >
-          <v-card
-            class="mx-auto"
-            color="#ffffff"
-            light
-            outlined
-          >
-            <v-list-item three-line>
-              <v-list-item-content>
-                <v-list-item-title class="text-h7">
-                  Data Structures
-                </v-list-item-title>
-                <v-list-item-title class="text-h7">
-                  CS3345.001
-                </v-list-item-title>
-                <v-list-item-subtitle>
-                  MW 5:30PM - 6:45PM
-                </v-list-item-subtitle>
-              </v-list-item-content>
-            </v-list-item>
-            </v-card>
-          </v-col>
-
-          <v-col 
-            cols="4"
-            class="spacing-playground pa-0"
-          >
-            <v-card
-              color="#FFB86F"
-              light
-              outlined
-            >
-              <div class="pt-2 pl-15 ml-12">
-                Teach This Class Again?
-              </div>
-              <v-card-actions>
-                <v-btn
-                  color="#ffffff"
-                  elevation="2"
-                  rounded
-                  light
-                  class="mr-3 mb-1 ml-15"
-                >
-                  Yes 
-                </v-btn> 
-                <v-btn
-                  color="#ffffff"
-                  elevation="2"
-                  rounded
-                  light
-                  class="mb-1 mr-3"
-                >
-                  Maybe
-                </v-btn> 
-                <v-btn
-                  color="#ffffff"
-                  elevation="2"
-                  rounded
-                  light
-                  class="mb-1"
-                >
-                  No
-                </v-btn> 
-              </v-card-actions>
-            </v-card>
-          </v-col>
-         </v-row> 
-        <br><br>
-
-         <v-row>
-        <v-col 
-          cols="8" 
-          class="spacing-playground pa-0"
-        >
-          <v-card
-            class="mx-auto"
-            color="#ffffff"
-            light
-            outlined
-          >
-            <v-list-item three-line>
-              <v-list-item-content>
-                <v-list-item-title class="text-h7">
-                  Data Structures
-                </v-list-item-title>
-                <v-list-item-title class="text-h7">
-                  CS3345.001
-                </v-list-item-title>
-                <v-list-item-subtitle>
-                  MW 5:30PM - 6:45PM
-                </v-list-item-subtitle>
-              </v-list-item-content>
-            </v-list-item>
-            </v-card>
-          </v-col>
-
-          <v-col 
-            cols="4"
-            class="spacing-playground pa-0"
-          >
-            <v-card
-              color="#FFB86F"
-              light
-              outlined
-            >
-              <div class="pt-2 pl-15 ml-12">
-                Teach This Class Again?
-              </div>
-              <v-card-actions>
-                <v-btn
-                  color="#ffffff"
-                  elevation="2"
-                  rounded
-                  light
-                  class="mr-3 mb-1 ml-15"
-                >
-                  Yes 
-                </v-btn> 
-                <v-btn
-                  color="#ffffff"
-                  elevation="2"
-                  rounded
-                  light
-                  class="mb-1 mr-3"
-                >
-                  Maybe
-                </v-btn> 
-                <v-btn
-                  color="#ffffff"
-                  elevation="2"
-                  rounded
-                  light
-                  class="mb-1"
-                >
-                  No
-                </v-btn> 
-              </v-card-actions>
-            </v-card>
-          </v-col>
-         </v-row> 
-         <br><br>
-
-         <v-row>
-        <v-col 
-          cols="8" 
-          class="spacing-playground pa-0"
-        >
-          <v-card
-            class="mx-auto"
-            color="#ffffff"
-            light
-            outlined
-          >
-            <v-list-item three-line>
-              <v-list-item-content>
-                <v-list-item-title class="text-h7">
-                  Data Structures
-                </v-list-item-title>
-                <v-list-item-title class="text-h7">
-                  CS3345.001
-                </v-list-item-title>
-                <v-list-item-subtitle>
-                  MW 5:30PM - 6:45PM
-                </v-list-item-subtitle>
-              </v-list-item-content>
-            </v-list-item>
-            </v-card>
-          </v-col>
-
-          <v-col 
-            cols="4"
-            class="spacing-playground pa-0"
-          >
-            <v-card
-              color="#FFB86F"
-              light
-              outlined
-            >
-              <div class="pt-2 pl-15 ml-12">
-                Teach This Class Again?
-              </div>
-              <v-card-actions>
-                <v-btn
-                  color="#ffffff"
-                  elevation="2"
-                  rounded
-                  light
-                  class="mr-3 mb-1 ml-15"
-                >
-                  Yes 
-                </v-btn> 
-                <v-btn
-                  color="#ffffff"
-                  elevation="2"
-                  rounded
-                  light
-                  class="mb-1 mr-3"
-                >
-                  Maybe
-                </v-btn> 
-                <v-btn
-                  color="#ffffff"
-                  elevation="2"
-                  rounded
-                  light
-                  class="mb-1"
-                >
-                  No
-                </v-btn> 
-              </v-card-actions>
-            </v-card>
-          </v-col>
-         </v-row> 
-         <br>
+        <br>
       </v-expansion-panel-content>
     </v-expansion-panel>
   </v-expansion-panels>
-
-  <br><br>
-  <v-expansion-panels
-    dark
-  >
-    <v-expansion-panel>
-      <v-expansion-panel-header
-        color="#5C9970"
-      >
-        <h2>Fall 2022</h2>
-      </v-expansion-panel-header>
-      <v-expansion-panel-content
-        color="#5C9970"
-      >
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-      </v-expansion-panel-content>
-    </v-expansion-panel>
-  </v-expansion-panels>
-
-  <br><br>
-  <v-expansion-panels
-    dark
-  >
-    <v-expansion-panel>
-      <v-expansion-panel-header
-        color="#5C9970"
-      >
-        <h2>Spring 2022</h2>
-      </v-expansion-panel-header>
-      <v-expansion-panel-content
-        color="#5C9970"
-      >
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-      </v-expansion-panel-content>
-    </v-expansion-panel>
-  </v-expansion-panels>
-  
   </v-container>
 </template>
 
@@ -380,26 +123,48 @@ import axios from "axios"
 export default {
   data() {
     return {
+      buttonColor: '#ffffff',
       name: '',
       preference: '',
-      instructor_name: ''
+      instructor_name: '',
+      pastClasses: [],
     };
   },
   created() {
     this.getCourses();
   },
   methods: {
+    changeColor(item, buttonType) {
+      // Update the active button for a specific card
+      item.activeButton = buttonType;
+
+      // Update the button colors based on the active button within the card
+      item.yesButtonColor = buttonType === 'yesButtonColor' ? '#5C9970' : '#ffffff';
+      item.maybeButtonColor = buttonType === 'maybeButtonColor' ? '#5C9970' : '#ffffff';
+      item.noButtonColor = buttonType === 'noButtonColor' ? '#5C9970' : '#ffffff';
+    },
+
+    displayDays(days) {
+      return days.join(', ');
+    },
+
     async getCourses() {
-      let name = "Karen%20Mazidi"
-      axios.get(`http://localhost:3000/pastcourses/instructors?name=${name}`)
-        .then(response => {
-          console.log(response.data); // Log the data property of the response
-          //resolve(response.data); // Resolve with the data
-        })
-        .catch(error => {
-          console.error(error);
-          //reject(error);
-        });
+      let name = "Karen%20Mazidi";
+      try {
+        const response = await axios.get(`http://localhost:3000/pastcourses/instructors?name=${name}`);
+        this.pastClasses = response.data.map(item => ({
+          ...item,
+          yesButtonColor: '#ffffff', // Initialize unique button colors for each item
+          maybeButtonColor: '#ffffff',
+          noButtonColor: '#ffffff',
+          activeButton: null, 
+        })); // Assign the data to the pastClasses property
+      } 
+      catch (error) {
+        console.error(error);
+      }
+      console.log("past classes array:", this.pastClasses);
+    
     },
 
     //if preferences already exist, then put based on course_prefix, course_number and preference
@@ -429,7 +194,6 @@ export default {
   },
 };
 </script>
-
 
 <style>
 </style>
