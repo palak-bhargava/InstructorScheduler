@@ -7,7 +7,6 @@
           <v-col cols="10">
             <v-autocomplete
               v-model="values"
-              :items="items"
               filled
               rounded
               solo-filled
@@ -78,12 +77,11 @@
               type="week"
               light
               first-time="07:00"
-              last-time="10:00"
+              last-time="22:00"
               interval-count="15"
               :events="events"
               :event-color="getEventColor"
               :event-ripple="false"
-              @change="updateEvents"
               @click:event="showEvent"
               @mousedown:event="startDrag"
               @mousedown:time="startTime"
@@ -141,7 +139,6 @@
 <script>
   export default {
     data: () => ({
-      // selectedEvent: null,
       selectedEvent: {},
       selectedElement: null,
       selectedOpen: false,
@@ -155,7 +152,6 @@
       extendOriginal: null,
     }),
     mounted () {
-      console.log('Component mounted');
       this.$refs.calendar.checkChange()
       },
     methods: {
@@ -179,7 +175,7 @@
             name: `Event #${this.events.length}`,
             color: '#FFB86F',
             start: this.createStart,
-            end: this.createStart,
+            end: this.createEnd,
             timed: true
           }
 
@@ -248,22 +244,6 @@
       toTime (tms) {
         return new Date(tms.year, tms.month - 1, tms.day, tms.hour, tms.minute).getTime()
       },
-      viewDay ({ date }) {
-        this.focus = date
-        this.type = 'day'
-      },
-      getEventColor (event) {
-        return event.color
-      },
-      setToday () {
-        this.focus = ''
-      },
-      prev () {
-        this.$refs.calendar.prev()
-      },
-      next () {
-        this.$refs.calendar.next()
-      },
       showEvent({ nativeEvent, event }) {
         const open = () => {
           this.selectedEvent = event
@@ -287,7 +267,6 @@
           this.events.splice(index, 1);
         }
 
-        // Close the menu after deleting the event
         this.selectedOpen = false;
       },
       updateRange ({ start, end }) {
@@ -300,8 +279,60 @@
         };
         this.events.push(newEvent);
       },
-    },
-}
+      postPreferences(events) {
+        const resultArray = [];
+
+        try {
+          events.forEach(event => {
+            // Extract relevant information from the event
+            const { name, startTime, endTime } = event;
+
+            // Log the original start and end times
+            console.log('Original Start Time:', startTime);
+            console.log('Original End Time:', endTime);
+
+            // Convert the start and end times to Date objects for better manipulation
+            const startDate = new Date(startTime);
+            const endDate = new Date(endTime);
+
+            // Log the parsed start and end times
+            console.log('Parsed Start Time:', startDate);
+            console.log('Parsed End Time:', endDate);
+
+            // Get the day of the week as a string (e.g., "Monday", "Tuesday", etc.)
+            const dayOfWeek = new Intl.DateTimeFormat('en-US', { weekday: 'long' }).format(startDate);
+
+            // Log the day of the week
+            console.log('Day of the Week:', dayOfWeek);
+
+            // Format the start and end times without space, with lowercase AM/PM, and without leading zero for single-digit hours
+            const startTimeFormatted = startDate.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true }).replace(/\s/g, '').toLowerCase();
+            const endTimeFormatted = endDate.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true }).replace(/\s/g, '').toLowerCase();
+
+            // Find the entry in the result array corresponding to the day of the week
+            let dayEntry = resultArray.find(entry => entry.day === dayOfWeek);
+
+            // If the entry does not exist, create a new one
+            if (!dayEntry) {
+              dayEntry = { day: dayOfWeek, times: [] };
+              resultArray.push(dayEntry);
+            }
+
+            // Add the formatted time range to the times array
+            const timeRange = `${startTimeFormatted} - ${endTimeFormatted}`;
+            dayEntry.times.push(timeRange);
+          });
+
+          console.log('Result Array:', resultArray);
+          return resultArray;
+        } catch (error) {
+          console.error('Error in postPreferences function:', error);
+          throw error; // Rethrow the error to propagate it further
+        }
+      }
+    }
+  }
+
 </script>
 
 <style scoped lang="scss">
