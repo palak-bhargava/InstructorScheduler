@@ -66,81 +66,72 @@
           </v-card> 
       </v-col>
     </v-row>
-
     <v-row>
-      <div class="text-h5 mt-15 pl-3">My Availibility</div>
+      <div class="text-h5 mt-15 pl-3">My Availability</div>
       <v-col cols="12">
-        <v-card
-          class = "pl-4 pa-2 rounded-xl"
-          color="#5C9970"
-          dark
-        >
-          <template>
-            <v-row class="fill-height">
-              <v-col>
-                <v-sheet height="600">
-                  <v-calendar
-                    ref="calendar"
-                    v-model="value"
-                    color="green lighten-1"
-                    type="week"
-                    light
-                    first-time=07:00
-                    last-time=10:00
-                    interval-count="15"
-                    :events="events"
-                    :event-color="getEventColor"
-                    :event-ripple="false"
-                    @change="updateEvents"
-                    @click:event="showEvent"
-                    @mousedown:event="startDrag"
-                    @mousedown:time="startTime"
-                    @mousemove:time="mouseMove"
-                    @mouseup:time="endDrag"
-                    @mouseleave="cancelDrag"
+        <v-card class="pl-4 pa-2 mb-10 rounded-xl" color="#5C9970" dark>
+          <v-sheet class="pa-5" style="background-color: #5C9970;" height="600">
+            <v-calendar
+              ref="calendar"
+              v-model="value"
+              color="green lighten-1"
+              type="week"
+              light
+              first-time="07:00"
+              last-time="10:00"
+              interval-count="15"
+              :events="events"
+              :event-color="getEventColor"
+              :event-ripple="false"
+              @change="updateEvents"
+              @click:event="showEvent"
+              @mousedown:event="startDrag"
+              @mousedown:time="startTime"
+              @mousemove:time="mouseMove"
+              @mouseup:time="endDrag"
+              @mouseleave="cancelDrag"
+            >
+              <template v-slot:event="{ event, timed }">
+                <div
+                  v-if="timed"
+                  class="v-event-drag-bottom"
+                  @mousedown.stop="extendBottom(event)"
+                ></div>
+              </template>
+            </v-calendar>
+            <v-menu
+              v-model="selectedOpen"
+              :close-on-content-click="false"
+              :activator="selectedElement"
+            >
+              <v-card class="pa-1" color="grey lighten-4" flat>
+                <v-card-actions>
+                  <v-btn
+                    class="ma-2"
+                    color="grey lighten-2"
+                    @click="selectedOpen = false"
                   >
-                  <template v-slot:event="{ event, timed }">
-                    <div
-                      v-if="timed"
-                      class="v-event-drag-bottom"
-                      @mousedown.stop="extendBottom(event)"
-                    ></div>
-                  </template>
-                  </v-calendar>
-                  <v-menu
-                    v-model="selectedOpen"
-                    :close-on-content-click="false"
-                    :activator="selectedElement"
-                    
+                    Cancel
+                  </v-btn>
+                  <v-btn
+                    class="ma-2"
+                    color="error"
+                    @click="deleteEvent(selectedEvent)"
                   >
-                    <v-card
-                      class="pa-1"
-                      color="grey lighten-4"
-                      flat
-                    >
-                      <v-card-actions>
-                        <v-btn
-                          class="ma-2"
-                          
-                          color="grey lighten-2"
-                          @click="selectedOpen = false"
-                        >
-                          Cancel
-                        </v-btn>
-                        <v-btn
-                          class="ma-2"
-                          color="error"
-                          @click="deleteEvent(selectedEvent)"
-                        >
-                          Delete
-                        </v-btn>
-                      </v-card-actions>
-                    </v-card>
-                  </v-menu>
-                </v-sheet>
-              </v-col>
-            </v-row>
-          </template>
+                    Delete
+                  </v-btn>
+                </v-card-actions>
+              </v-card>
+            </v-menu>
+          </v-sheet>
+          <v-row class="d-flex justify-center">
+            <v-btn 
+            class="mt-2 mb-5" 
+            color="#FFB86F" 
+            @click="postPreferences(events)">
+              Save Preferences
+            </v-btn>
+          </v-row>
         </v-card>
       </v-col>
     </v-row>
@@ -274,19 +265,6 @@
         this.$refs.calendar.next()
       },
       showEvent({ nativeEvent, event }) {
-        // // Prevent the default behavior of the click event
-        // nativeEvent.preventDefault();
-
-        // // Set the selected event for the menu
-        // this.selectedEvent = event;
-
-        // // Set the position and show the menu
-        // this.selectedElement = {
-        //   x: nativeEvent.clientX,
-        //   y: nativeEvent.clientY,
-        // };
-        // this.selectedOpen = true;
-        
         const open = () => {
           this.selectedEvent = event
           this.selectedElement = nativeEvent.target
