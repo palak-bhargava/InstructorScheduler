@@ -74,8 +74,9 @@
             filled
             rounded
             dense
+            v-model="email"
           ></v-text-field>
-
+  
           <v-text-field
             label="Password"
             prepend-inner-icon="mdi-lock"
@@ -93,6 +94,7 @@
               rounded
               color="#5C9970"
               dark
+              @click="login"
             >
               LOGIN
             </v-btn>
@@ -103,12 +105,34 @@
   </v-container>
 </template>
 
-<script>
-  export default {
-    name: 'LoginPage',
 
-    data: () => ({
-      
-    }),
+
+<script>
+const getUserEmail = require('../../../node-server/controllers/sign_in_controller.js')
+  export default {
+  data() {
+    return {
+      email: '',
+      password: ''
+    };
+  },
+  
+  methods: {
+    async login() {
+      try {
+        let email = this.email?.trim();
+        let password = this.password?.trim();
+
+        // Assuming getUserEmail returns a promise
+        const response = await getUserEmail(email, password);
+
+        // Handle the response
+        console.log('Response:', response);
+      } catch (error) {
+        // Handle errors
+        console.error('Error:', error);
+      }
+    }
   }
+};
 </script>
