@@ -101,9 +101,17 @@ function convert_to_24h(time_range){
 //Create a get function that can take multiple parameters the instructor searches by
     //Get function must be for the current_course_info DB 
 
+//Example input from frontend, actually should be stored in instructor preferences database
+
+//Karen Mazidi
+//call for instructor preferences
+
+
+
 
 //Store the response in an array
 
+//call for current schedule
 //Get function for the instructor's current schedule (from last semester)
 
 //Store time availabilites in a dict
