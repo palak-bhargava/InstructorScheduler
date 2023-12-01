@@ -12,16 +12,18 @@ const instructorPreferenceSchema = mongoose.Schema(
                 course_prefix: String,
                 course_number: Number,
                 teaching_preference: String,
+                class_number: Number
             }
         ],
         required: [false]
     },
-        days: {
-            type: Array,
-            required: [false]
-        },
-        times: {
-            type: Array,
+        availability: {
+            type: [
+                {
+                    day: String,
+                    time: Array
+                }
+            ],
             required: [false]
         }
     }
