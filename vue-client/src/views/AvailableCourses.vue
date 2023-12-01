@@ -44,12 +44,11 @@
       v-model="selected"
       :headers="headers"
       :items="available_classes"
-      :single-select="singleSelect"
       :search="search"
       :page.sync="page"
       :items-per-page=9
       hide-default-footer
-      item-key="number"
+      item-key="class_number"
       show-select
       class="elevation-2 mt-3"
       @page-count="pageCount = $event"
@@ -69,6 +68,7 @@
           rounded
           dark
           class="ml-7 mt-4"
+          @click="addToSchedule"
         >
           Add To Schedule
           <v-icon right>
@@ -89,6 +89,7 @@
 </template>
 
 <script>
+  import axios from "axios"
 
   export default {
     name: 'AvailableCourses',
@@ -99,172 +100,51 @@
         pageCount: 0,
         itemsPerPage: 9,
         search: '',
-        singleSelect: false,
         selected: [],
         headers: [
           {
-            text: 'Class #',
+            text: 'Course Code',
             align: 'start',
             sortable: false,
-            value: 'number',
+            value: 'class_number',
           },
-          { text: 'Course Name', value: 'name' },
+          { text: 'Course Number', value: 'course_number' },
+          { text: 'Course Name', value: 'title' },
           { text: 'Section', value: 'section' },
           { text: 'Location', value: 'location' },
           { text: 'Days', value: 'days' },
-          { text: 'Time', value: 'time' },
+          { text: 'Time', value: 'times_12h' },
         ],
-        available_classes: [
-          {
-            number: 123456,
-            name: 'Data Structures',
-            section: '003',
-            location: 'ECSW 2.106',
-            days: 'TTH',
-            time: '10:00AM - 11:15AM',
-          },
-          {
-            number: 574930,
-            name: 'Machine Learning',
-            section: '003',
-            location: 'ECSW 2.106',
-            days: 'TTH',
-            time: '10:00AM - 11:15AM',
-          },
-          {
-            number: 890273,
-            name: 'Advanced Algorithms',
-            section: '003',
-            location: 'ECSW 2.106',
-            days: 'TTH',
-            time: '10:00AM - 11:15AM',
-          },
-          {
-            number: 469320,
-            name: 'Data Structures',
-            section: '004',
-            location: 'ECSW 2.106',
-            days: 'TTH',
-            time: '10:00AM - 11:15AM',
-          },
-          {
-            number: 738209,
-            name: 'Data Structures',
-            section: '003',
-            location: 'ECSW 2.106',
-            days: 'TTH',
-            time: '10:00AM - 11:15AM',
-          },
-          {
-            number: 103864,
-            name: 'Machine Learning',
-            section: '003',
-            location: 'ECSW 2.106',
-            days: 'TTH',
-            time: '10:00AM - 11:15AM',
-          },
-          {
-            number: 310432,
-            name: 'Advanced Algorithms',
-            section: '003',
-            location: 'ECSW 2.106',
-            days: 'TTH',
-            time: '10:00AM - 11:15AM',
-          },
-          {
-            number: 595743,
-            name: 'Data Structures',
-            section: '004',
-            location: 'ECSW 2.106',
-            days: 'TTH',
-            time: '10:00AM - 11:15AM',
-          },
-          {
-            number: 984633,
-            name: 'Data Structures',
-            section: '003',
-            location: 'ECSW 2.106',
-            days: 'TTH',
-            time: '10:00AM - 11:15AM',
-          },
-          {
-            number: 464839,
-            name: 'Machine Learning',
-            section: '003',
-            location: 'ECSW 2.106',
-            days: 'TTH',
-            time: '10:00AM - 11:15AM',
-          },
-          {
-            number: 203474,
-            name: 'Advanced Algorithms',
-            section: '003',
-            location: 'ECSW 2.106',
-            days: 'TTH',
-            time: '10:00AM - 11:15AM',
-          },
-          {
-            number: 230432,
-            name: 'Data Structures',
-            section: '004',
-            location: 'ECSW 2.106',
-            days: 'TTH',
-            time: '10:00AM - 11:15AM',
-          },
-          {
-            number: 658494,
-            name: 'Data Structures',
-            section: '003',
-            location: 'ECSW 2.106',
-            days: 'TTH',
-            time: '10:00AM - 11:15AM',
-          },
-          {
-            number: 134556,
-            name: 'Machine Learning',
-            section: '003',
-            location: 'ECSW 2.106',
-            days: 'TTH',
-            time: '10:00AM - 11:15AM',
-          },
-          {
-            number: 122334,
-            name: 'Advanced Algorithms',
-            section: '003',
-            location: 'ECSW 2.106',
-            days: 'TTH',
-            time: '10:00AM - 11:15AM',
-          },
-          {
-            number: 111111,
-            name: 'Data Structures',
-            section: '004',
-            location: 'ECSW 2.106',
-            days: 'TTH',
-            time: '10:00AM - 11:15AM',
-          },
-        ],
+        available_classes: [],
       }
     },
     created() {
-      this.getCourses();
+      this.getAvailableCourses();
     },
     methods: {
+      addToSchedule() {
+        console.log('Selected courses:', this.selected);
+        // You can perform further actions with the selected courses here
+      },
+
       async getAvailableCourses() {
         let availability = "false";
         try {
           const response = await axios.get(`http://localhost:3000/currentcourses/${availability}`);
           console.log(response)
+          this.available_classes = response.data.map(course => {
+            return {
+              ...course,
+              course_number: `CS${course.course_number}` // Assuming course_number is a string
+            };
+          });
         } 
         catch (error) {
           console.error(error);
         }
-        console.log("past classes array:", this.pastClasses);
+        console.log("available courses array:", this.available_classes);
       },
     }
-    
-
-
   }
 </script>
 
