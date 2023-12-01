@@ -77,8 +77,8 @@
               </div>
               <v-card-actions>
                 <v-btn
-                  :style="{ backgroundColor: item.yesButtonColor }"
-                  @click="changeColor(item, 'yesButtonColor')"
+                  :style="{ backgroundColor: item.yes }"
+                  @click="changeColor(item, 'yes')"
                   elevation="2"
                   rounded
                   light
@@ -87,8 +87,8 @@
                   Yes 
                 </v-btn> 
                 <v-btn
-                  :style="{ backgroundColor: item.maybeButtonColor }"
-                  @click="changeColor(item, 'maybeButtonColor')"
+                  :style="{ backgroundColor: item.maybe }"
+                  @click="changeColor(item, 'maybe')"
                   elevation="2"
                   rounded
                   light
@@ -97,8 +97,8 @@
                   Maybe
                 </v-btn> 
                 <v-btn
-                  :style="{ backgroundColor: item.noButtonColor }"
-                  @click="changeColor(item, 'noButtonColor')"
+                  :style="{ backgroundColor: item.no}"
+                  @click="changeColor(item, 'no')"
                   elevation="2"
                   rounded
                   light
@@ -139,9 +139,11 @@ export default {
       item.activeButton = buttonType;
 
       // Update the button colors based on the active button within the card
-      item.yesButtonColor = buttonType === 'yesButtonColor' ? '#5C9970' : '#ffffff';
-      item.maybeButtonColor = buttonType === 'maybeButtonColor' ? '#5C9970' : '#ffffff';
-      item.noButtonColor = buttonType === 'noButtonColor' ? '#5C9970' : '#ffffff';
+      item.yes = buttonType === 'yes' ? '#5C9970' : '#ffffff';
+      item.maybe = buttonType === 'maybe' ? '#5C9970' : '#ffffff';
+      item.no = buttonType === 'no' ? '#5C9970' : '#ffffff';
+
+      this.updatePreferences(item, item.activeButton, item.class_number);
     },
 
     displayDays(days) {
@@ -149,15 +151,15 @@ export default {
     },
 
     async getCourses() {
-      let name = "Karen%20Mazidi";
+      let name = "Pushpa%20Kumar";
       try {
         const response = await axios.get(`http://localhost:3000/pastcourses/instructors?name=${name}`);
         this.pastClasses = response.data.map(item => ({
           ...item,
-          yesButtonColor: '#ffffff', // Initialize unique button colors for each item
-          maybeButtonColor: '#ffffff',
-          noButtonColor: '#ffffff',
-          activeButton: null, 
+          yes: '#ffffff', // Initialize unique button colors for each item
+          maybe: '#ffffff',
+          no: '#ffffff',
+          activeButton: null, // strores which button is pressed
         })); // Assign the data to the pastClasses property
       } 
       catch (error) {
@@ -172,17 +174,18 @@ export default {
 
     //TODO: if a preference from this page is added, remove course time from availability
 
-    async upadtePreferences(){
-      let preference = "No"; //this.preference.trim();
+    async updatePreferences(item, activeButton, classNum){
+      let preference = activeButton; //this.preference.trim();
       let instructor_name = "Pushpa%20Kumar"; //this.instructor_name.trim();
-      let course_number = "1134"; //this.course_number.trim();
-      let course_prefix = "CS"; //this.course_prefix.trim();
+      ' let course_number = "1134"; //this.course_number.trim();
+      ' let course_prefix = "CS"; //this.course_prefix.trim();
+      let class_number = classNum;
 
       const data_update = {
         teaching_preference: preference
       }
 
-      axios.put(`http://localhost:3000/instructorpreferences/${instructor_name}/${course_prefix}/${course_number}`, data_update)
+      axios.put(`http://localhost:3000/instructorpreferences/${instructor_name}/${class_number}`, data_update)
       .then(response => {
           console.log('Response:', response.data.message);
       })
