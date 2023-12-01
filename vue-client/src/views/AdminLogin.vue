@@ -116,7 +116,7 @@
   
   
   <script>
-  const getUserEmail = require('../../../node-server/controllers/sign_in_controller.js')
+  const getAdminEmail = require('../../../node-server/controllers/sign_in_controller.js')
     export default {
     data() {
       return {
@@ -132,7 +132,7 @@
           let password = this.password?.trim();
   
           // Assuming getUserEmail returns a promise
-          const response = await getUserEmail(email, password);
+          const response = await getAdminEmail(email, password);
   
           // Handle the response
           console.log('Response:', response);

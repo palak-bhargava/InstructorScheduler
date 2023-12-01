@@ -6,6 +6,7 @@ const { InstructorSchedule } = require('./models/instructor_schedule');
 const { User } = require('./models/user')
 const app = express();
 const mongoose = require('mongoose')
+const bcryptjs = require('bcryptjs');
 
 const dotenv = require('dotenv');
 dotenv.config();
@@ -60,22 +61,22 @@ app.get('/users/email/:email', async(req, res) =>{
 
 //POST TO USERS
 app.post('/signup', async(req, res) => {
-    console.log('HELLO')
     try{
         // const users = await User.create(req.body)
         // res.status(200).json(users)
-        let {name, email, password} = req.body;
+        let {type, name, email, password} = req.body;
+        type = type.trim();
         name = name?.trim();
         email = email?.trim();
         password = password?.trim();
         const saltRounds = 10;
-                    bcrypt.hash(password, saltRounds).then(hashedPassword => {
+                    bcryptjs.hash(password, saltRounds).then(hashedPassword => {
                         const newUser = new User({
+                            type,
                             name,
                             email,
                             password: hashedPassword
                         });
-                        console.log(hashedPassword)
                         newUser.save().then(result => {
                             res.json({
                                 status: "SUCESS",
