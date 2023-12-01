@@ -246,6 +246,25 @@
         ],
       }
     },
+    created() {
+      this.getCourses();
+    },
+    methods: {
+      async getAvailableCourses() {
+        let availability = "false";
+        try {
+          const response = await axios.get(`http://localhost:3000/currentcourses/${availability}`);
+          console.log(response)
+        } 
+        catch (error) {
+          console.error(error);
+        }
+        console.log("past classes array:", this.pastClasses);
+      },
+    }
+    
+
+
   }
 </script>
 
