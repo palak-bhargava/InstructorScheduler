@@ -3,7 +3,7 @@ const mongoose = require('mongoose')
 const currentCourseSchema = mongoose.Schema(
     {
         class_assigned: {
-            type: Boolean,
+            type: String,
             required: [true]
         },
         section_address: {

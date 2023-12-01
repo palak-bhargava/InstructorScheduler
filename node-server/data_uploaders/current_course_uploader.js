@@ -32,7 +32,7 @@ fs.readFile('../json_data/coursebook.json', 'utf8', (err, data) => {
             jsonEntry.title = jsonEntry.title.trim();
         }
 
-        jsonEntry.class_assigned = false;
+        jsonEntry.class_assigned = "false";
 
         return new CurrentCourses(jsonEntry);
     };

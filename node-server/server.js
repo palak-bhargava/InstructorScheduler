@@ -302,6 +302,20 @@ app.post('/currentcourses', async(req, res) => {
     }
 })
 
+app.get('/currentcourses/:class_assigned', async(req, res) =>{
+    try {
+        const class_assigned = req.params.class_assigned; 
+        const current_courses = await CurrentCourses.find(
+            {
+                class_assigned: class_assigned
+            });
+        res.status(200).json(current_courses);
+    } catch (error) {
+        res.status(500).json({message: error.message})
+    }
+});
+
+
 //----------------------API FOR INSTRUCTOR PREFERENCES----------------------
 app.post('/instructorpreferences', async(req, res) => {
     try{
