@@ -22,9 +22,6 @@
 
         <v-spacer></v-spacer>
       </v-app-bar>
-
-    
-  </v-container>
     <v-main>
       <Preferences/>
     </v-main>

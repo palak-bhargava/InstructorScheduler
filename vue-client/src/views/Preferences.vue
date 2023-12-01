@@ -316,7 +316,7 @@
           console.error('Error in postPreferences function:', error);
           throw error; // Rethrow the error to propagate it further
         }
-      }
+      },
     }
   }
 </script>
