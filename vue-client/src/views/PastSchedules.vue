@@ -178,7 +178,7 @@ export default {
       let preference = activeButton; //this.preference.trim();
       let instructor_name = "Pushpa%20Kumar"; //this.instructor_name.trim();
       let class_number = classNum;
-      
+    
       const data_update = {
         teaching_preference: preference
       }

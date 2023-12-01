@@ -330,19 +330,20 @@ app.get('/instructorpreferences/:instructor_name', async(req, res) =>{
 app.put('/instructorpreferences/:instructor_name/:class_number', async (req, res) => {
     try {
       const instructor_name = req.params.instructor_name;
-    //   const course_prefix = req.params.course_prefix;
-    //   const course_number = req.params.course_number;
       const teaching_preference = req.body.teaching_preference; // Change from req.params to req.body
       const class_number = req.params.class_number;
-  
-      // Find instructor preferences based on instructor_name
+
+      //console.log(instructor_name, teaching_preference, class_number);
+
       const instructor_preferences = await InstructorPreference.findOne({ instructor_name: instructor_name });
+
+      //console.log(instructor_preferences.courses)
   
       if (instructor_preferences) {
-        // Find the course in the instructor's preferences
         const courseIndex = instructor_preferences.courses.findIndex(course => {
-          return course.class_number === class_number;
+          return course.class_number === parseInt(class_number, 10);
         });
+
   
         if (courseIndex !== -1) {
           // Update teaching_preference for the specified course
