@@ -1,9 +1,8 @@
 # InstructorScheduler
 CS 4485 Senior Project - Dr. Chida
 
-Running Vue:
-- npm install
-- npm run serve
+Running Angular:
+- ng serve
 
 Running Node Server:
 - node server.js
