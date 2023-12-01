@@ -143,7 +143,7 @@ export default {
       item.maybe = buttonType === 'maybe' ? '#5C9970' : '#ffffff';
       item.no = buttonType === 'no' ? '#5C9970' : '#ffffff';
 
-      this.updatePreferences(item, item.activeButton, item.class_number);
+      this.updatePreferences(item.activeButton, item.class_number);
     },
 
     displayDays(days) {
@@ -174,13 +174,11 @@ export default {
 
     //TODO: if a preference from this page is added, remove course time from availability
 
-    async updatePreferences(item, activeButton, classNum){
+    async updatePreferences(activeButton, classNum){
       let preference = activeButton; //this.preference.trim();
       let instructor_name = "Pushpa%20Kumar"; //this.instructor_name.trim();
-      ' let course_number = "1134"; //this.course_number.trim();
-      ' let course_prefix = "CS"; //this.course_prefix.trim();
       let class_number = classNum;
-
+      
       const data_update = {
         teaching_preference: preference
       }
