@@ -1,31 +1,43 @@
 <template>
   <v-app>
+    <v-app-bar
+        app
+        color="f5f5f5"
+      >
+        <div class="d-flex align-center justify-center" style="width: 100%">
+          <v-img
+
+            class="shrink mr-2"
+            contain
+            :src="require('./assets/IS-logo.png')"
+            transition="scale-transition"
+            width="40"
+          />
+         <v-toolbar-title class="flex text-center">
+          My Preferences
+          </v-toolbar-title>
+          
+          
+        </div>
+
+        <v-spacer></v-spacer>
+      </v-app-bar>
     <v-main>
-<<<<<<< HEAD
-      <MyPreferences/>
-=======
-      <AvailableCourses/>
->>>>>>> c0008ef3d98aafeda0785e12667f39da8e0061d4
+      <MyPreferences>
+
+      </MyPreferences>
     </v-main>
   </v-app>
 </template>
 
 <script>
-<<<<<<< HEAD
 import MyPreferences from './views/preferences.vue';
-=======
-import AvailableCourses from './views/AvailableCourses';
->>>>>>> c0008ef3d98aafeda0785e12667f39da8e0061d4
 
 export default {
   name: 'App',
 
   components: {
-<<<<<<< HEAD
     MyPreferences,
-=======
-    AvailableCourses,
->>>>>>> c0008ef3d98aafeda0785e12667f39da8e0061d4
   },
 
   data: () => ({
