@@ -12,6 +12,7 @@ const instructorPreferenceSchema = mongoose.Schema(
                 course_prefix: String,
                 course_number: Number,
                 teaching_preference: String,
+                class_number: Number,
             }
         ],
         required: [false]
