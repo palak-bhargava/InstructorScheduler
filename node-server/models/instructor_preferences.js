@@ -17,12 +17,13 @@ const instructorPreferenceSchema = mongoose.Schema(
         ],
         required: [false]
     },
-        days: {
-            type: Array,
-            required: [false]
-        },
-        times: {
-            type: Array,
+        availability: {
+            type: [
+                {
+                    day: String,
+                    time: String
+                }
+            ],
             required: [false]
         }
     }
