@@ -1,19 +1,19 @@
 <template>
   <v-app>
     <v-main>
-      <AvailableCourses/>
+      <AdminLogin/>
     </v-main>
   </v-app>
 </template>
 
 <script>
-import AvailableCourses from './views/AvailableCourses';
+import AdminLogin from './views/AdminLogin';
 
 export default {
   name: 'App',
 
   components: {
-    AvailableCourses,
+    AdminLogin,
   },
 
   data: () => ({
