@@ -1,3 +1,9 @@
+
+const axios = require('axios');
+const instructor_pref = require("./controllers/instructor_preferences_controller");
+const instructor_sched = require("./controllers/instructor_schedule_controller");
+
+
 const course_objs = [
     {
         section_address: "cs1134.101.22f",
@@ -53,7 +59,7 @@ const preferences_obj = [
 const courses_map = new Map();
 course_objs.forEach(item => courses_map.set(item.section_address, item))
 
-console.log(courses_map.get("cs1134.103.22f"))
+// console.log(courses_map.get("cs1134.103.22f"))
 
 //------------------------- TIME PREFERENCE -------------------------//
 //calculate if class time is within teacher preference ranges
@@ -91,6 +97,63 @@ function convert_to_24h(time_range){
     return times
 }
 
+async function getPreference(){
+    const response = await instructor_pref.getInstructorPreference("Pushpa%20Kumar")
+    return response
+}
+
+async function getSchedule(){
+    const response = await instructor_sched.getInstructorSchedule("Pushpa%20Kumar")
+    return response
+}
+
+function populateInstructorAvailabilities(instructorPreference, instructorSchedule) {
+          // Initialize the instructorAvailabilities object
+    var instructorAvailabilities = {
+        Monday: [],
+        Tuesday: [],
+        Wednesday: [],
+        Thursday: [],
+        Friday: [],
+        Saturday: [],
+        Sunday: [],
+    };
+
+    // Extract availability information from the instructorPreference
+    const availability1 = instructorPreference[0].availability;
+
+    // Iterate through availability and add times to corresponding days
+    availability1.forEach((avail) => {
+        const day = avail.day;
+        const times = avail.time;
+        instructorAvailabilities[day] = instructorAvailabilities[day].concat(times);
+    });
+
+    // Extract class information from the instructorSchedule
+    const classes = instructorSchedule[0].courses;
+
+    // Iterate through classes and remove times from corresponding days
+    classes.forEach((course) => {
+        const unavailableDay = course.days[0];
+        const unavailableTime = course.times_12h;
+
+        // Find the index of the time range in instructorAvailabilities
+        const index = instructorAvailabilities[unavailableDay].findIndex(
+            (timeRange) => timeRange.includes(unavailableTime)
+        );
+
+        if (index !== -1) {
+            // Split the time range into two parts and update the array
+            const [start, end] = instructorAvailabilities[unavailableDay][index].split(" - ");
+            const classEndTime = course.times_12h.split(" - ")[1];
+            instructorAvailabilities[unavailableDay][index] = `${classEndTime} - ${end}`;
+        }
+    });
+    console.log(instructorAvailabilities)
+    return instructorAvailabilities;
+}
+
+
 
 
 //Scheduling algorithm planning
@@ -107,93 +170,161 @@ function convert_to_24h(time_range){
 //call for instructor preferences
 
 
+// console.log(response)
 
 
-//Store the response in an array
+// const instructorPreference = getPreference()
+// const instructorSchedule = getSchedule()
+// console.log(instructorPreference)
+// console.log(instructorSchedule)
 
-//call for current schedule
-//Get function for the instructor's current schedule (from last semester)
+// async function fetchData() {
+//     try {
+//       const instructorPreference = await getPreference();
+//       console.log("Instructor Preference Response:", instructorPreference);
+  
+//       const instructorSchedule = await getSchedule();
+//       console.log("Instructor Schedule Response:", instructorSchedule);
+  
+//       // Now check the structure of the responses and adjust your code accordingly
+//       console.log("Instructor Preference Data:", instructorPreference.data);
+//       console.log("Instructor Schedule Data:", instructorSchedule.data);
+//     } catch (error) {
+//       console.error("Error fetching data:", error);
+//     }
+// }
+  
+// fetchData();
+// function fetchData() {
+//     // Use Promise.all to wait for both promises to resolve
+//     Promise.all([getPreference(), getSchedule()])
+//       .then(([instructorPreference, instructorSchedule]) => {
+//         // Both promises have resolved, and you have access to the results
+//         console.log("Instructor Preference:", instructorPreference);
+//         console.log("Instructor Schedule:", instructorSchedule);
+  
+//         // Call another function with the results
+//         populateInstructorAvailabilities(instructorPreference, instructorSchedule);
+//       })
+//       .catch((error) => {
+//         console.error("Error fetching data:", error);
+//       });
+//   }
+  
+//   fetchData()
+Promise.all([getPreference(), getSchedule()])
+      .then(([instructorPreference, instructorSchedule]) => {
+        // Both promises have resolved, and you have access to the results
+        console.log("Instructor Preferences:", instructorPreference);
+        console.log(instructorPreference[0].availability);
+        console.log("Instructor Schedule:", instructorSchedule);
+        console.log(instructorSchedule[0].courses);
+  
+        // Call another function with the results
+        populateInstructorAvailabilities(instructorPreference, instructorSchedule);
+      })
+      .catch((error) => {
+        console.error("Error fetching data:", error);
+      });
+  
+  
+//   getPreference().then((instructorPreference) => {
+//     console.log(instructorPreference);
+//   });
 
-//Store time availabilites in a dict
-var instructorAvailabilites = {Monday: [], Tuesday: [], Wednesday: [], 
-    Thursday: [], Friday: [], Saturday: [], Sunday:[]};
-
-//Update the instructorAvailabilities based off the preferences they set 
-//and their previous schedule
-
-    //For example: if available to teach from 9:00 AM to 3:00 PM on Monday, but 
-    //already teaching a class from 1:00 PM to 2:15 PM, the availability would be
-    //Monday: from 9:00 AM - 1:00 PM and from 2:15 PM - 3:00 PM
-
-
-let allPossibleCourses = [];
-//For each course they add to preferences, do the following
-
-//The API response will include the classes based off preference by day and course
-//Need to check time
-
-//if the time of the course on the day in within the range
-//For example, if class is taught on Monday and Wednesday
-
-for (let i = 0; i < course_objs.length; i++){
-    timeOfClass = course_objs[i].times
-    courseTemp = course_objs[i]
-
-    if (timeInRange(timeOfClass, instructorAvailabilites.Monday) && 
-    timeInRange(timeOfClass, instructorAvailabilites.Wednesday)){
-    //add to possible courses
-        allPossibleCourses.push(courseTemp)
-    }    
-
-}
-
-
-let tempAllPossibleCourses = { ...allPossibleCourses };
-let tempInstructorAvailabilites = { ...instructorAvailabilites };
-//Algorithm and Scoring
-//allPossibleCourses
-//  __________ __________ __________  _________  _________  __________  __________
-// | CourseA1 | CourseA2 | CourseA3 | CourseB1 | CourseB2 | Course C1 | Course C2 | 
-//  ---------- ---------- ---------- ---------- ---------- -----------  ----------
-
-//Algorithm
-//Start to iterate, and fill out the possible schedule object
-//Must build this object based off the number of course preferences the instructor set
-possibleSchedule = {
-    course1: "",
-    course2: "",
-    course3: "",
-}
-
-
-//while more schedules can be generated
-
-//      X
-//  __________ __________ __________  _________  _________  __________  __________
-// | CourseA1 | CourseA2 | CourseA3 | CourseB1 | CourseB2 | Course C1 | Course C2 | 
-//  ---------- ---------- ---------- ---------- ---------- -----------  ----------
-
-
-//Check that course has already been assigned, if so, then keep iterating until one
-//that hasn't been assigned is found
-
-//Scoring: 100/#of courses for each possible course, only courses 
-//with the score of 100 will be sent to frontend
-
-//assign it to the possibleSchedule object and modify the tempInstructorAvailabilites
-//by removing the time of the class added
-//repeat the same with the next course, and keep adding to the the possible Schedule object
-//once a schedule object is filled, a possible schedule has been verified!
-
-//add that schedule object to the finalPossibleCourses array
-
-//Things to consider: after the 1st occurance of the course has been accepted, 
-//declare it unavailable for the 2nd iteration
+//   getSchedule().then((instructorSchedule) => {
+//     console.log(instructorSchedule);
+//   });
 
 
 
 
-let finalPossibleCourses = []
+// //Store the response in an array
+
+// //call for current schedule
+// //Get function for the instructor's current schedule (from last semester)
+
+// //Store time availabilites in a dict
+// const instructor_availabilities = populateInstructorAvailabilities(instructorPreference.data, instructorSchedule.data);
+// console.log(instructor_availabilities)
+
+// //Update the instructorAvailabilities based off the preferences they set 
+// //and their previous schedule
+
+    // For example: if available to teach from 9:00 AM to 3:00 PM on Monday, but 
+    // already teaching a class from 1:00 PM to 2:15 PM, the availability would be
+    // Monday: from 9:00 AM - 1:00 PM and from 2:15 PM - 3:00 PM.
+
+
+
+// let allPossibleCourses = [];
+// //For each course they add to preferences, do the following
+
+// //The API response will include the classes based off preference by day and course
+// //Need to check time
+
+// //if the time of the course on the day in within the range
+// //For example, if class is taught on Monday and Wednesday
+
+// for (let i = 0; i < course_objs.length; i++){
+//     timeOfClass = course_objs[i].times
+//     courseTemp = course_objs[i]
+
+//     if (timeInRange(timeOfClass, instructorAvailabilites.Monday) && 
+//     timeInRange(timeOfClass, instructorAvailabilites.Wednesday)){
+//     //add to possible courses
+//         allPossibleCourses.push(courseTemp)
+//     }    
+
+// }
+
+
+// let tempAllPossibleCourses = { ...allPossibleCourses };
+// let tempInstructorAvailabilites = { ...instructorAvailabilites };
+// //Algorithm and Scoring
+// //allPossibleCourses
+// //  __________ __________ __________  _________  _________  __________  __________
+// // | CourseA1 | CourseA2 | CourseA3 | CourseB1 | CourseB2 | Course C1 | Course C2 | 
+// //  ---------- ---------- ---------- ---------- ---------- -----------  ----------
+
+// //Algorithm
+// //Start to iterate, and fill out the possible schedule object
+// //Must build this object based off the number of course preferences the instructor set
+// possibleSchedule = {
+//     course1: "",
+//     course2: "",
+//     course3: "",
+// }
+
+
+// //while more schedules can be generated
+
+// //      X
+// //  __________ __________ __________  _________  _________  __________  __________
+// // | CourseA1 | CourseA2 | CourseA3 | CourseB1 | CourseB2 | Course C1 | Course C2 | 
+// //  ---------- ---------- ---------- ---------- ---------- -----------  ----------
+
+
+// //Check that course has already been assigned, if so, then keep iterating until one
+// //that hasn't been assigned is found
+
+// //Scoring: 100/#of courses for each possible course, only courses 
+// //with the score of 100 will be sent to frontend
+
+// //assign it to the possibleSchedule object and modify the tempInstructorAvailabilites
+// //by removing the time of the class added
+// //repeat the same with the next course, and keep adding to the the possible Schedule object
+// //once a schedule object is filled, a possible schedule has been verified!
+
+// //add that schedule object to the finalPossibleCourses array
+
+// //Things to consider: after the 1st occurance of the course has been accepted, 
+// //declare it unavailable for the 2nd iteration
+
+
+
+
+// let finalPossibleCourses = []
 
 //return this to the frontend where each entry is a possible schedule
 

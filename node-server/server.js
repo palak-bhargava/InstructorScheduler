@@ -299,14 +299,42 @@ app.post('/instructorpreferences', async(req, res) => {
     }
 })
 
+//GET preferences by instructor
+app.get('/instructorpreferences/:instructor_name', async(req, res) =>{
+    try {
+        const instructor_name = req.params.instructor_name; 
+        const instructor_preferences = await InstructorPreference.find(
+            {
+                instructor_name: instructor_name
+            });
+        res.status(200).json(instructor_preferences);
+    } catch (error) {
+        res.status(500).json({message: error.message})
+    }
+});
+
 //----------------------API FOR NEW INSTRUCTOR SCHEDULES----------------------
 app.post('/instructorschedules', async(req, res) => {
     try{
-        const schedules = await InstructorSchedule.create(req.body)
-        res.status(200).json(schedules)
+        const instructor_schedules = await InstructorSchedule.create(req.body)
+        res.status(200).json(instructor_schedules)
     }
     catch (error) { 
         console.error(error.message)
+        res.status(500).json({message: error.message})
+    }
+})
+
+//GET schedules by instructor
+app.get('/instructorschedules/:instructor_name', async(req, res) =>{
+    try {
+        const instructor_name = req.params.instructor_name; 
+        const instructor_schedules = await InstructorSchedule.find(
+            {
+                instructor_name: instructor_name
+            });
+        res.status(200).json(instructor_schedules);
+    } catch (error) {
         res.status(500).json({message: error.message})
     }
 })
@@ -325,3 +353,4 @@ app.post('/instructorschedules', async(req, res) => {
 //4) Methods to get, post, patch instructor preferences
 
 app.listen(process.env.PORT, () => console.log('Server has started on port 3000'))
+
