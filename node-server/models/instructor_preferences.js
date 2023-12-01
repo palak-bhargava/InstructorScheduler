@@ -21,7 +21,7 @@ const instructorPreferenceSchema = mongoose.Schema(
             type: [
                 {
                     day: String,
-                    time: String
+                    time: Array
                 }
             ],
             required: [false]
