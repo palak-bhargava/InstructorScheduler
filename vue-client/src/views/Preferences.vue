@@ -6,7 +6,7 @@
         <v-row>
           <v-col cols="10">
             <v-autocomplete
-              v-model="values"
+              
               filled
               rounded
               solo-filled
@@ -80,16 +80,18 @@
               last-time="22:00"
               interval-count="15"
               :events="events"
-              :event-color="getEventColor"
               :event-ripple="false"
-              @click:event="showEvent"
+              @click:event="showPopup"
               @mousedown:event="startDrag"
               @mousedown:time="startTime"
               @mousemove:time="mouseMove"
               @mouseup:time="endDrag"
-              @mouseleave="cancelDrag"
+              @mouseleave.native="cancelDrag"
             >
-              <template v-slot:event="{ event, timed }">
+              <template v-slot:event="{ event, timed, eventSummary }">
+                <div class="v-event-draggable">
+                  <component :is="{ render: eventSummary }"></component>
+                </div>
                 <div
                   v-if="timed"
                   class="v-event-drag-bottom"
@@ -128,7 +130,7 @@
             color="#FFB86F" 
             @click="postPreferences(events)">
               Save Preferences
-            </v-btn>
+            </v-btn> 
           </v-row>
         </v-card>
       </v-col>
@@ -142,7 +144,7 @@
       selectedEvent: {},
       selectedElement: null,
       selectedOpen: false,
-      value: 'null',
+      value: '',
       focus: '',
       events: [],
       dragEvent: null,
@@ -155,6 +157,7 @@
       this.$refs.calendar.checkChange()
       },
     methods: {
+      
       startDrag ({ event, timed }) {
         if (event && timed) {
           this.dragEvent = event
@@ -167,15 +170,17 @@
 
         if (this.dragEvent && this.dragTime === null) {
           const start = this.dragEvent.start
-
           this.dragTime = mouse - start
         } else {
           this.createStart = this.roundTime(mouse)
+          
+          const eventDuration = 60 * 60 * 1000; // 1 hour as an example
+          const createEnd = this.createStart + eventDuration;
+
           this.createEvent = {
-            name: `Event #${this.events.length}`,
             color: '#FFB86F',
-            start: this.createStart,
-            end: this.createEnd,
+            start: new Date(this.createStart),
+            end: new Date(createEnd),
             timed: true
           }
 
@@ -244,7 +249,7 @@
       toTime (tms) {
         return new Date(tms.year, tms.month - 1, tms.day, tms.hour, tms.minute).getTime()
       },
-      showEvent({ nativeEvent, event }) {
+      showPopup({ nativeEvent, event }) {
         const open = () => {
           this.selectedEvent = event
           this.selectedElement = nativeEvent.target
@@ -257,9 +262,7 @@
         } else {
           open()
         }
-
         nativeEvent.stopPropagation()
-    
       },
       deleteEvent(eventToDelete) {
         const index = this.events.findIndex((event) => event === eventToDelete);
@@ -269,62 +272,46 @@
 
         this.selectedOpen = false;
       },
-      updateRange ({ start, end }) {
-        const newEvent = {
-          name: 'Time Frame',
-          start: new Date(start),
-          end: new Date(end),
-          color: '#FFB86F',
-          timed: true,
-        };
-        this.events.push(newEvent);
-      },
       postPreferences(events) {
         const resultArray = [];
 
         try {
-          events.forEach(event => {
-            // Extract relevant information from the event
-            const { name, startTime, endTime } = event;
+          events.forEach((event, index) => {
+            try {
+              // Extract relevant information from the event
+              const { name, start, end } = event;
 
-            // Log the original start and end times
-            console.log('Original Start Time:', startTime);
-            console.log('Original End Time:', endTime);
+              // Convert the start and end times to Date objects for better manipulation
+              const startDate = new Date(start);
+              const endDate = new Date(end);
 
-            // Convert the start and end times to Date objects for better manipulation
-            const startDate = new Date(startTime);
-            const endDate = new Date(endTime);
+              // Get the day of the week as a string (e.g., "Monday", "Tuesday", etc.)
+              const dayOfWeek = new Intl.DateTimeFormat('en-US', { weekday: 'long' }).format(startDate);
 
-            // Log the parsed start and end times
-            console.log('Parsed Start Time:', startDate);
-            console.log('Parsed End Time:', endDate);
+              // Format the start and end times without space, with lowercase AM/PM, and without leading zero for single-digit hours
+              const startTimeFormatted = startDate.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true }).replace(/\s/g, '').toLowerCase();
+              const endTimeFormatted = endDate.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true }).replace(/\s/g, '').toLowerCase();
 
-            // Get the day of the week as a string (e.g., "Monday", "Tuesday", etc.)
-            const dayOfWeek = new Intl.DateTimeFormat('en-US', { weekday: 'long' }).format(startDate);
+              // Find the entry in the result array corresponding to the day of the week
+              let dayEntry = resultArray.find(entry => entry.day === dayOfWeek);
 
-            // Log the day of the week
-            console.log('Day of the Week:', dayOfWeek);
+              // If the entry does not exist, create a new one
+              if (!dayEntry) {
+                dayEntry = { day: dayOfWeek, times: [] };
+                resultArray.push(dayEntry);
+              }
 
-            // Format the start and end times without space, with lowercase AM/PM, and without leading zero for single-digit hours
-            const startTimeFormatted = startDate.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true }).replace(/\s/g, '').toLowerCase();
-            const endTimeFormatted = endDate.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true }).replace(/\s/g, '').toLowerCase();
-
-            // Find the entry in the result array corresponding to the day of the week
-            let dayEntry = resultArray.find(entry => entry.day === dayOfWeek);
-
-            // If the entry does not exist, create a new one
-            if (!dayEntry) {
-              dayEntry = { day: dayOfWeek, times: [] };
-              resultArray.push(dayEntry);
+              // Add the formatted time range to the times array
+              const timeRange = `${startTimeFormatted} - ${endTimeFormatted}`;
+              dayEntry.times.push(timeRange);
+            } catch (error) {
+              console.error(`Error processing event ${index + 1}:`, error);
+              // Handle or log the error as needed
             }
-
-            // Add the formatted time range to the times array
-            const timeRange = `${startTimeFormatted} - ${endTimeFormatted}`;
-            dayEntry.times.push(timeRange);
           });
-
-          console.log('Result Array:', resultArray);
+          console.log(resultArray)
           return resultArray;
+          
         } catch (error) {
           console.error('Error in postPreferences function:', error);
           throw error; // Rethrow the error to propagate it further
@@ -332,7 +319,6 @@
       }
     }
   }
-
 </script>
 
 <style scoped lang="scss">
