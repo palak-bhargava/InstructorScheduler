@@ -189,6 +189,32 @@ app.put('/instructorpreferences/:instructor_name/:class_number', async (req, res
       res.status(500).json({ message: error.message });
     }
   });
+
+  app.put('/instructorpreferences/:instructor_name', async (req, res) => {
+    try {
+      const instructor_name = req.params.instructor_name;
+      const instructor_availabilites = req.body.instructor_availabilites; // Change from req.params to req.body
+
+      //console.log(instructor_name, teaching_preference, class_number);
+
+      const instructor_preferences = await InstructorPreference.findOne({ instructor_name: instructor_name });
+
+      //console.log(instructor_preferences.courses)
+  
+      if (instructor_preferences) {
+        instructor_preferences.availabilites = instructor_availabilites;
+
+          // Save the updated document
+          await instructor_preferences.save();
+  
+          res.status(200).json({ message: 'Instructor Availabilities updated successfully' });
+        } else {
+          res.status(404).json({ message: 'Instructor Preferences not for specific Instructor not found' });
+        }
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
+  });
   
 //----------------------API FOR NEW INSTRUCTOR SCHEDULES----------------------
 app.post('/instructorschedules', async(req, res) => {
