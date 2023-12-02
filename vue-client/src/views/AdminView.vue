@@ -34,6 +34,15 @@
         rounded
       >
         <h3>Anjum Chida</h3>
+        <v-btn
+          color="#FFB86F"
+          elevation="2"
+          rounded
+          light
+          style="max-width: 230px;"
+        >
+          Generate Schedule
+        </v-btn> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
       </v-expansion-panel-header>
       <v-expansion-panel-content
         color="#5C9970"
@@ -133,8 +142,18 @@
     <v-expansion-panel>
       <v-expansion-panel-header
         color="#5C9970"
+        rounded
       >
         <h3>John Cole</h3>
+        <v-btn
+          color="#FFB86F"
+          elevation="2"
+          rounded
+          light
+          style="max-width: 230px;"
+        >
+          Generate Schedule
+        </v-btn> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
       </v-expansion-panel-header>
       <v-expansion-panel-content
         color="#5C9970"
@@ -151,8 +170,18 @@
     <v-expansion-panel>
       <v-expansion-panel-header
         color="#5C9970"
+        rounded
       >
         <h3>Karen Mazidi</h3>
+        <v-btn
+          color="#FFB86F"
+          elevation="2"
+          rounded
+          light
+          style="max-width: 230px;"
+        >
+          Generate Schedule
+        </v-btn> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
       </v-expansion-panel-header>
       <v-expansion-panel-content
         color="#5C9970"
