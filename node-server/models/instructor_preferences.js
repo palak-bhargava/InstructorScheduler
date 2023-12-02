@@ -15,8 +15,12 @@ const instructorPreferenceSchema = mongoose.Schema(
                 class_number: Number
             }
         ],
-        required: [false]
-    },
+            required: [false]
+        },
+        general_preferences: {
+            type: Array,
+            required: [false]
+        },
         availability: {
             type: [
                 {

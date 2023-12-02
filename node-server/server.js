@@ -89,77 +89,7 @@ app.post('/signup', async(req, res) => {
     catch (error) { 
         console.error(error.message)
         res.status(500).json({message: error.message})
-    }
-
-
-
-
-
-    // if (name == "" || email == "" || password == ""){
-    //     res.json({
-    //         status: "FAILED",
-    //         message: "Empty input fields"
-    //     });
-    // } else if (!/^[a-zA-Z ]*$/.test(name)){
-    //     res.json({
-    //         status: "FAILED",
-    //         message: "Invalid name entered"
-    //     });
-    // } else if (!/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/){
-    //     res.json({
-    //         status: "FAILED",
-    //         message: "Invalid email entered"
-    //     });
-    // } else {
-    //     User.find({email: email}).then(result => {
-
-    //     }).catch(err => {
-    //         console.log(err);
-    //         if(result.length){
-    //             res.json({
-    //                 status: "FAILED",
-    //                 message: "User with the provided email already exists"
-    //             });
-    //         } else {
-    //             const saltRounds = 10;
-    //             bcrypt.hash(password, saltRounds).then(hashedPassword => {
-    //                 const newUser = new User({
-    //                     name,
-    //                     email,
-    //                     password: hashedPassword
-    //                 });
-    //                 console.log(hashedPassword)
-    //                 newUser.save().then(result => {
-    //                     res.json({
-    //                         status: "SUCESS",
-    //                         message: "User added sucessfully",
-    //                         data: result
-    //                     })
-    //                 })
-    //                 .catch(err => {
-    //                     res.json({
-    //                         status: "FAILED",
-    //                         message: "An error occured while saving the new user"
-    //                     });
-
-    //                 })
-    //             })
-    //             .catch(err => {
-    //                 res.json({
-    //                     status: "FAILED",
-    //                     message: "An error occured while hashing the password"
-    //                 });
-    //             })
-
-    //         }
-
-    //         res.json({
-    //             status: "FAILED",
-    //             message: "An error occured while checking for existing users"
-    //         });
-    //     })
-    // }
-    
+    } 
 })
 
 
@@ -293,14 +223,55 @@ app.get('/pastcourses/instructors', async (req, res) => {
 //----------------------API FOR CURRENT COURSES----------------------
 app.post('/currentcourses', async(req, res) => {
     try{
-        const current_course = await CurrentCourses.create(req.body)
-        res.status(200).json(current_course)
+        const current_courses = await CurrentCourses.create(req.body)
+        res.status(200).json(current_courses)
     }
     catch (error) { 
         console.error(error.message)
         res.status(500).json({message: error.message})
     }
-})
+});
+
+app.put('/currentcourses/:class_number', async (req, res) => {
+    try {
+      const instructor_name = req.body.instructor_name;
+      const class_assigned = req.body.class_assigned;
+      const class_number = req.params.class_number;
+  
+      const current_course = await CurrentCourses.findOne({ class_number: parseInt(class_number, 10) });
+  
+      if (current_course) {
+        // Update the class_assigned field
+        current_course.class_assigned = class_assigned;
+  
+        // If class_assigned is true, add the instructor to the array (if not already present)
+        if (class_assigned === "true" && !current_course.instructors.includes(instructor_name)) {
+          current_course.instructors.push(instructor_name);
+        }
+        //console.log(class_assigned)
+        // If class_assigned is false, remove the instructor from the array (if present)
+        if (class_assigned === "false") {
+          const index = current_course.instructors.indexOf(instructor_name);
+          //console.log(index)
+          if (index !== -1) {
+            current_course.instructors.splice(index, 1);
+          }
+        }
+  
+        await current_course.save();
+  
+        res.status(200).json({ message: 'Updated successfully' });
+      } else {
+        res.status(404).json({ message: 'Course not found' });
+      }
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
+  });
+  
+  
+
+
 
 //----------------------API FOR INSTRUCTOR PREFERENCES----------------------
 app.post('/instructorpreferences', async(req, res) => {
@@ -376,17 +347,68 @@ app.post('/instructorschedules', async(req, res) => {
     }
 })
 
-
-
-
-
-//DEMO:
-//GET
-//POST
-//Next Steps: 
-//1) Get method to get document based on requested parameters, 
-//2) Script to parse JSON file and upload courses to database
-//3) Collection to store instructor preferences,
-//4) Methods to get, post, patch instructor preferences
+app.put('/instructorschedules/:instructor_name', async (req, res) => {
+    const instructor_name = req.params.instructor_name;
+    const newCourse = req.body.newCourse;  // Change from newCourses to newCourse
+  
+    try {
+      let instructor_schedule = await InstructorSchedule.findOne({ instructor_name: instructor_name });
+  
+      if (!instructor_schedule) {
+        instructor_schedule = new InstructorSchedule({
+          instructor_name: instructor_name,
+          approved_schedule: "false",
+          courses: [],
+        });
+        await instructor_schedule.save();
+      }
+  
+      const exists = instructor_schedule.courses.some(existingCourse => 
+        existingCourse.class_number === newCourse.class_number
+      );
+  
+      if (!exists) {
+        // Only push the new course if it doesn't already exist
+        instructor_schedule.courses.push(newCourse);
+        await instructor_schedule.save();
+        res.status(200).json({ message: 'Course added to instructor schedule successfully' });
+      } else {
+        res.status(404).json({ message: 'Course already exists in the schedule' });
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      res.status(500).json({ message: 'Internal server error' });
+    }
+  });
+  
+  app.delete('/instructorschedules/:instructor_name/:class_number', async (req, res) => {
+    const instructor_name = req.params.instructor_name;
+    const class_number = req.params.class_number;
+  
+    try {
+      let instructor_schedule = await InstructorSchedule.findOne({ instructor_name: instructor_name });
+  
+      if (!instructor_schedule) {
+        res.status(404).json({ message: 'Instructor schedule not found' });
+        return;
+      }
+  
+      // Find the index of the course with the specified class_number
+      const courseIndex = instructor_schedule.courses.findIndex(course => course.class_number === parseInt(class_number,10));
+  
+      if (courseIndex !== -1) {
+        // Remove the course from the array
+        instructor_schedule.courses.splice(courseIndex, 1);
+        await instructor_schedule.save();
+        res.status(200).json({ message: 'Course removed from instructor schedule successfully' });
+      } else {
+        res.status(404).json({ message: 'Course not found in the schedule' });
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      res.status(500).json({ message: 'Internal server error' });
+    }
+  });
+  
 
 app.listen(process.env.PORT, () => console.log('Server has started on port 3000'))

@@ -143,7 +143,22 @@ export default {
       item.maybe = buttonType === 'maybe' ? '#5C9970' : '#ffffff';
       item.no = buttonType === 'no' ? '#5C9970' : '#ffffff';
 
-      this.updatePreferences(item.activeButton, item.class_number);
+      //this.updatePreferences(item.activeButton, item.class_number);
+      //check if active button is yes, add to schedule else ignore
+      if(item.activeButton === 'yes'){
+        //update schedule
+        this.addToInstructorSchedule(item);
+        const assigned = "true";
+        this.updateCurrentCoursesClassStatus(item.class_number, assigned);
+      }
+      else if(item.activeButton === 'no'){
+        this.deleteFromInstructorSchedule(item.class_number);
+        const assigned = "false";
+        this.updateCurrentCoursesClassStatus(item.class_number, assigned);
+      }
+      // else if(item.activeButton === 'maybe'){
+      //   this.updatePreferences(item.activeButton, item.class_number);
+      // }
     },
 
     displayDays(days) {
@@ -169,10 +184,68 @@ export default {
     
     },
 
-    //if preferences already exist, then put based on course_prefix, course_number and preference
-    //else post the course into preferences
+    async addToInstructorSchedule(item) {
+      console.log("adding to schedule");
+    try {
+      const instructorName = "Pushpa%20Kumar"; // this.instructor_name.trim();
+      const course = item;
 
-    //TODO: if a preference from this page is added, remove course time from availability
+      console.log("course", course)
+
+      const newCourse = {
+        "section_address": course.section_address,
+        "course_prefix": course.course_prefix,
+        "course_number": parseInt(course.course_number, 10),
+        "section": course.section,
+        "class_number": parseInt(course.class_number, 10),
+        "title": "Advanced Computer Science Laboratory",
+        "session": course.session,
+        "days": course.days,
+        "times": course.times,
+        "times_12h": course.times_12h,
+        "location": course.location
+      };
+
+      const response = await axios.put(`http://localhost:3000/instructorschedules/${instructorName}`, {newCourse});
+
+      console.log('Response:', response.data.message);
+    } catch (error) {
+      console.error('Error:', error.message);
+    }
+  },
+
+  async deleteFromInstructorSchedule(class_number) {
+      
+    try {
+      const instructorName = "Pushpa%20Kumar"; // this.instructor_name.trim();
+      const classNumber = class_number;
+
+      const response = await axios.delete(`http://localhost:3000/instructorschedules/${instructorName}/${classNumber}`);
+
+      console.log('Response:', response.data.message);
+    } catch (error) {
+      console.error('Error:', error.message);
+    }
+  },
+
+  async updateCurrentCoursesClassStatus(class_number, class_assigned) {
+      console.log("updating current courses to true");
+    try {
+      const classNumber = class_number;
+
+      const data_update = {
+        "class_assigned": class_assigned,
+        "instructor_name": "Pushpa Kumar"
+      }
+
+      const response = await axios.put(`http://localhost:3000/currentcourses/${classNumber}`, data_update);
+
+      console.log('Response:', response.data.message);
+    } catch (error) {
+      console.error('Error:', error.message);
+    }
+  },
+  
 
     async updatePreferences(activeButton, classNum){
       let preference = activeButton; //this.preference.trim();
