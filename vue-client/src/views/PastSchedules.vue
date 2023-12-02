@@ -148,9 +148,13 @@ export default {
       if(item.activeButton === 'yes'){
         //update schedule
         this.addToInstructorSchedule(item);
+        const assigned = "true";
+        this.updateCurrentCoursesClassStatus(item.class_number, assigned);
       }
       else if(item.activeButton === 'no'){
         this.deleteFromInstructorSchedule(item.class_number);
+        const assigned = "false";
+        this.updateCurrentCoursesClassStatus(item.class_number, assigned);
       }
       // else if(item.activeButton === 'maybe'){
       //   this.updatePreferences(item.activeButton, item.class_number);
@@ -181,7 +185,7 @@ export default {
     },
 
     async addToInstructorSchedule(item) {
-      
+      console.log("adding to schedule");
     try {
       const instructorName = "Pushpa%20Kumar"; // this.instructor_name.trim();
       const course = item;
@@ -224,6 +228,23 @@ export default {
     }
   },
 
+  async updateCurrentCoursesClassStatus(class_number, class_assigned) {
+      console.log("updating current courses to true");
+    try {
+      const classNumber = class_number;
+
+      const data_update = {
+        "class_assigned": class_assigned,
+        "instructor_name": "Pushpa Kumar"
+      }
+
+      const response = await axios.put(`http://localhost:3000/currentcourses/${classNumber}`, data_update);
+
+      console.log('Response:', response.data.message);
+    } catch (error) {
+      console.error('Error:', error.message);
+    }
+  },
   
 
     async updatePreferences(activeButton, classNum){
