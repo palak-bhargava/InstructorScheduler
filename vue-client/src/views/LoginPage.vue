@@ -66,7 +66,7 @@
           outlined
           
         >
-        <h2>Welcome!</h2> <br>
+        <h2>Welcome, Professor!</h2> <br>
     
           <v-text-field
             label="UTD email"
@@ -92,12 +92,22 @@
           <div class="text-center">
             <v-btn
               rounded
-              color="#5C9970"
+              color="#5C9970"   
               dark
               @click="login"
             >
               LOGIN
             </v-btn>
+          </div> 
+          <div class="text-center">
+            <router-link :to="{ name: 'AdminLogin' }">
+              <v-btn
+                text
+                color="black"
+              >
+              Login as admin?
+            </v-btn>
+          </router-link>
           </div>
         </v-card>
       </v-col>
@@ -113,7 +123,8 @@ const getUserEmail = require('../../../node-server/controllers/sign_in_controlle
   data() {
     return {
       email: '',
-      password: ''
+      password: '',
+      show1: false,
     };
   },
   

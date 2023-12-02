@@ -1,19 +1,20 @@
 <template>
   <v-app>
     <v-main>
-      <AdminLogin/>
+      <LoginPage/>
+      <router-view></router-view>
     </v-main>
   </v-app>
 </template>
 
 <script>
-import AdminLogin from './views/AdminLogin';
+import LoginPage from './views/LoginPage';
 
 export default {
   name: 'App',
 
   components: {
-    AdminLogin,
+    LoginPage,
   },
 
   data: () => ({
