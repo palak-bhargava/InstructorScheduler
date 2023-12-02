@@ -212,21 +212,121 @@ function populateInstructorAvailabilities(instructorPreference, instructorSchedu
 //   }
   
 //   fetchData()
+
+function excludeOverlappingTimes(availabilities, courses) {
+    // Initialize the result object
+    var instructorAvailabilities = {};
+
+    // Initialize all days with an empty array in the result object
+    const allDays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+    allDays.forEach(day => {
+        instructorAvailabilities[day] = [];
+    });
+
+    // Iterate through the availabilities array
+    availabilities.forEach((avail) => {
+        const day = avail.day;
+        const times = avail.time;
+
+        // Iterate through all days to ensure they exist in the result object
+        allDays.forEach(day => {
+            if (!instructorAvailabilities[day]) {
+                instructorAvailabilities[day] = [];
+            }
+        });
+
+        // Iterate through the courses array
+        courses.forEach((course) => {
+            const courseDay = course.days[0];
+            const courseTime = course.times_12h;
+
+            // Check if the course overlaps with the availability
+            if (day === courseDay && doTimesOverlap(times, courseTime)) {
+                // Exclude overlapping times from the availability range
+                const overlappingTimes = getOverlappingTimes(times, courseTime);
+                // Remove overlapping times from the original availability
+                instructorAvailabilities[day] = instructorAvailabilities[day].filter(time => !overlappingTimes.includes(time));
+            }
+        });
+
+        // If there are no overlapping times, retain the original availability
+        if (instructorAvailabilities[day].length === 0) {
+            instructorAvailabilities[day] = times;
+        }
+    });
+
+    // Sort the resulting time ranges
+    allDays.forEach(day => {
+        instructorAvailabilities[day] = instructorAvailabilities[day].sort();
+    });
+
+    return instructorAvailabilities;
+}
+
+// ... (rest of the code remains the same)
+
+// Function to check if two time ranges overlap
+function doTimesOverlap(range1, range2) {
+    const [start1, end1] = range1.map(time => parseTimeRange(time));
+    const [start2, end2] = parseTimeRange(range2);
+
+    return start1 < end2 && end1 > start2;
+}
+
+// Function to get overlapping times between two ranges
+function getOverlappingTimes(range1, range2) {
+    const [start1, end1] = range1.map(time => parseTimeRange(time));
+    const [start2, end2] = parseTimeRange(range2);
+
+    const start = start1 < start2 ? start2 : start1;
+    const end = end1 < end2 ? end1 : end2;
+
+    const overlappingTimes = [];
+    if (start < end) {
+        overlappingTimes.push(formatTime(start), formatTime(end));
+    }
+
+    return overlappingTimes;
+}
+
+// Function to parse time range to start and end time
+function parseTimeRange(timeRange) {
+    const [start, end] = timeRange.split(" - ").map(time => new Date(`1970-01-01 ${time}`));
+    return [start, end];
+}
+
+// Function to format time to HH:mmam/pm
+function formatTime(date) {
+    const hours = date.getHours();
+    const minutes = date.getMinutes();
+    const ampm = hours >= 12 ? 'pm' : 'am';
+    const formattedHours = hours % 12 === 0 ? 12 : hours % 12;
+    const formattedMinutes = minutes < 10 ? '0' + minutes : minutes;
+
+    return `${formattedHours}:${formattedMinutes}${ampm}`;
+}
+
+
+
+
 Promise.all([getPreference(), getSchedule()])
       .then(([instructorPreference, instructorSchedule]) => {
         // Both promises have resolved, and you have access to the results
-        console.log("Instructor Preferences:", instructorPreference);
+        console.log("Instructor Preferences:");
         console.log(instructorPreference[0].availability);
-        console.log("Instructor Schedule:", instructorSchedule);
+        console.log("Instructor Schedule:");
         console.log(instructorSchedule[0].courses);
   
         // Call another function with the results
-        populateInstructorAvailabilities(instructorPreference, instructorSchedule);
+       var instructor_availabilites = excludeOverlappingTimes(instructorPreference[0].availability, instructorSchedule[0].courses);
+       console.log(instructor_availabilites)
       })
       .catch((error) => {
         console.error("Error fetching data:", error);
       });
   
+
+
   
 //   getPreference().then((instructorPreference) => {
 //     console.log(instructorPreference);
@@ -236,6 +336,7 @@ Promise.all([getPreference(), getSchedule()])
 //     console.log(instructorSchedule);
 //   });
 
+//GET FUNCTION FOR COURSES BASED OFF DAY AND COURSE
 
 
 
@@ -254,6 +355,8 @@ Promise.all([getPreference(), getSchedule()])
     // For example: if available to teach from 9:00 AM to 3:00 PM on Monday, but 
     // already teaching a class from 1:00 PM to 2:15 PM, the availability would be
     // Monday: from 9:00 AM - 1:00 PM and from 2:15 PM - 3:00 PM.
+
+
 
 
 
