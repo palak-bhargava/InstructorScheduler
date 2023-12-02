@@ -268,6 +268,19 @@ app.put('/currentcourses/:class_number', async (req, res) => {
       res.status(500).json({ message: error.message });
     }
   });
+
+  app.get('/currentcourses/:class_assigned', async(req, res) =>{
+    try {
+        const class_assigned = req.params.class_assigned; 
+        const current_courses = await CurrentCourses.find(
+            {
+                class_assigned: class_assigned
+            });
+        res.status(200).json(current_courses);
+    } catch (error) {
+        res.status(500).json({message: error.message})
+    }
+});
   
   
 
@@ -295,6 +308,47 @@ app.get('/instructorpreferences/:instructor_name', async(req, res) =>{
         res.status(200).json(instructor_preferences);
     } catch (error) {
         res.status(500).json({message: error.message})
+    }
+});
+
+app.put('/instructorpreferences/:instructor_name', async (req, res) => {
+    try {
+        const instructor_name = req.params.instructor_name;
+        const newCourses = req.body.newCourses;
+
+        const instructor_preferences = await InstructorPreference.findOne({ instructor_name: instructor_name });
+
+        if (instructor_preferences) {
+            // Check if the courses array exists, if not, create it
+            if (!instructor_preferences.courses) {
+                instructor_preferences.courses = [];
+            }
+
+            newCourses.forEach((newCourse) => {
+                const exists = instructor_preferences.courses.some(existingCourse => 
+                    existingCourse.class_number === newCourse.class_number
+                );
+                console.log(exists);
+                if (!exists) {
+                    // Only push the new course if it doesn't already exist
+                    instructor_preferences.courses.push(newCourse);
+                }
+                else{
+                    res.status(404).json({ message: 'Course already exists' });
+                }
+            });
+            //console.log("new instructor courses:", instructor_preferences.courses)
+
+            instructor_preferences.save();
+
+            res.status(200).json({ message: 'Course added successfully', instructor_preferences });
+        } else {
+            // If the instructor is not found, return a 404 status
+            res.status(404).json({ message: 'Instructor not found' });
+        }
+    } catch (error) {
+        // Handle any errors that occur during the process
+        res.status(500).json({ message: error.message });
     }
 });
 
