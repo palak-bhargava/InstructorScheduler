@@ -376,17 +376,68 @@ app.post('/instructorschedules', async(req, res) => {
     }
 })
 
-
-
-
-
-//DEMO:
-//GET
-//POST
-//Next Steps: 
-//1) Get method to get document based on requested parameters, 
-//2) Script to parse JSON file and upload courses to database
-//3) Collection to store instructor preferences,
-//4) Methods to get, post, patch instructor preferences
+app.put('/instructorschedules/:instructor_name', async (req, res) => {
+    const instructor_name = req.params.instructor_name;
+    const newCourse = req.body.newCourse;  // Change from newCourses to newCourse
+  
+    try {
+      let instructor_schedule = await InstructorSchedule.findOne({ instructor_name: instructor_name });
+  
+      if (!instructor_schedule) {
+        instructor_schedule = new InstructorSchedule({
+          instructor_name: instructor_name,
+          approved_schedule: "false",
+          courses: [],
+        });
+        await instructor_schedule.save();
+      }
+  
+      const exists = instructor_schedule.courses.some(existingCourse => 
+        existingCourse.class_number === newCourse.class_number
+      );
+  
+      if (!exists) {
+        // Only push the new course if it doesn't already exist
+        instructor_schedule.courses.push(newCourse);
+        await instructor_schedule.save();
+        res.status(200).json({ message: 'Course added to instructor schedule successfully' });
+      } else {
+        res.status(404).json({ message: 'Course already exists in the schedule' });
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      res.status(500).json({ message: 'Internal server error' });
+    }
+  });
+  
+  app.delete('/instructorschedules/:instructor_name/:class_number', async (req, res) => {
+    const instructor_name = req.params.instructor_name;
+    const class_number = req.params.class_number;
+  
+    try {
+      let instructor_schedule = await InstructorSchedule.findOne({ instructor_name: instructor_name });
+  
+      if (!instructor_schedule) {
+        res.status(404).json({ message: 'Instructor schedule not found' });
+        return;
+      }
+  
+      // Find the index of the course with the specified class_number
+      const courseIndex = instructor_schedule.courses.findIndex(course => course.class_number === parseInt(class_number,10));
+  
+      if (courseIndex !== -1) {
+        // Remove the course from the array
+        instructor_schedule.courses.splice(courseIndex, 1);
+        await instructor_schedule.save();
+        res.status(200).json({ message: 'Course removed from instructor schedule successfully' });
+      } else {
+        res.status(404).json({ message: 'Course not found in the schedule' });
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      res.status(500).json({ message: 'Internal server error' });
+    }
+  });
+  
 
 app.listen(process.env.PORT, () => console.log('Server has started on port 3000'))
