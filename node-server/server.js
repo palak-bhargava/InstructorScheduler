@@ -282,9 +282,6 @@ app.put('/currentcourses/:class_number', async (req, res) => {
     }
 });
   
-  
-
-
 
 //----------------------API FOR INSTRUCTOR PREFERENCES----------------------
 app.post('/instructorpreferences', async(req, res) => {
@@ -313,44 +310,58 @@ app.get('/instructorpreferences/:instructor_name', async(req, res) =>{
 
 app.put('/instructorpreferences/:instructor_name', async (req, res) => {
     try {
-        const instructor_name = req.params.instructor_name;
-        const newCourses = req.body.newCourses;
-
-        const instructor_preferences = await InstructorPreference.findOne({ instructor_name: instructor_name });
-
-        if (instructor_preferences) {
-            // Check if the courses array exists, if not, create it
-            if (!instructor_preferences.courses) {
-                instructor_preferences.courses = [];
-            }
-
-            newCourses.forEach((newCourse) => {
-                const exists = instructor_preferences.courses.some(existingCourse => 
-                    existingCourse.class_number === newCourse.class_number
-                );
-                console.log(exists);
-                if (!exists) {
-                    // Only push the new course if it doesn't already exist
-                    instructor_preferences.courses.push(newCourse);
-                }
-                else{
-                    res.status(404).json({ message: 'Course already exists' });
-                }
-            });
-            //console.log("new instructor courses:", instructor_preferences.courses)
-
-            instructor_preferences.save();
-
-            res.status(200).json({ message: 'Course added successfully', instructor_preferences });
+      const instructor_name = req.params.instructor_name;
+      const newCourses = req.body.newCourses;
+  
+      let instructor_preferences = await InstructorPreference.findOne({ instructor_name: instructor_name });
+  
+      if (!instructor_preferences) {
+        // If instructor preferences do not exist, create a new entry
+        instructor_preferences = new InstructorPreference({
+          instructor_name: instructor_name,
+          courses: [],
+          general_preferences: [],
+          availability: []
+          // Add other fields as needed
+        });
+      }
+  
+      // Use a flag to determine if any course already exists
+      let courseExists = false;
+  
+      newCourses.forEach((newCourse) => {
+        const exists = instructor_preferences.courses.some(existingCourse => 
+          existingCourse.class_number === newCourse.class_number
+        );
+  
+        if (!exists) {
+          // Only push the new course if it doesn't already exist
+          instructor_preferences.courses.push(newCourse);
         } else {
-            // If the instructor is not found, return a 404 status
-            res.status(404).json({ message: 'Instructor not found' });
+          // Set the flag to indicate that at least one course already exists
+          courseExists = true;
         }
+      });
+  
+      // Save changes only if there are new courses or if it's a new entry
+      if (newCourses.length > 0 || !req.body.newCourses) {
+        await instructor_preferences.save();
+  
+        if (courseExists) {
+          res.status(404).json({ message: 'At least one course already exists' });
+        } else {
+          res.status(200).json({ message: 'Courses added successfully', instructor_preferences });
+        }
+      } else {
+        res.status(400).json({ message: 'No new courses provided' });
+      }
     } catch (error) {
-        // Handle any errors that occur during the process
-        res.status(500).json({ message: error.message });
+      // Handle any errors that occur during the process
+      console.error('Error:', error);
+      res.status(500).json({ message: 'Internal server error' });
     }
-});
+  });  
+
 
 app.put('/instructorpreferences/:instructor_name/:class_number', async (req, res) => {
     try {

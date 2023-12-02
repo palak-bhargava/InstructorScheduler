@@ -159,7 +159,7 @@
         let availability = "false";
         try {
           const response = await axios.get(`http://localhost:3000/currentcourses/${availability}`);
-          //console.log(response)
+          console.log(response)
           this.available_classes = response.data;
         } 
         catch (error) {
