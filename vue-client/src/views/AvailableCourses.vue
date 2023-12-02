@@ -70,11 +70,11 @@
           class="ml-7 mt-4"
           @click="addToPreferences"
         >
-          Add To Preferences
+          Request Course
           <v-icon right>
             mdi-plus
           </v-icon>
-        </v-btn> 
+        </v-btn> <br><br>
       </v-col>
     </v-row>
 
@@ -124,7 +124,7 @@
     methods: {
       addToPreferences() {
         const updatedCoursesArray = [];
-        console.log(this.selected)
+        //console.log(this.selected)
         this.selected.forEach((course) => {
             // Create a new courseObj for each iteration
             const courseObj = {
@@ -159,7 +159,7 @@
         let availability = "false";
         try {
           const response = await axios.get(`http://localhost:3000/currentcourses/${availability}`);
-          console.log(response)
+          //console.log(response)
           this.available_classes = response.data;
         } 
         catch (error) {
