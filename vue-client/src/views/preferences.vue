@@ -139,6 +139,8 @@
 </template>
 
 <script>
+  import axios from 'axios';
+
   export default {
     name: 'MyPreferences',
 
@@ -274,7 +276,7 @@
 
         this.selectedOpen = false;
       },
-      sendPreferences(events) {
+      savePreferences(events) {
         const resultArray = [];
 
         try {
@@ -312,12 +314,26 @@
             }
           });
           console.log(resultArray)
-          return resultArray;
-          
         } catch (error) {
           console.error('Error in postPreferences function:', error);
           throw error; // Rethrow the error to propagate it further
+        } 
+        sendPreferences(resultArray);
+      },
+      async sendPreferences(resultArray){
+        let instructor_name = "Pushpa%20Kumar"; //this.instructor_name.trim();
+      
+        const data_update = {
+          availability: resultArray
         }
+
+        axios.put(`http://localhost:3000/instructorpreferences/${instructor_name}`, data_update)
+        .then(response => {
+            console.log('Response:', response.data.message);
+        })
+        .catch(error => {
+            console.error('Error:', error.message);
+        });
       },
     }
   }
