@@ -68,9 +68,9 @@
           rounded
           dark
           class="ml-7 mt-4"
-          @click="addToSchedule"
+          @click="addToPreferences"
         >
-          Add To Schedule
+          Add To Preferences
           <v-icon right>
             mdi-plus
           </v-icon>
@@ -122,9 +122,37 @@
       this.getAvailableCourses();
     },
     methods: {
-      addToSchedule() {
-        console.log('Selected courses:', this.selected);
-        // You can perform further actions with the selected courses here
+      addToPreferences() {
+        const updatedCoursesArray = [];
+        console.log(this.selected)
+        this.selected.forEach((course) => {
+            // Create a new courseObj for each iteration
+            const courseObj = {
+                "course_prefix": course.course_prefix,
+                "course_number": course.course_number,
+                "teaching_preference": "yes",
+                "class_number": course.class_number
+            };
+
+            updatedCoursesArray.push(courseObj);
+        });
+
+        this.putAddedPreferences(updatedCoursesArray);
+      },
+
+      async putAddedPreferences(selectedCourseArray){
+        let instructor_name = "Pushpa%20Kumar"; //this.instructor_name.trim();
+
+        const newCourses = selectedCourseArray;
+
+        axios.put(`http://localhost:3000/instructorpreferences/${instructor_name}`, {newCourses})
+        .then(response => {
+            console.log('Response:', response.data.message);
+        })
+        .catch(error => {
+            console.error('Error:', error.message);
+        });
+
       },
 
       async getAvailableCourses() {
@@ -132,12 +160,7 @@
         try {
           const response = await axios.get(`http://localhost:3000/currentcourses/${availability}`);
           console.log(response)
-          this.available_classes = response.data.map(course => {
-            return {
-              ...course,
-              course_number: `CS${course.course_number}` // Assuming course_number is a string
-            };
-          });
+          this.available_classes = response.data;
         } 
         catch (error) {
           console.error(error);
