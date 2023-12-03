@@ -14,7 +14,12 @@ mongoose
 .catch((error) => console.error(error))
 
 app.use(express.json())
-
+app.use((req, res, next) => {
+    res.header('Access-Control-Allow-Origin', 'http://localhost:8080'); // Replace with the appropriate origin.
+    res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+    res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+    next();
+});
 app.get('/', (req, res) => {
     res.send("Hello from Palak")
 })
@@ -199,7 +204,7 @@ app.put('/instructorpreferences/:instructor_name/:class_number', async (req, res
 
       const instructor_preferences = await InstructorPreference.findOne({ instructor_name: instructor_name });
 
-      //console.log(instructor_preferences.courses)
+      console.log(instructor_preferences.availability)
   
       if (instructor_preferences) {
         instructor_preferences.availabilites = instructor_availabilites;
@@ -227,7 +232,6 @@ app.post('/instructorschedules', async(req, res) => {
         res.status(500).json({message: error.message})
     }
 })
-
 
 //DEMO:
 //GET
