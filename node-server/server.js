@@ -363,7 +363,7 @@ app.put('/instructorpreferences/:instructor_name/newCourses', async (req, res) =
   });  
 
 
-app.put('/instructorpreferences/:instructor_name/:class_number', async (req, res) => {
+app.put('/instructorpreferences/:instructor_name/:class_number/preferences', async (req, res) => {
     try {
       const instructor_name = req.params.instructor_name;
       const teaching_preference = req.body.teaching_preference; // Change from req.params to req.body
@@ -404,11 +404,10 @@ app.put('/instructorpreferences/:instructor_name/:class_number', async (req, res
 //INSTRUCTOR PREFERENCES PUT
 app.put('/instructorpreferences/:instructor_name/availabilities', async (req, res) => {
     try {
-      const instructor_name = req.params.instructor_name;
-      const instructor_availabilities = req.body.availabilities;
-  
-      const instructor_preferences = await InstructorPreference.findOne({ instructor_name: instructor_name });
-  
+        const instructor_name = req.params.instructor_name;
+        const instructor_availabilities = req.body.availabilities;
+        const instructor_preferences = await InstructorPreference.findOne({ instructor_name: instructor_name });
+        
       if (instructor_preferences) {
         instructor_preferences.availability = instructor_availabilities;
   

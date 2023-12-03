@@ -256,7 +256,7 @@ export default {
         teaching_preference: preference
       }
 
-      axios.put(`http://localhost:3000/instructorpreferences/${instructor_name}/${class_number}`, data_update)
+      axios.put(`http://localhost:3000/instructorpreferences/${instructor_name}/${class_number}/preferences`, data_update)
       .then(response => {
           console.log('Response:', response.data.message);
       })
