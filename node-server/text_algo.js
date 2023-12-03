@@ -63,8 +63,8 @@ course_objs.forEach(item => courses_map.set(item.section_address, item))
 
 //------------------------- TIME PREFERENCE -------------------------//
 //calculate if class time is within teacher preference ranges
-const timeRanges = ["8:00am - 12:00pm", "4:00pm - 7:00pm"];
-const timeRangeToCheck = "4:00pm - 6:45pm";
+// const timeRanges = ["8:00am - 12:00pm", "4:00pm - 7:00pm"];
+// const timeRangeToCheck = "4:00pm - 6:45pm";
 
 function timeInRange(timeRangeToCheck, timeRanges){
     const [s,e] = convert_to_24h(timeRangeToCheck)
@@ -107,51 +107,51 @@ async function getSchedule(){
     return response
 }
 
-function populateInstructorAvailabilities(instructorPreference, instructorSchedule) {
-          // Initialize the instructorAvailabilities object
-    var instructorAvailabilities = {
-        Monday: [],
-        Tuesday: [],
-        Wednesday: [],
-        Thursday: [],
-        Friday: [],
-        Saturday: [],
-        Sunday: [],
-    };
+// function populateInstructorAvailabilities(instructorPreference, instructorSchedule) {
+//           // Initialize the instructorAvailabilities object
+//     var instructorAvailabilities = {
+//         Monday: [],
+//         Tuesday: [],
+//         Wednesday: [],
+//         Thursday: [],
+//         Friday: [],
+//         Saturday: [],
+//         Sunday: [],
+//     };
 
-    // Extract availability information from the instructorPreference
-    const availability1 = instructorPreference[0].availability;
+//     // Extract availability information from the instructorPreference
+//     const availability1 = instructorPreference[0].availability;
 
-    // Iterate through availability and add times to corresponding days
-    availability1.forEach((avail) => {
-        const day = avail.day;
-        const times = avail.time;
-        instructorAvailabilities[day] = instructorAvailabilities[day].concat(times);
-    });
+//     // Iterate through availability and add times to corresponding days
+//     availability1.forEach((avail) => {
+//         const day = avail.day;
+//         const times = avail.time;
+//         instructorAvailabilities[day] = instructorAvailabilities[day].concat(times);
+//     });
 
-    // Extract class information from the instructorSchedule
-    const classes = instructorSchedule[0].courses;
+//     // Extract class information from the instructorSchedule
+//     const classes = instructorSchedule[0].courses;
 
-    // Iterate through classes and remove times from corresponding days
-    classes.forEach((course) => {
-        const unavailableDay = course.days[0];
-        const unavailableTime = course.times_12h;
+//     // Iterate through classes and remove times from corresponding days
+//     classes.forEach((course) => {
+//         const unavailableDay = course.days[0];
+//         const unavailableTime = course.times_12h;
 
-        // Find the index of the time range in instructorAvailabilities
-        const index = instructorAvailabilities[unavailableDay].findIndex(
-            (timeRange) => timeRange.includes(unavailableTime)
-        );
+//         // Find the index of the time range in instructorAvailabilities
+//         const index = instructorAvailabilities[unavailableDay].findIndex(
+//             (timeRange) => timeRange.includes(unavailableTime)
+//         );
 
-        if (index !== -1) {
-            // Split the time range into two parts and update the array
-            const [start, end] = instructorAvailabilities[unavailableDay][index].split(" - ");
-            const classEndTime = course.times_12h.split(" - ")[1];
-            instructorAvailabilities[unavailableDay][index] = `${classEndTime} - ${end}`;
-        }
-    });
-    console.log(instructorAvailabilities)
-    return instructorAvailabilities;
-}
+//         if (index !== -1) {
+//             // Split the time range into two parts and update the array
+//             const [start, end] = instructorAvailabilities[unavailableDay][index].split(" - ");
+//             const classEndTime = course.times_12h.split(" - ")[1];
+//             instructorAvailabilities[unavailableDay][index] = `${classEndTime} - ${end}`;
+//         }
+//     });
+//     console.log(instructorAvailabilities)
+//     return instructorAvailabilities;
+// }
 
 
 
@@ -306,7 +306,71 @@ function formatTime(date) {
     return `${formattedHours}:${formattedMinutes}${ampm}`;
 }
 
+function convertToTimeRange(timeString) {
+    const [start, end] = timeString.split(/[\s-]+/);
+    const startTime = new Date(`1970-01-01T${start}`);
+    const endTime = new Date(`1970-01-01T${end}`);
+    return [startTime, endTime];
+}
 
+function formatTimeRange(startTime, endTime) {
+    const options = { hour: 'numeric', minute: '2-digit' };
+    const formattedStartTime = startTime.toLocaleTimeString('en-US', options);
+    const formattedEndTime = endTime.toLocaleTimeString('en-US', options);
+    return `${formattedStartTime} to ${formattedEndTime}`;
+}
+
+
+
+function findNonOverlappingTimes(targetRange, timeRanges) {
+    const nonOverlappingRanges = [];
+
+    for (const timeRange of timeRanges) {
+        const nonOverlappingTime = extractNonOverlappingTime(targetRange, timeRange);
+        if (nonOverlappingTime.length > 0) {
+            nonOverlappingRanges.push(...nonOverlappingTime);
+        }
+    }
+
+    return nonOverlappingRanges;
+}
+function extractNonOverlappingTime(timeString1, timeString2) {
+    // Convert time strings to Date objects for easier comparison
+    const [startTime1, endTime1] = convertToTimeRange(timeString1);
+    const [startTime2, endTime2] = convertToTimeRange(timeString2);
+
+    // Check for non-overlapping times
+    if (endTime1 <= startTime2 || startTime1 >= endTime2) {
+        // If there is no overlap, return both time ranges
+        return [timeString1, timeString2];
+    } else {
+        // Calculate the non-overlapping time ranges
+        const nonOverlapRanges = [];
+
+        if (startTime1 < startTime2) {
+            nonOverlapRanges.push(formatTimeRange(startTime1, startTime2));
+        }
+
+        if (endTime1 > endTime2) {
+            nonOverlapRanges.push(formatTimeRange(endTime2, endTime1));
+        }
+
+        return nonOverlapRanges;
+    }
+}
+
+// Example usage
+const timeString1 = "2:00pm-5:00pm";
+const timeString2 = "2:00pm to 2:45pm";
+const OverlappingTimeRanges = extractNonOverlappingTime(timeString1, timeString2);
+console.log(OverlappingTimeRanges);
+
+// Example usage
+const targetRange = "11:30am-2:30pm";
+const timeRanges = ["10:00am-12:00pm", "2:00pm-4:00pm"];
+
+const nonOverlappingTimeRanges = findNonOverlappingTimes(targetRange, timeRanges);
+console.log(nonOverlappingTimeRanges);
 
 
 Promise.all([getPreference(), getSchedule()])
@@ -318,8 +382,8 @@ Promise.all([getPreference(), getSchedule()])
         console.log(instructorSchedule[0].courses);
   
         // Call another function with the results
-       var instructor_availabilites = excludeOverlappingTimes(instructorPreference[0].availability, instructorSchedule[0].courses);
-       console.log(instructor_availabilites)
+    //    var instructor_availabilites = excludeOverlappingTimes(instructorPreference[0].availability, instructorSchedule[0].courses);
+    //    console.log(instructor_availabilites)
       })
       .catch((error) => {
         console.error("Error fetching data:", error);
