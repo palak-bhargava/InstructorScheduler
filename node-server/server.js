@@ -474,6 +474,13 @@ app.put('/instructorschedules/:instructor_name', async (req, res) => {
       res.status(500).json({ message: 'Internal server error' });
     }
   });
-  
+  app.get('/instructorschedules', async(req, res) =>{
+    try {
+        const instructor_schedules = await InstructorSchedule.find({});
+        res.status(200).json(instructor_schedules);
+    } catch (error) {
+        res.status(500).json({message: error.message})
+    }
+});
 
 app.listen(process.env.PORT, () => console.log('Server has started on port 3000'))
