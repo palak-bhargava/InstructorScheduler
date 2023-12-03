@@ -25,8 +25,12 @@
     <v-expansion-panels
         dark
         rounded=30
+        class="mb-15"
     >
-      <v-expansion-panel v-for="(schedule, index) in allSchedules" :key="index" rounded>
+      <v-expansion-panel 
+        v-for="(schedule, index) in allSchedules" :key="index" 
+        rounded
+      >
         <v-expansion-panel-header color="#5C9970" rounded>
           <h3>{{ schedule.instructor_name }}</h3>
           <v-btn
@@ -40,46 +44,61 @@
             Generate Schedule
           </v-btn> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
         </v-expansion-panel-header>
-      <v-expansion-panel-content color="#5C9970" rounded>
-      <br>
-      <v-row>
-    <v-col cols="9" class="spacing-playground pa-0">
-      <v-card class="mx-auto" color="#ffffff" light outlined>
-        <v-list-item three-line v-for="(course, index) in schedule.courses" :key="index">
-          <v-list-item-content>
-          
-            <v-list-item-title class="text-h7">
-            <div v-if="course">
-              {{ course.course_number }}
-            </div>
-              <b></b> 
-            </v-list-item-title>
-            <!-- Add other details as needed -->
-          </v-list-item-content>
-        </v-list-item>
-   
-      </v-card>
-    </v-col>
+      <v-expansion-panel-content color="#5C9970" rounded> <br>
+         <v-row v-if="schedule.showContent">
+          <v-col cols="9" class="spacing-playground pa-0">
+            <v-card class="mx-auto" color="#ffffff" light outlined>
+              <v-list-item three-line v-for="(course, index) in schedule.courses" :key="index">
+                <v-list-item-content>
+                  <v-list-item-title class="text-h7">
+                    <div v-if="course">
+                      <b>CS{{ course.course_number }} {{ course.title }}</b> 
+                    </div>
+                  </v-list-item-title>
+                  <v-list-item-subtitle>
+                    <div v-if="course">
+                      {{ displayDays(course.days) }} | {{ course.times_12h }}
+                    </div>
+                  </v-list-item-subtitle>
+                </v-list-item-content>
+              </v-list-item>
+            </v-card>
+          </v-col>
 
-  
-        <v-col cols="3" class="spacing-playground pa-0">
-          <v-card color="#5C9970" light outlined>
-            <div class="pl-8 ml-12">
-              <b>Approve Schedule?</b>
-            </div>
-            <v-card-actions>
-              <v-btn color="#FFB86F" elevation="2" rounded light class="mr-3 mb-1 ml-15">
-                Yes
-              </v-btn>
-              <v-btn color="#FFB86F" elevation="2" rounded light class="mb-1 ml-4">
-                No
-              </v-btn>
-            </v-card-actions>
-          </v-card>
-        </v-col>
-      </v-row>
-    </v-expansion-panel-content>
-    </v-expansion-panel>
+          <v-col cols="3" class="spacing-playground pa-0">
+            <v-card color="#5C9970" light outlined>
+              <div class="pl-8 ml-12">
+                <b>Approve Schedule?</b>
+              </div>
+              <v-card-actions>
+                <v-btn 
+                  color="#FFB86F" 
+                  elevation="2" 
+                  rounded 
+                  light 
+                  class="mr-3 mb-1 ml-15"
+                  :style="{ backgroundColor: schedule.yes }"
+                  @click="changeColor(schedule, 'yes')"
+                >
+                  Yes
+                </v-btn>
+                <v-btn 
+                  color="#FFB86F" 
+                  elevation="2" 
+                  rounded 
+                  light 
+                  class="mr-3 mb-1 ml-5"
+                  :style="{ backgroundColor: schedule.no }"
+                  @click="changeColor(schedule, 'no')"
+                >
+                  No
+                </v-btn>
+              </v-card-actions>
+            </v-card> 
+          </v-col>
+        </v-row> <br>
+      </v-expansion-panel-content>
+    </v-expansion-panel> 
   </v-expansion-panels>
   </v-container>
 </template>
@@ -100,31 +119,54 @@
       this.getAllSchedules();
     },
     methods: {
-      
+      displayDays(days) {
+        return days.join(', ');
+      },
+
+      changeColor(item, buttonType) {
+        // Update the active button for a specific card
+        item.activeButton = buttonType;
+
+        // Update the button colors based on the active button within the card
+        item.yes = buttonType === 'yes' ? '#ffdbb7' : '#FFB86F';
+        item.no = buttonType === 'no' ? '#ffdbb7' : '#FFB86F';
+
+        //this.updatePreferences(item.activeButton, item.class_number);
+        //check if active button is yes, add to schedule else ignore
+        if(item.activeButton === 'yes') {
+          //update schedule
+          //this.addToInstructorSchedule(item);
+          const assigned = "true";
+          //this.updateCurrentCoursesClassStatus(item.class_number, assigned);
+        }
+        else if(item.activeButton === 'no') {
+          //this.deleteFromInstructorSchedule(item.class_number);
+          const assigned = "false";
+          //this.updateCurrentCoursesClassStatus(item.class_number, assigned);
+        }
+      },
+
       async getAllSchedules() {
         try {
           const response = await axios.get(`http://localhost:3000/instructorschedules`);
-          this.allSchedules = response.data; // Assign the data to the pastClasses property
+          this.allSchedules = response.data.map(item => ({
+            ...item,
+            yes: '#FFB86F', // Initialize unique button colors for each item
+            no: '#FFB86F',
+            activeButton: null, // strores which button is pressed
+            showContent: false,
+          })); // Assign the data to the pastClasses property // Assign the data to the pastClasses property
         } 
         catch (error) {
           console.error(error);
         }
         console.log("all schedules array:", this.allSchedules);
-      
       },
 
       showInstructorSchedule(schedule) {
-        // Assuming schedule contains class_schedules field with an array of schedules
-        this.instructorSchedule = schedule;
-        // Optionally, you can log the schedule for debugging or verification
-        console.log("Instructor Schedule:", this.instructorSchedule);
-      },
-      showClass(course) {
-        // Assuming schedule contains class_schedules field with an array of schedules
-        this.instructorSchedule = course;
-        // Optionally, you can log the schedule for debugging or verification
-        console.log("Classes:", this.instructorSchedule);
-       
+        //generate schedule function here
+        schedule.showContent = true; // Set flag to true when button is clicked
+        // You can also fetch and assign data specific to this schedule here
       },
     },
   }
