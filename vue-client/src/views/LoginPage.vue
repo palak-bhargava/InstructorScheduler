@@ -100,14 +100,14 @@
             </v-btn>
           </div> 
           <div class="text-center">
-            <router-link :to="{ name: 'AdminLogin' }">
+            
               <v-btn
                 text
                 color="black"
-              >
+                @click="goToAdminLogin">
               Login as admin?
             </v-btn>
-          </router-link>
+          
           </div>
         </v-card>
       </v-col>
@@ -124,11 +124,14 @@ const getUserEmail = require('../../../node-server/controllers/sign_in_controlle
     return {
       email: '',
       password: '',
-      show1: false,
+      show1: 'false'
     };
   },
   
   methods: {
+    goToAdminLogin() {
+      this.$router.push({ name: 'AdminLogin' });
+    },
     async login() {
       try {
         let email = this.email?.trim();

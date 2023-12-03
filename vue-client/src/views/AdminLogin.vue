@@ -103,7 +103,7 @@
               <v-btn
                 text
                 color="black"
-              >
+                @click="goToLoginPage">
               Login as instructor?
               </v-btn>
             </div>
@@ -121,11 +121,15 @@
     data() {
       return {
         email: '',
-        password: ''
+        password: '',
+        show1: 'false'
       };
     },
     
     methods: {
+      goToLoginPage() {
+      this.$router.push({ name: 'Login' });
+      },
       async login() {
         try {
           let email = this.email?.trim();
