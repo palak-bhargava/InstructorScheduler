@@ -6,78 +6,24 @@ const instructorScheduleSchema = mongoose.Schema(
             type: String,
             required: [true]
         },
+        approved_schedule: {
+            type: String,
+            required: [true]
+        },
         courses: [
             {   
                 section_address: String,
                 course_prefix: String,
                 course_number: Number,
-                section: Number,
+                section: String,
                 class_number: Number,
                 title: String,
-                session: Number,
+                session: String,
                 days: Array,
                 times: String,
                 times_12h: String,
-                location: String,
-                required: [false]
-            },
-            {
-                section_address: String,
-                course_prefix: String,
-                course_number: Number,
-                section: Number,
-                class_number: Number,
-                title: String,
-                session: Number,
-                days: Array,
-                times: String,
-                times_12h: String,
-                location: String,
-                required: [false]
-            },
-            {
-                section_address: String,
-                course_prefix: String,
-                course_number: Number,
-                section: Number,
-                class_number: Number,
-                title: String,
-                session: Number,
-                days: Array,
-                times: String,
-                times_12h: String,
-                location: String,
-                required: [false]
-            },
-            {
-                section_address: String,
-                course_prefix: String,
-                course_number: Number,
-                section: Number,
-                class_number: Number,
-                title: String,
-                session: Number,
-                days: Array,
-                times: String,
-                times_12h: String,
-                location: String,
-                required: [false]
-            },
-            {
-                section_address: String,
-                course_prefix: String,
-                course_number: Number,
-                section: Number,
-                class_number: Number,
-                title: String,
-                session: Number,
-                days: Array,
-                times: String,
-                times_12h: String,
-                location: String,
-                required: [false]
-            },
-
+                location: String
+            }
         ]
 
     }

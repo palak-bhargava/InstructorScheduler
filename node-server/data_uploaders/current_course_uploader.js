@@ -41,7 +41,7 @@ fs.readFile('../json_data/coursebook.json', 'utf8', (err, data) => {
 
     // Iterate through each entry in report_data and post it to the database
     for (const data of reportData) {
-        const current_course = mapJsonToSchema(data, class_assigned);
+        const current_course = mapJsonToSchema(data);
         postToDb(current_course, apiUrl);
     }
 });
