@@ -145,7 +145,7 @@
 
         const newCourses = selectedCourseArray;
 
-        axios.put(`http://localhost:3000/instructorpreferences/${instructor_name}`, {newCourses})
+        axios.put(`http://localhost:3000/instructorpreferences/${instructor_name}/newCourses`, {newCourses})
         .then(response => {
             console.log('Response:', response.data.message);
         })
