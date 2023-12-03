@@ -308,7 +308,7 @@ app.get('/instructorpreferences/:instructor_name', async(req, res) =>{
     }
 });
 
-app.put('/instructorpreferences/:instructor_name', async (req, res) => {
+app.put('/instructorpreferences/:instructor_name/newCourses', async (req, res) => {
     try {
       const instructor_name = req.params.instructor_name;
       const newCourses = req.body.newCourses;
@@ -399,6 +399,33 @@ app.put('/instructorpreferences/:instructor_name/:class_number', async (req, res
       res.status(500).json({ message: error.message });
     }
   });
+
+//----------------------------------------------------------------------------------------------------------
+//INSTRUCTOR PREFERENCES PUT
+app.put('/instructorpreferences/:instructor_name/availabilities', async (req, res) => {
+    try {
+      const instructor_name = req.params.instructor_name;
+      const instructor_availabilities = req.body.availabilities;
+  
+      const instructor_preferences = await InstructorPreference.findOne({ instructor_name: instructor_name });
+  
+      if (instructor_preferences) {
+        instructor_preferences.availability = instructor_availabilities;
+  
+        await instructor_preferences.save();
+  
+        res.status(200).json({ message: 'Instructor Availabilities updated successfully' });
+      } else {
+        res.status(404).json({ message: 'Instructor Preferences not found for specific Instructor' });
+      }
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
+  });
+  
+  
+//----------------------------------------------------------------------------------------------------------
+
   
 //----------------------API FOR NEW INSTRUCTOR SCHEDULES----------------------
 app.post('/instructorschedules', async(req, res) => {
