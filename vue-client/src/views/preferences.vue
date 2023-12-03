@@ -346,6 +346,14 @@ export default {
             console.error('Error:', error.message);
         }
     },
+    async getCourseArray() {
+      try {
+        const response = await axios.get(`http://localhost:3000/coursearrayobj`);
+         console.log('Response:', response.data);
+        } catch (error) {
+            console.error('Error:', error.message);
+        }
+    },
   },
 };
 </script>

@@ -1,5 +1,6 @@
 const express = require('express')
 const { PastCourses } = require('./models/past_course_info')
+const { CourseArrayObj } = require('./models/courses_array_obj')
 const { CurrentCourses } = require('./models/current_course_info')
 const { InstructorPreference } = require('./models/instructor_preferences');
 const { InstructorSchedule } = require('./models/instructor_schedule');
@@ -500,6 +501,27 @@ app.put('/instructorschedules/:instructor_name', async (req, res) => {
       res.status(500).json({ message: 'Internal server error' });
     }
   });
+
+  //----------------------API FOR COURSE ARRAY OBJECT----------------------
+  app.post('/coursearrayobj', async(req, res) => {
+    try{
+        const course_array_obj = await CourseArrayObj.create(req.body)
+        res.status(200).json(course_array_obj)
+    }
+    catch (error) { 
+        console.error(error.message)
+        res.status(500).json({message: error.message})
+    }
+});
+
+app.get('/coursearrayobj', async(req, res) => {
+    try {
+        const course_array_obj = await CourseArrayObj.find({});
+        res.status(200).json(course_array_obj);
+    } catch (error) {
+        res.status(500).json({message: error.message})
+    }
+})
   
 
 app.listen(process.env.PORT, () => console.log('Server has started on port 3000'))
