@@ -66,28 +66,28 @@
                   <b>CS3345 Data Structures</b> 
                 </v-list-item-title>
                 <v-list-item-subtitle>
-                Monday, Wednesday 1:00 PM - 2:15 PM
+                Monday, Wednesday | 1:00 PM - 2:15 PM
                 </v-list-item-subtitle>
                 <br>
                 <v-list-item-title class="text-h7">
                   <b>CS2336 Computer Science II</b> 
                 </v-list-item-title>
                 <v-list-item-subtitle>
-                Monday, Wednesday 2:00 PM - 3:15 PM
+                Monday, Wednesday | 2:00 PM - 3:15 PM
                 </v-list-item-subtitle>
                 <br>
                 <v-list-item-title class="text-h7">
                   <b>CS4485 Automata Theory</b> 
                 </v-list-item-title>
                 <v-list-item-subtitle>
-                Tuesday, Thursday 1:00 PM - 2:15 PM
+                Tuesday, Thursday | 1:00 PM - 2:15 PM
                 </v-list-item-subtitle>
                 <br>
                 <v-list-item-title class="text-h7">
                   <b>CS3349 Advanced Algorithms</b> 
                 </v-list-item-title>
                 <v-list-item-subtitle>
-                Tuesday, Thursday 8:00 PM - 9:15 PM
+                Tuesday, Thursday | 8:00 PM - 9:15 PM
                 </v-list-item-subtitle>
                 <br>
               </v-list-item-content>
