@@ -1,8 +1,9 @@
 <template>
   <v-app>
     <v-main>
-      <LoginPage/>
-      <router-view></router-view>
+      <router-view>
+        <LoginPage/>
+      </router-view>
     </v-main>
   </v-app>
 </template>
