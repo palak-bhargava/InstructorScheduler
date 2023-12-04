@@ -66,7 +66,7 @@
           outlined
           
         >
-        <h2>Welcome, Professor!</h2> <br>
+        <h2>Welcome, Instructor!</h2> <br>
     
           <v-text-field
             label="UTD email"
@@ -81,9 +81,9 @@
             label="Password"
             prepend-inner-icon="mdi-lock"
             v-model="password"
-            :type="show1 ? 'text' : 'password'"
+            :type="show ? 'text' : 'password'"
             name="input-10-1"
-            @click:append="show1 = !show1"
+            @click:append="show = !show"
             filled
             rounded
             dense
@@ -92,23 +92,23 @@
           <div class="text-center">
             <v-btn
               rounded
-              color="#5C9970"   
+              color="#5C9970"
               dark
-              @click="login"
+              @click="userLogin"
             >
               LOGIN
             </v-btn>
-          </div> 
+          </div>
           <div class="text-center">
             
-              <v-btn
-                text
-                color="black"
-                @click="goToAdminLogin">
-              Login as admin?
-            </v-btn>
-          
-          </div>
+            <v-btn
+              text
+              color="black"
+              @click="goToAdminLogin">
+            Login as admin?
+          </v-btn>
+        
+        </div>
         </v-card>
       </v-col>
     </v-row>
@@ -118,13 +118,14 @@
 
 
 <script>
-const getUserEmail = require('../../../node-server/controllers/sign_in_controller.js')
+import axios from "axios"
   export default {
   data() {
     return {
       email: '',
       password: '',
-      show1: 'false'
+      show: false,
+      loginSuccess: false
     };
   },
   
@@ -132,14 +133,49 @@ const getUserEmail = require('../../../node-server/controllers/sign_in_controlle
     goToAdminLogin() {
       this.$router.push({ name: 'AdminLogin' });
     },
-    async login() {
+    async getUserEmail(email, password) {
+      return new Promise(async (resolve, reject) => {
+        const bcryptjs = require('bcryptjs');
+        try {
+          const response = await axios.get(`http://localhost:3000/users/email/${email}`);
+          
+          // Check if response.data[0] is defined
+          if (response.data && response.data.length > 0) {
+            const hashedPassword = response.data[0].password;
+            const type = response.data[0].type;
+
+            if (type === "instructor") {
+              bcryptjs.compare(password, hashedPassword).then(result => {
+                if (result) {
+                  console.log("SUCCESS");
+                  resolve(true);
+                } else {
+                  console.log("FAILURE");
+                  resolve(false); // Return false if password doesn't match
+                }
+              });
+            } else {
+              console.log("FAILURE");
+              reject("Must be an instructor to log in.");
+            }
+          } else {
+            console.log("FAILURE");
+            reject("User not found");
+          }
+        } catch (error) {
+          console.log(error);
+          reject(error);
+        }
+      });
+    },
+
+    async userLogin() {
       try {
         let email = this.email?.trim();
         let password = this.password?.trim();
 
         // Assuming getUserEmail returns a promise
-        const response = await getUserEmail(email, password);
-
+        const response = await this.getUserEmail(email, password);
         // Handle the response
         console.log('Response:', response);
       } catch (error) {

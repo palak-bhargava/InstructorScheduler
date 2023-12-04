@@ -81,9 +81,9 @@
               label="Password"
               prepend-inner-icon="mdi-lock"
               v-model="password"
-              :type="show1 ? 'text' : 'password'"
+              :type="show ? 'text' : 'password'"
               name="input-10-1"
-              @click:append="show1 = !show1"
+              @click:append="show = !show"
               filled
               rounded
               dense
@@ -115,36 +115,72 @@
   
   
   
-  <script>
-  const getAdminEmail = require('../../../node-server/controllers/sign_in_controller.js')
-    export default {
+<script>
+import axios from "axios"    
+  export default {
     data() {
       return {
         email: '',
         password: '',
-        show1: 'false'
+        show: false,
+        loginSuccess: false,
       };
     },
     
     methods: {
       goToLoginPage() {
-      this.$router.push({ name: 'Login' });
+        this.$router.push({ name: 'Login' });
       },
-      async login() {
+      async getAdminEmail(email, password) {
+      return new Promise(async (resolve, reject) => {
+        const bcryptjs = require('bcryptjs');
         try {
-          let email = this.email?.trim();
-          let password = this.password?.trim();
-  
-          // Assuming getUserEmail returns a promise
-          const response = await getAdminEmail(email, password);
-  
-          // Handle the response
-          console.log('Response:', response);
+          const response = await axios.get(`http://localhost:3000/users/email/${email}`);
+          
+          // Check if response.data[0] is defined
+          if (response.data && response.data.length > 0) {
+            const hashedPassword = response.data[0].password;
+            const type = response.data[0].type;
+
+            if (type === "admin") {
+              bcryptjs.compare(password, hashedPassword).then(result => {
+                if (result) {
+                  console.log("SUCCESS");
+                  resolve(true);
+                } else {
+                  console.log("FAILURE");
+                  resolve(false); // Return false if password doesn't match
+                }
+              });
+            } else {
+              console.log("FAILURE");
+              reject("Must be an admin to log in.");
+            }
+          } else {
+            console.log("FAILURE");
+            reject("User not found");
+          }
         } catch (error) {
-          // Handle errors
-          console.error('Error:', error);
+          console.log(error);
+          reject(error);
         }
-      },
+      });
+    },
+    async login() {
+      try {
+        let email = this.email?.trim();
+        let password = this.password?.trim();
+
+        // Assuming getUserEmail returns a promise
+        const response = await this.getAdminEmail(email, password);
+        // Handle the response
+        console.log('Response:', response);
+      } catch (error) {
+        // Handle errors
+        console.error('Error:', error);
+      }
     }
-  };
-  </script>
+
+  }
+};
+</script>
