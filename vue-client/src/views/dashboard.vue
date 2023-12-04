@@ -183,19 +183,45 @@
                 </v-card> 
 
                 <v-row justify-center class="mb-0 mt-3"> 
-                            <v-btn
-                            color="#FFB86F"
-                            elevation="2"
-                            rounded
-                            class="mx-auto"
-                            @click="goToAvailableCourses">
-                                View Available Classes
-                            </v-btn> 
-                        </v-row> 
+                    <v-btn
+                    color="#FFB86F"
+                    elevation="2"
+                    rounded
+                    class="mx-auto"
+                    @click="goToAvailableCourses"
+                    >
+                        View Available Classes
+                    </v-btn> 
+                </v-row> 
             </v-container>
         </v-card> 
             
-        <div class="text-h5 mb-2 mt-15">My Current Schedule</div>
+        <div class="text-h5 mb-2 mt-15 d-flex justify-space-between align-center">
+            My Current Schedule
+            <v-card 
+            color="#FFB86F"
+            class="rounded-xl pl-5 pr-5"
+            style="height: 36px; width: 250px; display: flex; justify-content: center; align-items: center;"
+            >
+                <span v-if="isApproved==null" style="color: black; font-size: 14px;">
+                    <v-progress-circular   
+                    :size="22" 
+                    :width="2.5" 
+                    color="gray" 
+                    indeterminate>
+                    </v-progress-circular>
+                        &nbsp;&nbsp;&nbsp;<b>Schedule Pending Approval</b>
+                </span>
+                <span v-else-if="!isApproved" style="color: black; font-size: 14px;">
+                    <v-icon color="red">mdi-alert-circle</v-icon>
+                    &nbsp;&nbsp;<b>Schedule Declined</b>
+                </span>
+                <span v-else style="color: black; font-size: 14px;">
+                    <v-icon color="#5C9970">mdi-check-circle</v-icon>
+                    &nbsp;&nbsp;<b>Schedule Approved</b>
+                </span>
+            </v-card>
+        </div>
         <v-card
             color="#5C9970"
             class="rounded-xl mb-10"
@@ -226,12 +252,13 @@
 import axios from "axios"
   export default {
     data: () => ({
-      instructorScheduleArray: [],
-      events: []
+        instructorScheduleArray: [],
+        events: [],
+        isApproved: null,
     }),
 
     mounted() {
-    this.getCoursesArray();
+        this.getCoursesArray();
     },
 
     methods: {
