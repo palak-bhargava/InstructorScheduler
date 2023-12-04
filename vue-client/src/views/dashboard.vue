@@ -1,5 +1,20 @@
 <template>
-    <v-container class="mt-10">
+    <v-container>
+        <v-app-bar app color="f5f5f5">
+            <div class="d-flex align-center justify-center" style="width: 100%">
+                <v-img
+                    class="shrink mr-2"
+                    contain
+                    :src="require('../assets/IS-logo.png')"
+                    transition="scale-transition"
+                    width="40"
+                />
+                <v-toolbar-title class="flex text-center">
+                    Instructor Scheduler Dashboard
+                </v-toolbar-title>
+            </div>
+        </v-app-bar>
+        <br></br>
         <v-row>
             <v-col cols="7">
                 <div class="text-h5 mb-2">My Preferences</div>
@@ -8,7 +23,7 @@
                 class="rounded-xl"
                 > 
                     <v-container class="spacing-playground pa-5">
-                        <v-row> 
+                        <v-row>         
                             <v-col>
                                 <v-card class="rounded-xl">
                                     <v-container>
@@ -40,11 +55,9 @@
                         </v-row> 
                     </v-container>
                 </v-card>               
-            </v-col>
-        
+                </v-col>
             <v-col cols="1">
             </v-col>
-
             <v-col cols="4">
                 <div class="text-h5 mb-2">Past Schedules</div>
                 <v-card
@@ -53,41 +66,12 @@
                 > 
                     <v-container class="spacing-playground pa-5">
                         <v-btn
-                        color="#FFFFFF"
-                        elevation="2"
-                        rounded
-                        block
-                        outlined
-                        class="mb-2"
-                        >
-                            Fall 2023 
-                            <v-spacer></v-spacer>
-                            <v-icon right>
-                            mdi-arrow-right-thick
-                            </v-icon>
-                        </v-btn> 
-                        
-                    
-                        <v-btn
                         color="white"
                         elevation="2"
                         rounded
                         block
                         outlined
-                        class="mb-2"
-                        >
-                            Spring 2022
-                            <v-spacer></v-spacer>
-                            <v-icon right>
-                            mdi-arrow-right-thick
-                            </v-icon>
-                        </v-btn> 
-                        <v-btn
-                        color="white"
-                        elevation="2"
-                        rounded
-                        block
-                        outlined
+                        @click="goToPastSchedules"
                         >
                             Fall 2022
                             <v-spacer></v-spacer>
@@ -99,12 +83,12 @@
                 </v-card> 
             </v-col>
         </v-row>
-    
-        <div class="text-h5 mb-2 mt-15">Available Courses</div>
-        <v-card
-            color="#5C9970"
-            class="rounded-xl"
-        > 
+
+    <div class="text-h5 mb-2 mt-15">Available Courses</div>
+    <v-card
+        color="#5C9970"
+        class="rounded-xl"
+    > 
             <v-container class="spacing-playground pa-5">
                 <v-card
                     class = "mb-2 pa-2 rounded-xl font-weight-medium"
@@ -240,6 +224,9 @@
 </template>
 
 <script>
+//import Navbar from './components/Navbar.vue';
+//import Banner from './components/Banner.vue';
+
   export default {
     data: () => ({
       events: [
@@ -276,6 +263,9 @@
     methods: {
         goToAvailableCourses() {
             this.$router.push({ name: 'AvailableCourses' });
+        },
+        goToPastSchedules() {
+            this.$router.push({ name: 'PastSchedules' });
         },
     }
   }

@@ -172,9 +172,12 @@ export default {
       let password = this.password?.trim();
 
       // Assuming getUserEmail returns a promise
-      const response = await this.getAdminEmail(email, password);
+      const loginSuccess = await this.getAdminEmail(email, password);
       // Handle the response
-      console.log('Response:', response);
+      console.log('Response:', loginSuccess);
+      if (loginSuccess) {
+        this.$router.push({ name: 'AdminView'});
+      }
     } catch (error) {
       // Handle errors
       console.error('Error:', error);

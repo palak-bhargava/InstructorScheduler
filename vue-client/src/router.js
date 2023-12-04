@@ -6,6 +6,8 @@ import LoginPage from '@/views/LoginPage.vue';
 import AdminLogin from '@/views/AdminLogin.vue';
 import Dashboard from '@/views/dashboard.vue';
 import AvailableCourses from '@/views/AvailableCourses.vue';
+import PastSchedules from '@/views/PastSchedules.vue';
+import AdminView from '@/views/AdminView.vue';
 
 Vue.use(VueRouter);
 
@@ -17,7 +19,7 @@ const routes = [
     name: 'Login',
   },
   {
-    path: '/admin',
+    path: '/admin-login',
     component: AdminLogin,
     name: 'AdminLogin',
   },
@@ -27,9 +29,19 @@ const routes = [
     name: 'Dashboard',
   },
   {
-    path: '/availablecourses',
+    path: '/available-courses',
     component: AvailableCourses,
     name: 'AvailableCourses',
+  },
+  {
+    path: '/past-schedules',
+    component: PastSchedules,
+    name: 'PastSchedules',
+  },
+  {
+    path: '/admin-view',
+    component: AdminView,
+    name: 'AdminView',
   },
 ];
 
