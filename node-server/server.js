@@ -1,11 +1,12 @@
-const express = require('express')
-const { PastCourses } = require('./models/past_course_info')
-const { CurrentCourses } = require('./models/current_course_info')
+const express = require('express');
+const { PastCourses } = require('./models/past_course_info');
+const { CourseArrayObj } = require('./models/courses_array_obj');
+const { CurrentCourses } = require('./models/current_course_info');
 const { InstructorPreference } = require('./models/instructor_preferences');
 const { InstructorSchedule } = require('./models/instructor_schedule');
-const { User } = require('./models/user')
+const { User } = require('./models/user');
 const app = express();
-const mongoose = require('mongoose')
+const mongoose = require('mongoose');
 
 const dotenv = require('dotenv');
 dotenv.config();
@@ -308,7 +309,7 @@ app.get('/instructorpreferences/:instructor_name', async(req, res) =>{
     }
 });
 
-app.put('/instructorpreferences/:instructor_name', async (req, res) => {
+app.put('/instructorpreferences/:instructor_name/newCourses', async (req, res) => {
     try {
       const instructor_name = req.params.instructor_name;
       const newCourses = req.body.newCourses;
@@ -363,7 +364,7 @@ app.put('/instructorpreferences/:instructor_name', async (req, res) => {
   });  
 
 
-app.put('/instructorpreferences/:instructor_name/:class_number', async (req, res) => {
+  app.put('/instructorpreferences/:instructor_name/:class_number/preferences', async (req, res) => {
     try {
       const instructor_name = req.params.instructor_name;
       const teaching_preference = req.body.teaching_preference; // Change from req.params to req.body
@@ -399,6 +400,90 @@ app.put('/instructorpreferences/:instructor_name/:class_number', async (req, res
       res.status(500).json({ message: error.message });
     }
   });
+
+  app.put('/instructorpreferences/:instructor_name/availabilities', async (req, res) => {
+    try {
+        const instructor_name = req.params.instructor_name;
+        const instructor_availabilities = req.body.availabilities;
+        const instructor_preferences = await InstructorPreference.findOne({ instructor_name: instructor_name });
+
+      if (instructor_preferences) {
+        instructor_preferences.availability = instructor_availabilities;
+
+        await instructor_preferences.save();
+
+        res.status(200).json({ message: 'Instructor Availabilities updated successfully' });
+      } else {
+        res.status(404).json({ message: 'Instructor Preferences not found for specific Instructor' });
+      }
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
+  });
+
+
+  app.put('/instructorpreferences/:instructor_name/generalpreferences', async (req, res) => {
+    try {
+      const instructor_name = req.params.instructor_name;
+      const preference = req.body;
+
+      const instructor_preferences = await InstructorPreference.findOne({ instructor_name: instructor_name });
+
+      if (instructor_preferences) {
+
+        const exists = instructor_preferences.general_preferences.some(course => 
+          course.course_number === preference.course_number
+        );
+
+        if (!exists) {
+          instructor_preferences.general_preferences.push(preference);
+
+          // Save the updated document
+          await instructor_preferences.save();
+
+          res.status(200).json({ message: 'General preference added successfully', instructor_preferences });
+        } else {
+          res.status(400).json({ message: 'General preference already exists' });
+        }
+      } else {
+        res.status(404).json({ message: 'Instructor not found' });
+      }
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
+  });
+
+  app.delete('/instructorpreferences/:instructor_name/generalpreferences/:course_number', async (req, res) => {
+    try {
+      const { instructor_name, course_number } = req.params;
+
+      // Find the instructor by name
+      const instructor = await InstructorPreference.findOne({ instructor_name });
+        console.log(instructor)
+      if (!instructor) {
+        return res.status(404).json({ message: 'Instructor not found' });
+      }
+
+      const courseIndex = instructor.general_preferences.findIndex(course => course.course_number === course_number);
+      console.log(courseIndex)
+      // If the course is not found, return 404
+      if (courseIndex === -1) {
+        return res.status(404).json({ message: 'Course not found in general_preferences' });
+      }
+
+      // Remove the course from general_preferences array
+      instructor.general_preferences.splice(courseIndex, 1);
+
+      // Save the updated instructor document
+      await instructor.save();
+
+      res.json({ message: 'Course deleted from general_preferences successfully' });
+    } catch (error) {
+      console.error('Error:', error.message);
+      res.status(500).json({ message: 'Internal Server Error' });
+    }
+  });
+
   
 //----------------------API FOR NEW INSTRUCTOR SCHEDULES----------------------
 app.post('/instructorschedules', async(req, res) => {
@@ -474,6 +559,27 @@ app.put('/instructorschedules/:instructor_name', async (req, res) => {
       res.status(500).json({ message: 'Internal server error' });
     }
   });
+
+  //----------------------API FOR COURSE ARRAY OBJECT----------------------
+  app.post('/coursearrayobj', async(req, res) => {
+    try{
+        const course_array_obj = await CourseArrayObj.create(req.body)
+        res.status(200).json(course_array_obj)
+    }
+    catch (error) { 
+        console.error(error.message)
+        res.status(500).json({message: error.message})
+    }
+});
+
+app.get('/coursearrayobj', async(req, res) => {
+    try {
+        const course_array_obj = await CourseArrayObj.find({});
+        res.status(200).json(course_array_obj);
+    } catch (error) {
+        res.status(500).json({message: error.message})
+    }
+})
   
 
 app.listen(process.env.PORT, () => console.log('Server has started on port 3000'))

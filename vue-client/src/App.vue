@@ -1,19 +1,19 @@
 <template>
   <v-app>
     <v-main>
-      <AvailableCourses/>
+      <preferences/>
     </v-main>
   </v-app>
 </template>
 
 <script>
-import AvailableCourses from './views/AvailableCourses';
+import preferences from './views/preferences';
 
 export default {
   name: 'App',
 
   components: {
-    AvailableCourses,
+    preferences,
   },
 
   data: () => ({
