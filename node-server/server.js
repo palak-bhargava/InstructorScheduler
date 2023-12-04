@@ -445,6 +445,29 @@ app.put('/instructorschedules/:instructor_name', async (req, res) => {
       res.status(500).json({ message: 'Internal server error' });
     }
   });
+
+  app.put('/instructorschedules/:instructor_name/:approved_schedule', async (req, res) => {
+    const instructor_name = req.params.instructor_name;
+    const approved_schedule = req.params.approved_schedule;
+  
+    try {
+        let instructor_schedule = await InstructorSchedule.findOne({ instructor_name: instructor_name });
+        console.log(instructor_schedule);
+    
+        if (!instructor_schedule) {
+            res.status(404).json({ message: 'Schedule does not exist' });
+        }
+        else{
+            instructor_schedule.approved_schedule = approved_schedule;
+        }
+        await instructor_schedule.save();
+        res.status(200).json({ message: 'Schedule status changed to ' + approved_schedule});
+
+    } catch (error) {
+      console.error('Error:', error);
+      res.status(500).json({ message: 'Internal server error' });
+    }
+  });
   
   app.delete('/instructorschedules/:instructor_name/:class_number', async (req, res) => {
     const instructor_name = req.params.instructor_name;

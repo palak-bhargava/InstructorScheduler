@@ -123,26 +123,23 @@
         return days.join(', ');
       },
 
-      changeColor(item, buttonType) {
+      changeColor(schedule, isApproved) {
         // Update the active button for a specific card
-        item.activeButton = buttonType;
+        schedule.isApproved = isApproved;
 
         // Update the button colors based on the active button within the card
-        item.yes = buttonType === 'yes' ? '#ffdbb7' : '#FFB86F';
-        item.no = buttonType === 'no' ? '#ffdbb7' : '#FFB86F';
+        schedule.yes = isApproved === 'yes' ? '#ffdbb7' : '#FFB86F';
+        schedule.no = isApproved === 'no' ? '#ffdbb7' : '#FFB86F';
 
-        //this.updatePreferences(item.activeButton, item.class_number);
+        console.log("schedule: ", schedule);
+
         //check if active button is yes, add to schedule else ignore
-        if(item.activeButton === 'yes') {
+        if(schedule.isApproved === 'yes') {
           //update schedule
-          //this.addToInstructorSchedule(item);
-          const assigned = "true";
-          //this.updateCurrentCoursesClassStatus(item.class_number, assigned);
+          this.updateApprovedStatus(schedule);
         }
-        else if(item.activeButton === 'no') {
-          //this.deleteFromInstructorSchedule(item.class_number);
-          const assigned = "false";
-          //this.updateCurrentCoursesClassStatus(item.class_number, assigned);
+        else if(schedule.isApproved === 'no') {
+          this.updateApprovedStatus(schedule);
         }
       },
 
@@ -153,7 +150,7 @@
             ...item,
             yes: '#FFB86F', // Initialize unique button colors for each item
             no: '#FFB86F',
-            activeButton: null, // strores which button is pressed
+            isApproved: null, // strores which button is pressed
             showContent: false,
           })); // Assign the data to the pastClasses property // Assign the data to the pastClasses property
         } 
@@ -168,6 +165,17 @@
         schedule.showContent = true; // Set flag to true when button is clicked
         // You can also fetch and assign data specific to this schedule here
       },
+      async updateApprovedStatus(schedule){
+        const instructor_name = "Pushpa%20Kumar";
+        const isApproved = schedule.isApproved;
+        axios.put(`http://localhost:3000/instructorschedules/${instructor_name}/${isApproved}`)
+        .then(response => {
+            console.log('Response:', response.data.message);
+        })
+        .catch(error => {
+            console.error('Error:', error.message);
+        });
+      }
     },
   }
 </script>
