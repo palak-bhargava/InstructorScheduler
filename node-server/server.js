@@ -592,6 +592,16 @@ app.put('/instructorschedules/:instructor_name', async (req, res) => {
     }
 });
 
+    app.get('/instructorschedules/:instructor_name', async(req, res) =>{
+        const instructor_name = req.params.instructor_name;
+        try {
+            const response = await InstructorSchedule.find({instructor_name: instructor_name});
+            res.status(200).json(response[0].courses);
+        } catch (error) {
+            res.status(500).json({message: error.message})
+        }
+    });
+
   //----------------------API FOR COURSE ARRAY OBJECT----------------------
   app.post('/coursearrayobj', async(req, res) => {
     try{

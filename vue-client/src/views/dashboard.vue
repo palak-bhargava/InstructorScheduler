@@ -225,9 +225,7 @@
 </template>
 
 <script>
-//import Navbar from './components/Navbar.vue';
-//import Banner from './components/Banner.vue';
-
+import axios from "axios"
   export default {
     data: () => ({
       events: [
@@ -259,7 +257,13 @@
           color: '#FFB86F'
         },
       ],
+      instructorScheduleArray: [],
+      events: []
     }),
+
+    mounted() {
+    this.getCoursesArray();
+    },
 
     methods: {
         goToAvailableCourses() {
@@ -271,6 +275,79 @@
         goToPreferences() {
             this.$router.push({ name: 'Preferences' });
         },
+
+        async getCoursesArray(){
+            const instructor_name = "Pushpa%20Kumar";
+            try {
+                const response = await axios.get(`http://localhost:3000/instructorschedules/${instructor_name}`);
+                this.instructorScheduleArray = response.data;
+                //console.log("Instructor schedule: ", this.instructorScheduleArray);
+            } 
+            catch (error) {
+                console.error(error.message);
+            }
+
+            this.parseCoursesToEvents(this.instructorScheduleArray);
+        },
+
+        parseCoursesToEvents(courses) {
+            console.log("Courses: " ,courses);
+            const events = [];
+
+            courses.forEach(course => {
+                const days = course.days.map(day => day.slice(0, 3)); // Extract first three letters of days
+
+            console.log("Days: ", days)
+
+                days.forEach(day => {
+                    //console.log("course.time ", course.times);
+                    const[startString, endString] = this.getEventDateTime(day, course.times);
+                const event = {
+                    name: course.title,
+                    start: startString, //start string,
+                    end: endString,//end string,
+                    color: '#FFB86F',
+                };
+                console.log(event);
+
+                // if (course.textcolor) {
+                //     event.textcolor = course.textcolor;
+                // }
+
+                // events.push(event);
+                });
+            });
+            //console.log(events);
+            return events;
+        },
+
+        getEventDateTime(day, time) {
+            //const [startHour, startMinute] = time.split(':').map(String);
+            const [start, end] = time.split('-');
+            const [startHour, startMinute] = start.trim().split(':').map(String);
+            const [endHour, endMinute] = end.trim().split(':').map(String);
+            const currentDate = new Date();
+            //console.log("currentDate", currentDate);
+            const currentDay = currentDate.getDay();
+            //console.log("currentDay", currentDay);
+            const daysOfWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+            let dayIndex = daysOfWeek.indexOf(day);
+
+            const daysToAdd = dayIndex - currentDay;
+            console.log("daysToAdd: ", daysToAdd);
+            const date = new Date(currentDate);
+            date.setDate(date.getDate() + daysToAdd);
+            //console.log(date);
+
+            // start: '2023-11-30 16:00',
+            // end: '2023-11-30 17:15',
+
+            const startString = '2023-12-06 14:00';
+            const endString = '2023-12-06 16:45';
+            
+            return {startString, endString};
+        }
+
     }
   }
 </script>
