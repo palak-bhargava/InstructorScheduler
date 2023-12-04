@@ -411,6 +411,19 @@ app.post('/instructorschedules', async(req, res) => {
         res.status(500).json({message: error.message})
     }
 })
+//GET schedules by instructor
+app.get('/instructorschedules/:instructor_name', async(req, res) =>{
+    try {
+        const instructor_name = req.params.instructor_name; 
+        const instructor_schedules = await InstructorSchedule.find(
+            {
+                instructor_name: instructor_name
+            });
+        res.status(200).json(instructor_schedules);
+    } catch (error) {
+        res.status(500).json({message: error.message})
+    }
+})
 
 app.put('/instructorschedules/:instructor_name', async (req, res) => {
     const instructor_name = req.params.instructor_name;
