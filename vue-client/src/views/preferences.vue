@@ -1,19 +1,21 @@
 <template>
   <v-container>
     <v-row>
-      <v-col cols="7">
+      <v-col cols="6">
         <div class="text-h5 mt-15 mb-3">Course Search</div>
         <v-row>
           <v-col cols="10">
             <v-autocomplete
-              filled
-              rounded
-              solo-filled
-              dark
-              clearable
-              background-color="#5C9970"
-              label="Course Number"
-              class="small-autocomplete"
+                v-model="selectedCourse"
+                :items="courseInfo"
+                filled
+                rounded
+                solo-filled
+                dark
+                clearable
+                background-color="#5C9970"
+                label="Course Number"
+                class="small-autocomplete"
             >
               <template v-slot:append-outer>
                 <v-row class="justify-center">
@@ -23,6 +25,7 @@
                     rounded
                     dark
                     class="ml-7 mt-1"
+                    @click="addCourse"
                   >
                     Add
                   </v-btn>
@@ -32,20 +35,28 @@
           </v-col>
         </v-row>
       </v-col>
-      <v-col cols="5">
+      <v-col cols="6">
         <div class="text-h5 mt-15 mb-3">Courses I Want To Teach</div>
         <v-card color="#5C9970" class="rounded-xl">
           <v-container class="spacing-playground pb-3 pa-5">
-            <v-card class="mb-2 pl-4 pa-2 rounded-pill" color="#FFFFFF">
-              CS 4348 Automata Theory
-            </v-card>
-
-            <v-card class="mb-2 pl-4 pa-2 rounded-pill" color="#FFFFFF">
-              CS 2336 CS II
-            </v-card>
-
-            <v-card class="mb-2 pl-4 pa-2 rounded-pill" color="#FFFFFF">
-              CS 3345 Data Structures
+            <v-card v-for="(preference, index) in generalpreferencesarray" :key="index" 
+                class="mb-2 pl-4 pa-2 rounded-pill d-flex align-center"  
+                color="#ffffff"
+            >
+                <div>
+                    <b>{{ preference.course_prefix }}{{ preference.course_number }}</b> - {{ preference.title }}
+                </div>
+                <v-card-actions class="ml-auto">
+                    <v-btn
+                        color="#ffffff"
+                        elevation="0"
+                        rounded
+                        small
+                        @click="deletePreference(preference)"
+                    >
+                        <v-icon>mdi-trash-can-outline</v-icon>
+                    </v-btn>
+                </v-card-actions>
             </v-card>
           </v-container>
         </v-card>
@@ -112,7 +123,7 @@
           </v-sheet>
           <v-row class="d-flex justify-center">
             <v-btn
-              class="mt-2 mb-5"
+              class="mt-2 mb-5 ml-12"
               color="#FFB86F"
               @click="sendAvailability(events)"
             >
@@ -143,10 +154,21 @@ export default {
     createEvent: null,
     createStart: null,
     extendOriginal: null,
+    allCourses: [],
+    selectedCourse: null,
+    generalpreferencesarray: [],
   }),
 
   mounted() {
     this.$refs.calendar.checkChange();
+    this.getCourseArray();
+    this.getInstructorPreferences();
+  },
+  computed: {
+    // Compute an array of course titles
+    courseInfo() {
+      return this.allCourses.map(course => "CS"+course.course_number+" - "+course.title);
+    },
   },
 
   methods: {
@@ -349,11 +371,64 @@ export default {
     async getCourseArray() {
       try {
         const response = await axios.get(`http://localhost:3000/coursearrayobj`);
-         console.log('Response:', response.data);
+        this.allCourses = response.data;
+        console.log('allCourses:', this.allCourses);
+        //  console.log('Response:', response.data);
         } catch (error) {
             console.error('Error:', error.message);
         }
     },
+    async addCourse() {
+        const instructor_name = "Pushpa%20Kumar";
+        console.log('Selected Course:', this.selectedCourse);
+       
+        const pattern = /^([A-Za-z]+)(\d+)\s*-\s*(.+)$/;
+
+        const matches = pattern.exec(this.selectedCourse);
+
+        console.log(matches[1]);
+        console.log(matches[2]);
+        console.log(matches[3]);
+
+        const data_update = {
+            "course_prefix": matches[1],
+            "course_number": matches[2],
+            "title": matches[3]
+        }
+
+        try {
+            const response = await axios.put(`http://localhost:3000/instructorpreferences/${instructor_name}/generalpreferences`, data_update);
+            console.log('Response:', response.data.message);
+        } catch (error) {
+            console.error('Error:', error.message);
+        }
+
+        this.getInstructorPreferences();
+    },
+    
+    async getInstructorPreferences(){
+        const instructor_name = "Pushpa%20Kumar";
+        try {
+            const response = await axios.get(`http://localhost:3000/instructorpreferences/${instructor_name}`);
+            this.generalpreferencesarray = response.data[0].general_preferences;
+            console.log('instructor preferences:', response.data[0].general_preferences);
+        } catch (error) {
+            console.error('Error:', error.message);
+        }
+    },
+    async deletePreference(preference){
+        //console.log("delete:", preference);
+        const course_number = preference.course_number;
+
+        const instructor_name = "Pushpa%20Kumar";
+        try {
+            const response = await axios.delete(`http://localhost:3000/instructorpreferences/${instructor_name}/generalpreferences/${course_number}`);
+            console.log('instructor preference deletes:', response.data.message);
+        } catch (error) {
+            console.error('Error:', error.message);
+        }
+        this.getInstructorPreferences();
+    }
   },
 };
 </script>
