@@ -4,12 +4,15 @@ import VueRouter from 'vue-router';
 // Import your components
 import LoginPage from '@/views/LoginPage.vue';
 import AdminLogin from '@/views/AdminLogin.vue';
+import Dashboard from '@/views/dashboard.vue';
+import AvailableCourses from '@/views/AvailableCourses.vue';
 
 Vue.use(VueRouter);
 
 const routes = [
-  {
-    path: '/instructor',
+
+    {
+    path: '/',
     component: LoginPage,
     name: 'Login',
   },
@@ -17,6 +20,16 @@ const routes = [
     path: '/admin',
     component: AdminLogin,
     name: 'AdminLogin',
+  },
+  {
+    path:'/dashboard',
+    component: Dashboard,
+    name: 'Dashboard',
+  },
+  {
+    path: '/availablecourses',
+    component: AvailableCourses,
+    name: 'AvailableCourses',
   },
 ];
 

@@ -203,7 +203,7 @@
                             elevation="2"
                             rounded
                             class="mx-auto"
-                            >
+                            @click="goToAvailableCourses">
                                 View Available Classes
                             </v-btn> 
                         </v-row> 
@@ -272,5 +272,11 @@
         },
       ],
     }),
+
+    methods: {
+        goToAvailableCourses() {
+            this.$router.push({ name: 'AvailableCourses' });
+        },
+    }
   }
 </script>

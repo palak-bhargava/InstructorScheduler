@@ -3,6 +3,7 @@ const path = require('path');
 const fs = require('fs-extra');
 
 module.exports = defineConfig({
+  publicPath: '/',
   transpileDependencies: ['vuetify'],
   configureWebpack: {
     resolve: {

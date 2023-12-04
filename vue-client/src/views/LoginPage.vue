@@ -176,15 +176,15 @@ import axios from "axios"
 
         // Assuming getUserEmail returns a promise
         const loginSuccess = await this.getUserEmail(email, password);
+        console.log('Response:', loginSuccess);
         if (loginSuccess) {
-          console.log('send to dashboard')
+          this.$router.push({ name: 'Dashboard' });
         }
-        console.log('Response:', response);
       } catch (error) {
         // Handle errors
         console.error('Error:', error);
       }
-      return response
+      
     }
   }
 };
