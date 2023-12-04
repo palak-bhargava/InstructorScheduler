@@ -66,7 +66,7 @@
           outlined
           
         >
-        <h2>Welcome, Instructor!</h2> <br>
+        <h2>Welcome, Administrator!</h2> <br>
     
           <v-text-field
             label="UTD email"
@@ -94,21 +94,19 @@
               rounded
               color="#5C9970"
               dark
-              @click="userLogin"
+              @click="login"
             >
               LOGIN
             </v-btn>
-          </div>
+          </div> 
           <div class="text-center">
-            
             <v-btn
               text
               color="black"
-              @click="goToAdminLogin">
-            Login as admin?
-          </v-btn>
-        
-        </div>
+              @click="goToLoginPage">
+            Login as instructor?
+            </v-btn>
+          </div>
         </v-card>
       </v-col>
     </v-row>
@@ -118,74 +116,71 @@
 
 
 <script>
-import axios from "axios"
-  export default {
+import axios from "axios"    
+export default {
   data() {
     return {
       email: '',
       password: '',
       show: false,
-      loginSuccess: false
+      loginSuccess: false,
     };
   },
   
   methods: {
-    goToAdminLogin() {
-      this.$router.push({ name: 'AdminLogin' });
+    goToLoginPage() {
+      this.$router.push({ name: 'Login' });
     },
-    async getUserEmail(email, password) {
-      return new Promise(async (resolve, reject) => {
-        const bcryptjs = require('bcryptjs');
-        try {
-          const response = await axios.get(`http://localhost:3000/users/email/${email}`);
-          
-          // Check if response.data[0] is defined
-          if (response.data && response.data.length > 0) {
-            const hashedPassword = response.data[0].password;
-            const type = response.data[0].type;
+    async getAdminEmail(email, password) {
+    return new Promise(async (resolve, reject) => {
+      const bcryptjs = require('bcryptjs');
+      try {
+        const response = await axios.get(`http://localhost:3000/users/email/${email}`);
+        
+        // Check if response.data[0] is defined
+        if (response.data && response.data.length > 0) {
+          const hashedPassword = response.data[0].password;
+          const type = response.data[0].type;
 
-            if (type === "instructor") {
-              bcryptjs.compare(password, hashedPassword).then(result => {
-                if (result) {
-                  console.log("SUCCESS");
-                  resolve(true);
-                } else {
-                  console.log("FAILURE");
-                  resolve(false); // Return false if password doesn't match
-                }
-              });
-            } else {
-              console.log("FAILURE");
-              reject("Must be an instructor to log in.");
-            }
+          if (type === "admin") {
+            bcryptjs.compare(password, hashedPassword).then(result => {
+              if (result) {
+                console.log("SUCCESS");
+                resolve(true);
+              } else {
+                console.log("FAILURE");
+                resolve(false); // Return false if password doesn't match
+              }
+            });
           } else {
             console.log("FAILURE");
-            reject("User not found");
+            reject("Must be an admin to log in.");
           }
-        } catch (error) {
-          console.log(error);
-          reject(error);
+        } else {
+          console.log("FAILURE");
+          reject("User not found");
         }
-      });
-    },
-
-    async userLogin() {
-      try {
-        let email = this.email?.trim();
-        let password = this.password?.trim();
-
-        // Assuming getUserEmail returns a promise
-        const loginSuccess = await this.getUserEmail(email, password);
-        if (loginSuccess) {
-          console.log('send to dashboard')
-        }
-        console.log('Response:', response);
       } catch (error) {
-        // Handle errors
-        console.error('Error:', error);
+        console.log(error);
+        reject(error);
       }
-      return response
+    });
+  },
+  async login() {
+    try {
+      let email = this.email?.trim();
+      let password = this.password?.trim();
+
+      // Assuming getUserEmail returns a promise
+      const response = await this.getAdminEmail(email, password);
+      // Handle the response
+      console.log('Response:', response);
+    } catch (error) {
+      // Handle errors
+      console.error('Error:', error);
     }
   }
+
+}
 };
 </script>

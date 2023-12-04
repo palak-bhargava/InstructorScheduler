@@ -1,19 +1,21 @@
 <template>
   <v-app>
     <v-main>
-      <AvailableCourses/>
+      <router-view>
+        <LoginPage/>
+      </router-view>
     </v-main>
   </v-app>
 </template>
 
 <script>
-import AvailableCourses from './views/AvailableCourses';
+import LoginPage from './views/LoginPage';
 
 export default {
   name: 'App',
 
   components: {
-    AvailableCourses,
+    LoginPage,
   },
 
   data: () => ({
