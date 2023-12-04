@@ -206,9 +206,7 @@
                     <v-sheet height="400">
                         <v-calendar
                         ref="calendar"
-                        :value="today"
                         :events="events"
-                        :today="now"
                         type="week"
                         first-time=07:00
                         last-time=10:00
@@ -228,35 +226,6 @@
 import axios from "axios"
   export default {
     data: () => ({
-      events: [
-        {
-          name: 'CS 4384',
-          start: '2023-11-27 10:00',
-          end: '2023-11-27 11:15',
-          color: '#FFB86F'
-
-        },
-        {
-          name: 'CS 4384',
-          start: '2023-11-29 10:00',
-          end: '2023-11-29 11:15',
-          color: '#FFB86F',
-          textcolor: '#000000'
-
-        },
-        {
-          name: 'CS 4375',
-          start: '2023-11-28 16:00',
-          end: '2023-11-28 17:15',
-          color: '#FFB86F'
-        },
-        {
-          name: 'CS 4375',
-          start: '2023-11-30 16:00',
-          end: '2023-11-30 17:15',
-          color: '#FFB86F'
-        },
-      ],
       instructorScheduleArray: [],
       events: []
     }),
@@ -281,55 +250,44 @@ import axios from "axios"
             try {
                 const response = await axios.get(`http://localhost:3000/instructorschedules/${instructor_name}`);
                 this.instructorScheduleArray = response.data;
-                //console.log("Instructor schedule: ", this.instructorScheduleArray);
             } 
             catch (error) {
                 console.error(error.message);
             }
 
-            this.parseCoursesToEvents(this.instructorScheduleArray);
+            this.events = this.parseCoursesToEvents(this.instructorScheduleArray);
         },
 
         parseCoursesToEvents(courses) {
-            console.log("Courses: " ,courses);
-            const events = [];
+            const localEvents = [];
 
             courses.forEach(course => {
-                const days = course.days.map(day => day.slice(0, 3)); // Extract first three letters of days
+                const days = course.days.map(day => day.slice(0, 3));
 
             console.log("Days: ", days)
 
                 days.forEach(day => {
-                    //console.log("course.time ", course.times);
                     const[startString, endString] = this.getEventDateTime(day, course.times);
                 const event = {
                     name: course.title,
-                    start: startString, //start string,
-                    end: endString,//end string,
+                    start: startString,
+                    end: endString,
                     color: '#FFB86F',
                 };
-                console.log(event);
-
-                // if (course.textcolor) {
-                //     event.textcolor = course.textcolor;
-                // }
-
-                // events.push(event);
+             
+                localEvents.push(event);
                 });
             });
             //console.log(events);
-            return events;
+            return localEvents;
         },
 
         getEventDateTime(day, time) {
-            //const [startHour, startMinute] = time.split(':').map(String);
             const [start, end] = time.split('-');
             const [startHour, startMinute] = start.trim().split(':').map(String);
             const [endHour, endMinute] = end.trim().split(':').map(String);
             const currentDate = new Date();
-            //console.log("currentDate", currentDate);
             const currentDay = currentDate.getDay();
-            //console.log("currentDay", currentDay);
             const daysOfWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
             let dayIndex = daysOfWeek.indexOf(day);
 
@@ -337,15 +295,16 @@ import axios from "axios"
             console.log("daysToAdd: ", daysToAdd);
             const date = new Date(currentDate);
             date.setDate(date.getDate() + daysToAdd);
-            //console.log(date);
 
-            // start: '2023-11-30 16:00',
-            // end: '2023-11-30 17:15',
+            const year = date.getFullYear();
+            const month = (date.getMonth() + 1).toString().padStart(2, '0');
+            const dayOfMonth = date.getDate().toString().padStart(2, '0');
 
-            const startString = '2023-12-06 14:00';
-            const endString = '2023-12-06 16:45';
-            
-            return {startString, endString};
+            // Format time to 'HH:mm'
+            const startTime = `${year}-${month}-${dayOfMonth} ${startHour}:${startMinute}`;
+            const endTime = `${year}-${month}-${dayOfMonth} ${endHour}:${endMinute}`;
+
+            return [startTime, endTime];
         }
 
     }
