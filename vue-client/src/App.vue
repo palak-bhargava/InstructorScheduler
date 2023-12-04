@@ -1,19 +1,19 @@
 <template>
   <v-app>
     <v-main>
-      <preferences/>
+      <AdminView/>
     </v-main>
   </v-app>
 </template>
 
 <script>
-import preferences from './views/preferences';
+import AdminView from './views/AdminView';
 
 export default {
   name: 'App',
 
   components: {
-    preferences,
+    AdminView,
   },
 
   data: () => ({

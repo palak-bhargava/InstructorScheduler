@@ -25,183 +25,158 @@
     <v-expansion-panels
         dark
         rounded=30
+        class="mb-15"
     >
-    <v-expansion-panel
-        rounded
-    >
-      <v-expansion-panel-header
-        color="#5C9970"
+      <v-expansion-panel 
+        v-for="(schedule, index) in allSchedules" :key="index" 
         rounded
       >
-        <h3>Anjum Chida</h3>
-        <v-btn
-          color="#FFB86F"
-          elevation="2"
-          rounded
-          light
-          style="max-width: 230px;"
-        >
-          Generate Schedule
-        </v-btn> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-      </v-expansion-panel-header>
-      <v-expansion-panel-content
-        color="#5C9970"
-        rounded
-      >
-      <br>
-      <v-row>
-        <v-col 
-          cols="9" 
-          class="spacing-playground pa-0"
-        >
-          <v-card
-            class="mx-auto"
-            color="#ffffff"
+        <v-expansion-panel-header color="#5C9970" rounded>
+          <h3>{{ schedule.instructor_name }}</h3>
+          <v-btn
+            color="#FFB86F"
+            elevation="2"
+            rounded
             light
-            outlined
+            style="max-width: 230px;"
+            @click="showInstructorSchedule(schedule)"
           >
-            <v-list-item three-line>
-              <v-list-item-content>
-                <v-list-item-title class="text-h7">
-                  <b>CS3345 Data Structures</b> 
-                </v-list-item-title>
-                <v-list-item-subtitle>
-                Monday, Wednesday 1:00 PM - 2:15 PM
-                </v-list-item-subtitle>
-                <br>
-                <v-list-item-title class="text-h7">
-                  <b>CS2336 Computer Science II</b> 
-                </v-list-item-title>
-                <v-list-item-subtitle>
-                Monday, Wednesday 2:00 PM - 3:15 PM
-                </v-list-item-subtitle>
-                <br>
-                <v-list-item-title class="text-h7">
-                  <b>CS4485 Automata Theory</b> 
-                </v-list-item-title>
-                <v-list-item-subtitle>
-                Tuesday, Thursday 1:00 PM - 2:15 PM
-                </v-list-item-subtitle>
-                <br>
-                <v-list-item-title class="text-h7">
-                  <b>CS3349 Advanced Algorithms</b> 
-                </v-list-item-title>
-                <v-list-item-subtitle>
-                Tuesday, Thursday 8:00 PM - 9:15 PM
-                </v-list-item-subtitle>
-                <br>
-              </v-list-item-content>
-            </v-list-item>
+            Generate Schedule
+          </v-btn> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        </v-expansion-panel-header>
+      <v-expansion-panel-content color="#5C9970" rounded> <br>
+         <v-row v-if="schedule.showContent">
+          <v-col cols="9" class="spacing-playground pa-0">
+            <v-card class="mx-auto" color="#ffffff" light outlined>
+              <v-list-item three-line v-for="(course, index) in schedule.courses" :key="index">
+                <v-list-item-content>
+                  <v-list-item-title class="text-h7">
+                    <div v-if="course">
+                      <b>CS{{ course.course_number }} {{ course.title }}</b> 
+                    </div>
+                  </v-list-item-title>
+                  <v-list-item-subtitle>
+                    <div v-if="course">
+                      {{ displayDays(course.days) }} | {{ course.times_12h }}
+                    </div>
+                  </v-list-item-subtitle>
+                </v-list-item-content>
+              </v-list-item>
             </v-card>
           </v-col>
 
-          <v-col 
-            cols="3"
-            class="spacing-playground pa-0"
-          >
-            <v-card
-              color="#5C9970"
-              light
-              outlined
-            >
+          <v-col cols="3" class="spacing-playground pa-0">
+            <v-card color="#5C9970" light outlined>
               <div class="pl-8 ml-12">
                 <b>Approve Schedule?</b>
               </div>
               <v-card-actions>
-                <v-btn
-                  color="#FFB86F"
-                  elevation="2"
-                  rounded
-                  light
+                <v-btn 
+                  color="#FFB86F" 
+                  elevation="2" 
+                  rounded 
+                  light 
                   class="mr-3 mb-1 ml-15"
+                  :style="{ backgroundColor: schedule.yes }"
+                  @click="changeColor(schedule, 'yes')"
                 >
-                  Yes 
-                </v-btn> 
-                <v-btn
-                  color="#FFB86F"
-                  elevation="2"
-                  rounded
-                  light
-                  class="mb-1 ml-4"
+                  Yes
+                </v-btn>
+                <v-btn 
+                  color="#FFB86F" 
+                  elevation="2" 
+                  rounded 
+                  light 
+                  class="mr-3 mb-1 ml-5"
+                  :style="{ backgroundColor: schedule.no }"
+                  @click="changeColor(schedule, 'no')"
                 >
                   No
-                </v-btn> 
+                </v-btn>
               </v-card-actions>
-            </v-card>
+            </v-card> 
           </v-col>
-         </v-row> 
-        <br>
+        </v-row> <br>
       </v-expansion-panel-content>
-    </v-expansion-panel>
+    </v-expansion-panel> 
   </v-expansion-panels>
-
-  <br>
-  <v-expansion-panels
-    dark
-  >
-    <v-expansion-panel>
-      <v-expansion-panel-header
-        color="#5C9970"
-        rounded
-      >
-        <h3>John Cole</h3>
-        <v-btn
-          color="#FFB86F"
-          elevation="2"
-          rounded
-          light
-          style="max-width: 230px;"
-        >
-          Generate Schedule
-        </v-btn> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-      </v-expansion-panel-header>
-      <v-expansion-panel-content
-        color="#5C9970"
-      >
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-      </v-expansion-panel-content>
-    </v-expansion-panel>
-  </v-expansion-panels>
-
-  <br>
-  <v-expansion-panels
-    dark
-  >
-    <v-expansion-panel>
-      <v-expansion-panel-header
-        color="#5C9970"
-        rounded
-      >
-        <h3>Karen Mazidi</h3>
-        <v-btn
-          color="#FFB86F"
-          elevation="2"
-          rounded
-          light
-          style="max-width: 230px;"
-        >
-          Generate Schedule
-        </v-btn> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-      </v-expansion-panel-header>
-      <v-expansion-panel-content
-        color="#5C9970"
-      >
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-      </v-expansion-panel-content>
-    </v-expansion-panel>
-  </v-expansion-panels>
-  
   </v-container>
 </template>
 
 <script>
+  import axios from "axios"
 
   export default {
     name: 'AdminView',
 
-    data: () => ({
-      
-    }),
+    data() {
+      return {
+        allSchedules: [],
+        instructorSchedule: [],
+      };
+    },
+    created() {
+      this.getAllSchedules();
+    },
+    methods: {
+      displayDays(days) {
+        return days.join(', ');
+      },
+
+      changeColor(schedule, isApproved) {
+        // Update the active button for a specific card
+        schedule.isApproved = isApproved;
+
+        // Update the button colors based on the active button within the card
+        schedule.yes = isApproved === 'yes' ? '#ffdbb7' : '#FFB86F';
+        schedule.no = isApproved === 'no' ? '#ffdbb7' : '#FFB86F';
+
+        console.log("schedule: ", schedule);
+
+        //check if active button is yes, add to schedule else ignore
+        if(schedule.isApproved === 'yes') {
+          //update schedule
+          this.updateApprovedStatus(schedule);
+        }
+        else if(schedule.isApproved === 'no') {
+          this.updateApprovedStatus(schedule);
+        }
+      },
+
+      async getAllSchedules() {
+        try {
+          const response = await axios.get(`http://localhost:3000/instructorschedules`);
+          this.allSchedules = response.data.map(item => ({
+            ...item,
+            yes: '#FFB86F', // Initialize unique button colors for each item
+            no: '#FFB86F',
+            isApproved: null, // strores which button is pressed
+            showContent: false,
+          })); // Assign the data to the pastClasses property // Assign the data to the pastClasses property
+        } 
+        catch (error) {
+          console.error(error);
+        }
+        console.log("all schedules array:", this.allSchedules);
+      },
+
+      showInstructorSchedule(schedule) {
+        //generate schedule function here
+        schedule.showContent = true; // Set flag to true when button is clicked
+        // You can also fetch and assign data specific to this schedule here
+      },
+      async updateApprovedStatus(schedule){
+        const instructor_name = "Pushpa%20Kumar";
+        const isApproved = schedule.isApproved;
+        axios.put(`http://localhost:3000/instructorschedules/${instructor_name}/${isApproved}`)
+        .then(response => {
+            console.log('Response:', response.data.message);
+        })
+        .catch(error => {
+            console.error('Error:', error.message);
+        });
+      }
+    },
   }
 </script>
 
