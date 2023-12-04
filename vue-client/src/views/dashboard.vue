@@ -91,97 +91,19 @@
         class="rounded-xl"
     > 
             <v-container class="spacing-playground pa-5">
-                <v-card
-                    class = "mb-2 pa-2 rounded-xl font-weight-medium"
-                    color="#FFFFFF"
-                >
-                    <v-row>
-                        <v-col 
-                        cols="2">
-                        Course Number
-                        </v-col>
-                        <v-col cols="3">
-                            Course Name
-                        </v-col>
-                        <v-col cols="1.5">
-                            Section
-                        </v-col>
-                        <v-col cols="1.5">
-                            Location
-                        </v-col>
-                        <v-col cols="2.5">
-                            Days & Time
-                        </v-col>
-                    </v-row>
-                </v-card>
-                <v-card
-                    class="rounded-xl mb-2 pa-2"
-                    color="#FFFFFF"
-                >
-                    <v-row>
-                        <v-col cols="2">
-                        CS 3345
-                        </v-col>
-                        <v-col cols="3">
-                            Data Structures
-                        </v-col>
-                        <v-col cols="1.5">
-                            003
-                        </v-col>
-                        <v-col cols="1.5">
-                            ECSS 2.415
-                        </v-col>
-                        <v-col cols="2.5">
-                            MW 4:00 PM - 5:15 PM
-                        </v-col>
-                    </v-row>
-                </v-card>
-                
-                <v-card
-                class="rounded-xl mb-2 pa-2"
-                    color="#FFFFFF"
-                >
-                    <v-row>
-                        <v-col cols="2">
-                        CS 2340
-                        </v-col>
-                        <v-col cols="3">
-                            Computer Architecture
-                        </v-col>
-                        <v-col cols="1.5">
-                            001
-                        </v-col>
-                        <v-col cols="1.5">
-                            ECSS 2.501
-                        </v-col>
-                        <v-col cols="2.5">
-                            MW 7:00 PM - 8:15 PM
-                        </v-col>
-                    </v-row>
-                </v-card> 
-                <v-card
-                class="rounded-xl mb-2 pa-2"
-                    color="#FFFFFF"
-                >
-                    <v-row>
-                        <v-col cols="2">
-                        CS 2336
-                        </v-col>
-                        <v-col cols="3">
-                            Computer Science II
-                        </v-col>
-                        <v-col cols="1.5">
-                            006
-                        </v-col>
-                        <v-col cols="1.5">
-                            ECSW 1.365
-                        </v-col>
-                        <v-col cols="2.5">
-                            TTH 1:00 PM - 2:15 PM
-                        </v-col>
-                    </v-row>
-                </v-card> 
+             <div class="scrollable-table">
+                <v-data-table
+                    :headers="headers"
+                    :items="available_classes"
+                    hide-default-footer
+                    item-key="class_number"
+                    class="elevation-2 mt-3"
+                    :items-per-page=10
+                    >
+                    </v-data-table>
 
+                
+                </div>
                 <v-row justify-center class="mb-0 mt-3"> 
                     <v-btn
                     color="#FFB86F"
@@ -190,7 +112,7 @@
                     class="mx-auto"
                     @click="goToAvailableCourses"
                     >
-                        View Available Classes
+                        View All Available Courses
                     </v-btn> 
                 </v-row> 
             </v-container>
@@ -255,10 +177,27 @@ import axios from "axios"
         instructorScheduleArray: [],
         events: [],
         isApproved: null,
+        itemsPerPage: 10,
+        headers: [
+          {
+            text: 'Course Code',
+            align: 'start',
+            sortable: false,
+            value: 'class_number',
+          },
+          { text: 'Course Number', value: 'course_number' },
+          { text: 'Course Name', value: 'title' },
+          { text: 'Section', value: 'section' },
+          { text: 'Location', value: 'location' },
+          { text: 'Days', value: 'days' },
+          { text: 'Time', value: 'times_12h' },
+        ],
+        available_classes: [],
     }),
 
     mounted() {
         this.getCoursesArray();
+        this.getAvailableCourses();
     },
 
     methods: {
@@ -270,6 +209,19 @@ import axios from "axios"
         },
         goToPreferences() {
             this.$router.push({ name: 'Preferences' });
+        },
+
+        async getAvailableCourses() {
+            let availability = "false";
+            try {
+            const response = await axios.get(`http://localhost:3000/currentcourses/${availability}`);
+            console.log(response)
+            this.available_classes = response.data;
+            } 
+            catch (error) {
+            console.error(error);
+            }
+            console.log("available courses array:", this.available_classes);
         },
 
         async getCoursesArray(){
@@ -337,3 +289,10 @@ import axios from "axios"
     }
   }
 </script>
+
+<style>
+.scrollable-table {
+  max-height: 250px; 
+  overflow-y: auto;
+}
+</style>
