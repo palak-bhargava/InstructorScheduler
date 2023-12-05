@@ -21,11 +21,11 @@ const instructorPreferenceSchema = mongoose.Schema(
             type: Array,
             required: [false]
         },
-        availability: {
+        availabilities: {
             type: [
                 {
                     day: String,
-                    time: Array
+                    times: Array
                 }
             ],
             required: [false]
