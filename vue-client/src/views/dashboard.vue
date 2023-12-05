@@ -43,7 +43,7 @@
                             </v-col>
                         </v-row>
                     
-                        <v-row justify-center class="mb-0"> 
+                        <v-row justify-center class="mb-0 pt-2"> 
                             <v-btn
                             color="#FFB86F"
                             elevation="2"
@@ -52,6 +52,9 @@
                             @click="goToPreferences"
                             >
                                 Edit Preferences
+                                <v-icon right>
+                                    mdi-arrow-right-thick
+                                </v-icon>
                             </v-btn> 
                         </v-row> 
                     </v-container>
@@ -101,10 +104,8 @@
                     :items-per-page=10
                     >
                     </v-data-table>
-
-                
                 </div>
-                <v-row justify-center class="mb-0 mt-3"> 
+                <v-row justify-center class="mb-0 mt-5"> 
                     <v-btn
                     color="#FFB86F"
                     elevation="2"
@@ -113,32 +114,30 @@
                     @click="goToAvailableCourses"
                     >
                         View All Available Courses
+                        <v-icon right>
+                            mdi-arrow-right-thick
+                        </v-icon>
                     </v-btn> 
                 </v-row> 
             </v-container>
         </v-card> 
             
         <div class="text-h5 mb-2 mt-15 d-flex justify-space-between align-center">
-            My Current Schedule
+            <span class="flex-grow-1">My Current Schedule</span>
             <v-card 
-            color="#FFB86F"
-            class="rounded-xl pl-5 pr-5"
-            style="height: 36px; width: 250px; display: flex; justify-content: center; align-items: center;"
+                color="#ffffff"
+                class="rounded-xl pl-5 pr-5 d-flex justify-end align-center"
+                elevation="0"
+                style="height: 36px; width: 250px;"
             >
-                <span v-if="isApproved==null" style="color: black; font-size: 14px;">
-                    <v-progress-circular   
-                    :size="22" 
-                    :width="2.5" 
-                    color="gray" 
-                    indeterminate>
-                    </v-progress-circular>
-                        &nbsp;&nbsp;&nbsp;<b>Schedule Pending Approval</b>
+                <span v-if="isApproved==null" style="color: black; font-size: 14px; margin-right: 5px;">
+                    <b>Schedule Pending Approval.<span v-html="displayDots"></span></b>
                 </span>
-                <span v-else-if="!isApproved" style="color: black; font-size: 14px;">
+                <span v-else-if="!isApproved" style="color: red; font-size: 14px; display: flex; align-items: center;">
                     <v-icon color="red">mdi-alert-circle</v-icon>
-                    &nbsp;&nbsp;<b>Schedule Declined</b>
+                    &nbsp;&nbsp;<b>Schedule Not Approved</b>
                 </span>
-                <span v-else style="color: black; font-size: 14px;">
+                <span v-else style="color: #5C9970; font-size: 14px;">
                     <v-icon color="#5C9970">mdi-check-circle</v-icon>
                     &nbsp;&nbsp;<b>Schedule Approved</b>
                 </span>
@@ -166,6 +165,20 @@
                     </v-col>
                 </v-row>
             </v-container>
+            <v-row justify-center class="pb-5 pt-3"> 
+                <v-btn
+                color="#FFB86F"
+                elevation="2"
+                rounded
+                class="mx-auto"
+                @click="deleteSchedule"
+                >
+                    &nbsp;Delete Schedule
+                    <v-icon right>
+                        mdi-trash-can-outline
+                    </v-icon>
+                </v-btn> 
+            </v-row>
         </v-card>
     </v-container>
 </template>
@@ -177,6 +190,10 @@ import axios from "axios"
         instructorScheduleArray: [],
         events: [],
         isApproved: null,
+        isAnimatingDots: false,
+        displayDots: '',
+        dotCount: 0,
+        maxDots: 4,
         itemsPerPage: 10,
         headers: [
           {
@@ -198,6 +215,7 @@ import axios from "axios"
     mounted() {
         this.getCoursesArray();
         this.getAvailableCourses();
+        this.animatePendingApproval();
     },
 
     methods: {
@@ -209,6 +227,24 @@ import axios from "axios"
         },
         goToPreferences() {
             this.$router.push({ name: 'Preferences' });
+        },
+
+        async animatePendingApproval() {
+            this.isAnimatingDots = true;
+            while (this.isAnimatingDots) {
+                await this.delay(500); // Adjust timing as needed
+                this.displayDots += '.';
+                this.dotCount++;
+
+                if (this.dotCount === this.maxDots) {
+                this.displayDots = '';
+                this.dotCount = 0;
+                }
+            }
+        },
+
+        delay(ms) {
+            return new Promise(resolve => setTimeout(resolve, ms));
         },
 
         async getAvailableCourses() {
@@ -284,6 +320,10 @@ import axios from "axios"
             const endTime = `${year}-${month}-${dayOfMonth} ${endHour}:${endMinute}`;
 
             return [startTime, endTime];
+        },
+
+        deleteSchedule(){
+            console.log("delete schedule");
         }
 
     }
