@@ -117,8 +117,12 @@
       };
     },
     created() {
+      // Check if instructorName exists in localStorage, if not use default value
+      this.instructorName = localStorage.getItem('instructorName') || this.$route.params.instructorName;
+
+      // Save instructorName in localStorage
+      localStorage.setItem('instructorName', this.instructorName);
       this.getAllSchedules();
-      this.instructorName = this.$route.params.instructorName;
     },
     methods: {
       displayDays(days) {
@@ -162,14 +166,17 @@
         console.log("all schedules array:", this.allSchedules);
       },
 
-      showInstructorSchedule(schedule) {
+      async showInstructorSchedule(schedule) {
         //generate schedule function here
         schedule.showContent = true; // Set flag to true when button is clicked
         // You can also fetch and assign data specific to this schedule here
       },
       async updateApprovedStatus(schedule){
-        const instructor_name = "Pushpa%20Kumar";
+        const instructor_name = schedule.instructor_name;
         const isApproved = schedule.isApproved;
+        console.log("SCHEDULE:", schedule);
+        console.log("NAME:", instructor_name);
+
         axios.put(`http://localhost:3000/instructorschedules/${instructor_name}/${isApproved}`)
         .then(response => {
             console.log('Response:', response.data.message);

@@ -186,10 +186,14 @@ export default {
   }),
 
   mounted() {
+    // Check if instructorName exists in localStorage, if not use default value
+    this.instructorName = localStorage.getItem('instructorName') || this.$route.params.instructorName;
+
+    // Save instructorName in localStorage
+    localStorage.setItem('instructorName', this.instructorName);
     this.$refs.calendar.checkChange();
     this.getCourseArray();
     this.getInstructorPreferences();
-    this.instructorName = this.$route.params.instructorName;
   },
   computed: {
     // Compute an array of course titles
@@ -386,7 +390,7 @@ export default {
     },
 
     async sendAvailability(events) {
-      let instructor_name = "Pushpa%20Kumar"; //this.instructor_name.trim();
+      let instructor_name = this.instructorName;
       
       const availabilities = this.parseEvents(events);
       
@@ -409,7 +413,7 @@ export default {
         }
     },
     async addCourse() {
-        const instructor_name = "Pushpa%20Kumar";
+        const instructor_name = this.instructorName;
         console.log('Selected Course:', this.selectedCourse);
        
         const pattern = /^([A-Za-z]+)(\d+)\s*-\s*(.+)$/;
@@ -437,7 +441,7 @@ export default {
     },
     
     async getInstructorPreferences(){
-        const instructor_name = "Pushpa%20Kumar";
+        const instructor_name = this.instructorName;
         try {
             const response = await axios.get(`http://localhost:3000/instructorpreferences/${instructor_name}`);
             this.generalpreferencesarray = response.data[0].general_preferences;
@@ -450,7 +454,7 @@ export default {
         //console.log("delete:", preference);
         const course_number = preference.course_number;
 
-        const instructor_name = "Pushpa%20Kumar";
+        const instructor_name = this.instructorName;
         try {
             const response = await axios.delete(`http://localhost:3000/instructorpreferences/${instructor_name}/generalpreferences/${course_number}`);
             console.log('instructor preference deletes:', response.data.message);

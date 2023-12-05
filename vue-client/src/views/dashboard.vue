@@ -258,13 +258,17 @@ import axios from "axios"
     }),
 
     mounted() {
+        // Check if instructorName exists in localStorage, if not use default value
+        this.instructorName = localStorage.getItem('instructorName') || this.$route.params.instructorName;
+
+        // Save instructorName in localStorage
+        localStorage.setItem('instructorName', this.instructorName);
         this.getCoursesArray();
         this.getAvailableCourses();
         this.animatePendingApproval();
         this.getInstructorPreferences();
         this.getInstructorAvailabilities();
-        this.getInstructorScheduleStatus();
-        this.instructorName = this.$route.params.instructorName;
+        this.getInstructorScheduleStatus(); 
     },
 
     methods: {
@@ -314,18 +318,20 @@ import axios from "axios"
         },
 
         async getInstructorPreferences(){
-            const instructor_name = "Pushpa%20Kumar";
+            const instructor_name = this.instructorName;
+            console.log("instructor NAME:", instructor_name);
             try {
                 const response = await axios.get(`http://localhost:3000/instructorpreferences/${instructor_name}`);
                 this.generalpreferencesarray = response.data[0].general_preferences;
-                console.log('instructor preferences:', response.data[0].general_preferences);
+    
+                console.log("instructor preferences:", response.data[0].general_preferences);
             } catch (error) {
                 console.error('Error:', error.message);
             }
         },
 
         async getInstructorAvailabilities(){
-            const instructor_name = "Pushpa%20Kumar";
+            const instructor_name = this.instructorName;
             try {
                 const response = await axios.get(`http://localhost:3000/instructorpreferences/${instructor_name}`);
                 this.availabilitiesArray = response.data[0].availabilities;
@@ -353,7 +359,7 @@ import axios from "axios"
         },
 
         async getCoursesArray(){
-            const instructor_name = "Pushpa%20Kumar";
+            const instructor_name = this.instructorName;
             try {
                 const response = await axios.get(`http://localhost:3000/instructorschedules/${instructor_name}/courses`);
                 this.instructorScheduleArray = response.data;
@@ -415,7 +421,7 @@ import axios from "axios"
         },
 
         async getInstructorScheduleStatus(){
-            const instructor_name = "Pushpa%20Kumar";
+            const instructor_name = this.instructorName;
             try {
                 const response = await axios.get(`http://localhost:3000/instructorschedules/${instructor_name}/approved_schedule`);
                 this.isApproved = response.data;
@@ -428,7 +434,7 @@ import axios from "axios"
 
         async deleteSchedule(){
             //console.log("delete schedule");
-            const instructor_name = "Pushpa%20Kumar";
+            const instructor_name = this.instructorName;
             try {
                 const response = await axios.delete(`http://localhost:3000/instructorschedules/${instructor_name}/deleteSchedule`);
                 this.events = [];

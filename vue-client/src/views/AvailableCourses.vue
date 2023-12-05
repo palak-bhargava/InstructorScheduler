@@ -123,8 +123,12 @@
       }
     },
     created() {
+      // Check if instructorName exists in localStorage, if not use default value
+      this.instructorName = localStorage.getItem('instructorName') || this.$route.params.instructorName;
+
+      // Save instructorName in localStorage
+      localStorage.setItem('instructorName', this.instructorName);
       this.getAvailableCourses();
-      this.instructorName = this.$route.params.instructorName;
     },
     methods: {
       goToDashboard() {
@@ -149,7 +153,7 @@
       },
 
       async putAddedPreferences(selectedCourseArray){
-        let instructor_name = "Pushpa%20Kumar"; //this.instructor_name.trim();
+        let instructor_name = this.instructorName;
 
         const newCourses = selectedCourseArray;
 

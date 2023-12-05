@@ -135,9 +135,14 @@ export default {
     };
   },
   created() {
+    // Check if instructorName exists in localStorage, if not use default value
+    this.instructorName = localStorage.getItem('instructorName') || this.$route.params.instructorName;
+
+    // Save instructorName in localStorage
+    localStorage.setItem('instructorName', this.instructorName);
     this.getCourses();
-    this.instructorName = this.$route.params.instructorName;
   },
+
   methods: {
     goToDashboard() {
       this.$router.push({ name: 'Dashboard', params: { instructorName: this.instructorName } });
@@ -174,9 +179,9 @@ export default {
     },
 
     async getCourses() {
-      let name = "Pushpa%20Kumar";
+      let instructor_name = this.instructorName;
       try {
-        const response = await axios.get(`http://localhost:3000/pastcourses/instructors?name=${name}`);
+        const response = await axios.get(`http://localhost:3000/pastcourses/instructors?name=${instructor_name}`);
         this.pastClasses = response.data.map(item => ({
           ...item,
           yes: '#ffffff', // Initialize unique button colors for each item
@@ -195,7 +200,7 @@ export default {
     async addToInstructorSchedule(item) {
       console.log("adding to schedule");
     try {
-      const instructorName = "Pushpa%20Kumar"; // this.instructor_name.trim();
+      const instructor_name = this.instructorName;
       const course = item;
 
       console.log("course", course)
@@ -214,7 +219,7 @@ export default {
         "location": course.location
       };
 
-      const response = await axios.put(`http://localhost:3000/instructorschedules/${instructorName}`, {newCourse});
+      const response = await axios.put(`http://localhost:3000/instructorschedules/${instructor_name}`, {newCourse});
 
       console.log('Response:', response.data.message);
     } catch (error) {
@@ -225,10 +230,10 @@ export default {
   async deleteFromInstructorSchedule(class_number) {
       
     try {
-      const instructorName = "Pushpa%20Kumar"; // this.instructor_name.trim();
+      const instructor_name = this.instructorName;
       const classNumber = class_number;
 
-      const response = await axios.delete(`http://localhost:3000/instructorschedules/${instructorName}/${classNumber}/removeClass`);
+      const response = await axios.delete(`http://localhost:3000/instructorschedules/${instructor_name}/${classNumber}/removeClass`);
 
       console.log('Response:', response.data.message);
     } catch (error) {
@@ -243,7 +248,7 @@ export default {
 
       const data_update = {
         "class_assigned": class_assigned,
-        "instructor_name": "Pushpa Kumar"
+        "instructor_name": this.instructorName
       }
 
       const response = await axios.put(`http://localhost:3000/currentcourses/${classNumber}`, data_update);
@@ -257,7 +262,7 @@ export default {
 
     async updatePreferences(activeButton, classNum){
       let preference = activeButton; //this.preference.trim();
-      let instructor_name = "Pushpa%20Kumar"; //this.instructor_name.trim();
+      let instructor_name = this.instructorName;
       let class_number = classNum;
     
       const data_update = {
