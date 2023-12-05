@@ -135,7 +135,9 @@ export default {
     };
   },
   created() {
-    this.instructorName = this.$route.params.instructorName;
+    // Check if instructorName exists in localStorage, if not use default value
+    this.instructorName = localStorage.getItem("instructorName") || this.$route.params.instructorName;
+    console.log("LOCAL STORAGE:", localStorage.getItem("instructorName"));
     this.getCourses();
   },
 

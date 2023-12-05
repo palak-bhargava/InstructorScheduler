@@ -177,6 +177,8 @@ export default {
         const instructorName = await this.getUserEmail(email, password);
 
         if (instructorName) {
+          localStorage.setItem('instructorName', instructorName); // Corrected line
+          console.log("LOCAL STORAGE:", localStorage.getItem("instructorName"));
           console.log("instructorName: ", instructorName)
           this.$router.push({ name: 'Dashboard', params: { instructorName } });
         }
