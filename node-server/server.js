@@ -408,7 +408,7 @@ app.put('/instructorpreferences/:instructor_name/newCourses', async (req, res) =
         const instructor_preferences = await InstructorPreference.findOne({ instructor_name: instructor_name });
 
       if (instructor_preferences) {
-        instructor_preferences.availability = instructor_availabilities;
+        instructor_preferences.availabilities = instructor_availabilities;
 
         await instructor_preferences.save();
 
