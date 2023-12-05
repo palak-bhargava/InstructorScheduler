@@ -25,25 +25,26 @@
                     <v-container class="spacing-playground pa-5">
                         <v-row>         
                             <v-col>
-                                <v-card class="rounded-xl">
-                                    <v-container>
-                                        <div class="subtitle-1 font-weight-bold">Preferred Courses</div>
-                                        CS 4384 - Automata Theory<br>CS 4875 - Machine Learning
-                                    </v-container>
+                                <v-card class="rounded-xl" >
+                                    <div class="pa-3 font-weight-bold subtitle-1">Preferred Courses</div>
+                                    <v-row v-for="(preference, index) in generalpreferencesarray" :key="index">
+                                        <div class="pl-6 pt-2 text-body-2"><b>{{ preference.course_prefix }}{{ preference.course_number }}</b> {{ preference.title }}</div>
+                                    </v-row>
+                                    <br>
                                 </v-card>
                             </v-col>
 
                             <v-col>
-                                <v-card class="rounded-xl">
-                                    <v-container>
-                                        <div class="subtitle-1 font-weight-bold">Time Frames</div>
-                                        MW  12:00 PM - 4:00 PM<br>TTH  10:00 AM - 2:00 PM
-                                    </v-container>
+                                <v-card class="rounded-xl"> 
+                                    <div class="pa-3 font-weight-bold subtitle-1">Time Frames</div>
+                                    <v-row v-for="(availability, index) in availabilitiesArray" :key="index">
+                                        <div class="pl-6 pt-2 text-body-2"><b>{{ availability.day }}</b> | {{ displayTimes(availability.times) }}</div>
+                                    </v-row> <br>
                                 </v-card>
                             </v-col>
                         </v-row>
                     
-                        <v-row justify-center class="mb-0"> 
+                        <v-row justify-center class="mb-0 pt-2"> 
                             <v-btn
                             color="#FFB86F"
                             elevation="2"
@@ -52,6 +53,9 @@
                             @click="goToPreferences"
                             >
                                 Edit Preferences
+                                <v-icon right>
+                                    mdi-arrow-right-thick
+                                </v-icon>
                             </v-btn> 
                         </v-row> 
                     </v-container>
@@ -72,6 +76,7 @@
                         rounded
                         block
                         outlined
+                        
                         @click="goToPastSchedules"
                         >
                             Fall 2022
@@ -91,111 +96,55 @@
         class="rounded-xl"
     > 
             <v-container class="spacing-playground pa-5">
-                <v-card
-                    class = "mb-2 pa-2 rounded-xl font-weight-medium"
-                    color="#FFFFFF"
-                >
-                    <v-row>
-                        <v-col 
-                        cols="2">
-                        Course Number
-                        </v-col>
-                        <v-col cols="3">
-                            Course Name
-                        </v-col>
-                        <v-col cols="1.5">
-                            Section
-                        </v-col>
-                        <v-col cols="1.5">
-                            Location
-                        </v-col>
-                        <v-col cols="2.5">
-                            Days & Time
-                        </v-col>
-                    </v-row>
-                </v-card>
-                <v-card
-                    class="rounded-xl mb-2 pa-2"
-                    color="#FFFFFF"
-                >
-                    <v-row>
-                        <v-col cols="2">
-                        CS 3345
-                        </v-col>
-                        <v-col cols="3">
-                            Data Structures
-                        </v-col>
-                        <v-col cols="1.5">
-                            003
-                        </v-col>
-                        <v-col cols="1.5">
-                            ECSS 2.415
-                        </v-col>
-                        <v-col cols="2.5">
-                            MW 4:00 PM - 5:15 PM
-                        </v-col>
-                    </v-row>
-                </v-card>
-                
-                <v-card
-                class="rounded-xl mb-2 pa-2"
-                    color="#FFFFFF"
-                >
-                    <v-row>
-                        <v-col cols="2">
-                        CS 2340
-                        </v-col>
-                        <v-col cols="3">
-                            Computer Architecture
-                        </v-col>
-                        <v-col cols="1.5">
-                            001
-                        </v-col>
-                        <v-col cols="1.5">
-                            ECSS 2.501
-                        </v-col>
-                        <v-col cols="2.5">
-                            MW 7:00 PM - 8:15 PM
-                        </v-col>
-                    </v-row>
-                </v-card> 
-                <v-card
-                class="rounded-xl mb-2 pa-2"
-                    color="#FFFFFF"
-                >
-                    <v-row>
-                        <v-col cols="2">
-                        CS 2336
-                        </v-col>
-                        <v-col cols="3">
-                            Computer Science II
-                        </v-col>
-                        <v-col cols="1.5">
-                            006
-                        </v-col>
-                        <v-col cols="1.5">
-                            ECSW 1.365
-                        </v-col>
-                        <v-col cols="2.5">
-                            TTH 1:00 PM - 2:15 PM
-                        </v-col>
-                    </v-row>
-                </v-card> 
-
-                <v-row justify-center class="mb-0 mt-3"> 
-                            <v-btn
-                            color="#FFB86F"
-                            elevation="2"
-                            rounded
-                            class="mx-auto"
-                            @click="goToAvailableCourses">
-                                View Available Classes
-                            </v-btn> 
-                        </v-row> 
+             <div class="scrollable-table">
+                <v-data-table
+                    :headers="headers"
+                    :items="available_classes"
+                    hide-default-footer
+                    item-key="class_number"
+                    class="elevation-2 mt-3"
+                    :items-per-page=10
+                    >
+                    </v-data-table>
+                </div>
+                <v-row justify-center class="mb-0 mt-5"> 
+                    <v-btn
+                    color="#FFB86F"
+                    elevation="2"
+                    rounded
+                    class="mx-auto"
+                    @click="goToAvailableCourses"
+                    >
+                        View All Available Courses
+                        <v-icon right>
+                            mdi-arrow-right-thick
+                        </v-icon>
+                    </v-btn> 
+                </v-row> 
             </v-container>
         </v-card> 
             
-        <div class="text-h5 mb-2 mt-15">My Current Schedule</div>
+        <div class="text-h5 mb-2 mt-15 d-flex justify-space-between align-center">
+            <span class="flex-grow-1">My Current Schedule</span>
+            <v-card 
+                color="#ffffff"
+                class="rounded-xl pl-5 pr-5 d-flex justify-end align-center"
+                elevation="0"
+                style="height: 36px; width: 250px;"
+            >
+                <span v-if="isApproved === 'waiting'" style="color: black; font-size: 14px; margin-right: 5px;">
+                    <b>Schedule Pending Approval.<span v-html="displayDots"></span></b>
+                </span>
+                <span v-else-if="!isApproved" style="color: red; font-size: 14px; display: flex; align-items: center;">
+                    <v-icon color="red">mdi-alert-circle</v-icon>
+                    &nbsp;&nbsp;<b>Schedule Not Approved</b>
+                </span>
+                <span v-else style="color: #5C9970; font-size: 14px;">
+                    <v-icon color="#5C9970">mdi-check-circle</v-icon>
+                    &nbsp;&nbsp;<b>Schedule Approved</b>
+                </span>
+            </v-card>
+        </div>
         <v-card
             color="#5C9970"
             class="rounded-xl mb-10"
@@ -218,6 +167,20 @@
                     </v-col>
                 </v-row>
             </v-container>
+            <v-row justify-center class="pb-5 pt-3"> 
+                <v-btn
+                color="#FFB86F"
+                elevation="2"
+                rounded
+                class="mx-auto"
+                @click="deleteSchedule"
+                >
+                    &nbsp;Delete Schedule
+                    <v-icon right>
+                        mdi-trash-can-outline
+                    </v-icon>
+                </v-btn> 
+            </v-row>
         </v-card>
     </v-container>
 </template>
@@ -226,12 +189,40 @@
 import axios from "axios"
   export default {
     data: () => ({
-      instructorScheduleArray: [],
-      events: []
+        instructorScheduleArray: [],
+        events: [],
+        isApproved: "",
+        isAnimatingDots: false,
+        generalpreferencesarray: [],
+        availabilitiesArray: [],
+        displayDots: '',
+        dotCount: 0,
+        maxDots: 4,
+        itemsPerPage: 10,
+        headers: [
+          {
+            text: 'Course Code',
+            align: 'start',
+            sortable: false,
+            value: 'class_number',
+          },
+          { text: 'Course Number', value: 'course_number' },
+          { text: 'Course Name', value: 'title' },
+          { text: 'Section', value: 'section' },
+          { text: 'Location', value: 'location' },
+          { text: 'Days', value: 'days' },
+          { text: 'Time', value: 'times_12h' },
+        ],
+        available_classes: [],
     }),
 
     mounted() {
-    this.getCoursesArray();
+        this.getCoursesArray();
+        this.getAvailableCourses();
+        this.animatePendingApproval();
+        this.getInstructorPreferences();
+        this.getInstructorAvailabilities();
+        this.getInstructorScheduleStatus();
     },
 
     methods: {
@@ -245,10 +236,67 @@ import axios from "axios"
             this.$router.push({ name: 'Preferences' });
         },
 
+        async animatePendingApproval() {
+            this.isAnimatingDots = true;
+            while (this.isAnimatingDots) {
+                await this.delay(500); // Adjust timing as needed
+                this.displayDots += '.';
+                this.dotCount++;
+
+                if (this.dotCount === this.maxDots) {
+                this.displayDots = '';
+                this.dotCount = 0;
+                }
+            }
+        },
+
+        delay(ms) {
+            return new Promise(resolve => setTimeout(resolve, ms));
+        },
+
+        async getInstructorPreferences(){
+            const instructor_name = "Pushpa%20Kumar";
+            try {
+                const response = await axios.get(`http://localhost:3000/instructorpreferences/${instructor_name}`);
+                this.generalpreferencesarray = response.data[0].general_preferences;
+                console.log('instructor preferences:', response.data[0].general_preferences);
+            } catch (error) {
+                console.error('Error:', error.message);
+            }
+        },
+
+        async getInstructorAvailabilities(){
+            const instructor_name = "Pushpa%20Kumar";
+            try {
+                const response = await axios.get(`http://localhost:3000/instructorpreferences/${instructor_name}`);
+                this.availabilitiesArray = response.data[0].availabilities;
+                console.log('instructor avail:', response.data[0].availabilities);
+            } catch (error) {
+                console.error('Error:', error.message);
+            }
+        },
+
+        displayTimes(times) {
+            return times.join(', ');
+        },
+
+        async getAvailableCourses() {
+            let availability = "false";
+            try {
+            const response = await axios.get(`http://localhost:3000/currentcourses/${availability}`);
+            console.log(response)
+            this.available_classes = response.data;
+            } 
+            catch (error) {
+            console.error(error);
+            }
+            console.log("available courses array:", this.available_classes);
+        },
+
         async getCoursesArray(){
             const instructor_name = "Pushpa%20Kumar";
             try {
-                const response = await axios.get(`http://localhost:3000/instructorschedules/${instructor_name}`);
+                const response = await axios.get(`http://localhost:3000/instructorschedules/${instructor_name}/courses`);
                 this.instructorScheduleArray = response.data;
             } 
             catch (error) {
@@ -305,8 +353,40 @@ import axios from "axios"
             const endTime = `${year}-${month}-${dayOfMonth} ${endHour}:${endMinute}`;
 
             return [startTime, endTime];
+        },
+
+        async getInstructorScheduleStatus(){
+            const instructor_name = "Pushpa%20Kumar";
+            try {
+                const response = await axios.get(`http://localhost:3000/instructorschedules/${instructor_name}/approved_schedule`);
+                this.isApproved = response.data;
+                console.log("Approved or not:", response.data);
+            } 
+            catch (error) {
+                console.error(error.message);
+            }
+        },
+
+        async deleteSchedule(){
+            //console.log("delete schedule");
+            const instructor_name = "Pushpa%20Kumar";
+            try {
+                const response = await axios.delete(`http://localhost:3000/instructorschedules/${instructor_name}/deleteSchedule`);
+                this.events = [];
+                console.log("deleteSchedule:", response.data);
+            } 
+            catch (error) {
+                console.error(error.message);
+            }
         }
 
     }
   }
 </script>
+
+<style>
+.scrollable-table {
+  max-height: 250px; 
+  overflow-y: auto;
+}
+</style>

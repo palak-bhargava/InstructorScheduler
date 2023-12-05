@@ -220,7 +220,7 @@ export default {
       const instructorName = "Pushpa%20Kumar"; // this.instructor_name.trim();
       const classNumber = class_number;
 
-      const response = await axios.delete(`http://localhost:3000/instructorschedules/${instructorName}/${classNumber}`);
+      const response = await axios.delete(`http://localhost:3000/instructorschedules/${instructorName}/${classNumber}/removeClass`);
 
       console.log('Response:', response.data.message);
     } catch (error) {

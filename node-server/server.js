@@ -322,7 +322,7 @@ app.put('/instructorpreferences/:instructor_name/newCourses', async (req, res) =
           instructor_name: instructor_name,
           courses: [],
           general_preferences: [],
-          availability: []
+          availabilities: []
           // Add other fields as needed
         });
       }
@@ -403,19 +403,30 @@ app.put('/instructorpreferences/:instructor_name/newCourses', async (req, res) =
 
   app.put('/instructorpreferences/:instructor_name/availabilities', async (req, res) => {
     try {
-        const instructor_name = req.params.instructor_name;
-        const instructor_availabilities = req.body.availabilities;
-        const instructor_preferences = await InstructorPreference.findOne({ instructor_name: instructor_name });
+      const instructor_name = req.params.instructor_name;
+      const instructor_availabilities = req.body.availabilities;
 
-      if (instructor_preferences) {
-        instructor_preferences.availabilities = instructor_availabilities;
+      // Find or create the instructor_preferences document
+      let instructor_preferences = await InstructorPreference.findOne({ instructor_name: instructor_name });
 
-        await instructor_preferences.save();
-
-        res.status(200).json({ message: 'Instructor Availabilities updated successfully' });
-      } else {
-        res.status(404).json({ message: 'Instructor Preferences not found for specific Instructor' });
+      if (!instructor_preferences) {
+        // Create a new preferences object if it doesn't exist
+        instructor_preferences = new InstructorPreference({
+          instructor_name: instructor_name,
+          courses: [],
+          general_preferences: [],
+          availabilities: []
+          // Add other fields as needed
+        });
       }
+
+      // Set the availabilities
+      instructor_preferences.availabilities = instructor_availabilities;
+
+      // Save the updated document
+      await instructor_preferences.save();
+
+      res.status(200).json({ message: 'Instructor Availabilities updated successfully' });
     } catch (error) {
       res.status(500).json({ message: error.message });
     }
@@ -427,26 +438,32 @@ app.put('/instructorpreferences/:instructor_name/newCourses', async (req, res) =
       const instructor_name = req.params.instructor_name;
       const preference = req.body;
 
-      const instructor_preferences = await InstructorPreference.findOne({ instructor_name: instructor_name });
+      let instructor_preferences = await InstructorPreference.findOne({ instructor_name: instructor_name });
 
-      if (instructor_preferences) {
+      if (!instructor_preferences) {
+        // Create a new preferences object if it doesn't exist
+        instructor_preferences = new InstructorPreference({
+          instructor_name: instructor_name,
+          courses: [],
+          general_preferences: [],
+          availabilities: []
+          // Add other fields as needed
+        });
+      }
 
-        const exists = instructor_preferences.general_preferences.some(course => 
-          course.course_number === preference.course_number
-        );
+      const exists = instructor_preferences.general_preferences.some(course => 
+        course.course_number === preference.course_number
+      );
 
-        if (!exists) {
-          instructor_preferences.general_preferences.push(preference);
+      if (!exists) {
+        instructor_preferences.general_preferences.push(preference);
 
-          // Save the updated document
-          await instructor_preferences.save();
+        // Save the updated document
+        await instructor_preferences.save();
 
-          res.status(200).json({ message: 'General preference added successfully', instructor_preferences });
-        } else {
-          res.status(400).json({ message: 'General preference already exists' });
-        }
+        res.status(200).json({ message: 'General preference added successfully', instructor_preferences });
       } else {
-        res.status(404).json({ message: 'Instructor not found' });
+        res.status(400).json({ message: 'Instructor not found' });
       }
     } catch (error) {
       res.status(500).json({ message: error.message });
@@ -507,7 +524,7 @@ app.put('/instructorschedules/:instructor_name', async (req, res) => {
       if (!instructor_schedule) {
         instructor_schedule = new InstructorSchedule({
           instructor_name: instructor_name,
-          approved_schedule: "false",
+          approved_schedule: "waiting",
           courses: [],
         });
         await instructor_schedule.save();
@@ -554,7 +571,7 @@ app.put('/instructorschedules/:instructor_name', async (req, res) => {
     }
   });
   
-  app.delete('/instructorschedules/:instructor_name/:class_number', async (req, res) => {
+  app.delete('/instructorschedules/:instructor_name/:class_number/removeClass', async (req, res) => {
     const instructor_name = req.params.instructor_name;
     const class_number = req.params.class_number;
   
@@ -592,7 +609,7 @@ app.put('/instructorschedules/:instructor_name', async (req, res) => {
     }
 });
 
-    app.get('/instructorschedules/:instructor_name', async(req, res) =>{
+  app.get('/instructorschedules/:instructor_name/courses', async(req, res) =>{
         const instructor_name = req.params.instructor_name;
         try {
             const response = await InstructorSchedule.find({instructor_name: instructor_name});
@@ -601,6 +618,38 @@ app.put('/instructorschedules/:instructor_name', async (req, res) => {
             res.status(500).json({message: error.message})
         }
     });
+
+    app.get('/instructorschedules/:instructor_name/approved_schedule', async(req, res) =>{
+      const instructor_name = req.params.instructor_name;
+      try {
+          const response = await InstructorSchedule.find({instructor_name: instructor_name});
+          res.status(200).json(response[0].approved_schedule);
+      } catch (error) {
+          res.status(500).json({message: error.message})
+      }
+  });
+
+  app.delete('/instructorschedules/:instructor_name/deleteSchedule', async (req, res) => {
+    const instructor_name = req.params.instructor_name;
+
+    try {
+      let instructor_schedule = await InstructorSchedule.findOne({ instructor_name: instructor_name });
+
+      if (!instructor_schedule) {
+        return res.status(404).json({ message: 'Instructor schedule not found' });
+      }
+      // Clear the courses array
+      instructor_schedule.courses = [];
+
+      // Save the updated schedule
+      await instructor_schedule.save();
+
+      res.status(200).json({ message: 'Instructor schedule cleared successfully' });
+    } catch (error) {
+      console.error('Error:', error);
+      res.status(500).json({ message: 'Internal server error' });
+    }
+  });
 
   //----------------------API FOR COURSE ARRAY OBJECT----------------------
   app.post('/coursearrayobj', async(req, res) => {
