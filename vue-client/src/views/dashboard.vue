@@ -211,9 +211,45 @@
                         first-time=07:00
                         last-time=10:00
                         interval-count=15
+                        @click:event="showPopup"
                         >
                         <template v-slot:day-label-header="{}">{{ " " }}</template>
                         </v-calendar>
+                        <v-menu
+                            v-model="selectedOpen"
+                            :close-on-content-click="false"
+                            :activator="selectedElement"
+                            offset-x
+                        >
+                            <v-card
+                                color="grey lighten-4"
+                                min-width="250px"
+                                flat
+                            >
+                                <v-toolbar
+                                :color="selectedEvent.color"
+                                dark
+                                >
+                                    <v-toolbar-title v-html="selectedEvent.name"></v-toolbar-title>
+                                    <v-spacer></v-spacer>
+                                </v-toolbar>
+                                <v-card-text class="mb-0">
+                                    <span 
+                                        v-html="selectedEvent.details"
+                                        style="font-weight:bold; font-size:medium">
+                                    </span>
+                                </v-card-text>
+                                <v-card-actions class="d-flex justify-center mt-0">
+                                    <v-btn
+                                        class="ma-2"
+                                        color="grey lighten-2"
+                                        @click="selectedOpen = false"
+                                    >
+                                        Cancel
+                                    </v-btn>
+                                </v-card-actions>
+                            </v-card>
+                        </v-menu>
                     </v-sheet>
                     </v-col>
                 </v-row>
@@ -226,8 +262,11 @@
 import axios from "axios"
   export default {
     data: () => ({
-      instructorScheduleArray: [],
-      events: []
+        selectedEvent: {},
+        selectedElement: null,
+        selectedOpen: false,
+        instructorScheduleArray: [],
+        events: []
     }),
 
     mounted() {
@@ -243,6 +282,32 @@ import axios from "axios"
         },
         goToPreferences() {
             this.$router.push({ name: 'Preferences' });
+        },
+
+        showPopup({ nativeEvent, event }) {
+            const open = () => {
+                this.selectedEvent = event;
+                this.selectedElement = nativeEvent.target;
+                requestAnimationFrame(() =>
+                    requestAnimationFrame(() => (this.selectedOpen = true))
+                );
+            };
+
+            if (this.selectedOpen) {
+                this.selectedOpen = false;
+                requestAnimationFrame(() => open());
+            } else {
+                open();
+            }
+            nativeEvent.stopPropagation();
+        },
+        deleteEvent(eventToDelete) {
+            const index = this.events.findIndex((event) => event === eventToDelete);
+            if (index !== -1) {
+                this.events.splice(index, 1);
+            }
+
+            this.selectedOpen = false;
         },
 
         async getCoursesArray(){
@@ -264,21 +329,20 @@ import axios from "axios"
             courses.forEach(course => {
                 const days = course.days.map(day => day.slice(0, 3));
 
-            console.log("Days: ", days)
-
                 days.forEach(day => {
                     const[startString, endString] = this.getEventDateTime(day, course.times);
-                const event = {
-                    name: course.title,
-                    start: startString,
-                    end: endString,
-                    color: '#FFB86F',
-                };
-             
-                localEvents.push(event);
+                    const event = {
+                        name: course.course_prefix.toUpperCase() + ' ' + course.course_number + ' ' + course.title,
+                        start: startString,
+                        end: endString,
+                        details: 'Section: ' + course.section + '<br>Location: ' + course.location,
+                        color: '#FFB86F',
+                    };
+                    console.log("course name: ", event.name);
+
+                    localEvents.push(event);
                 });
             });
-            //console.log(events);
             return localEvents;
         },
 
@@ -300,13 +364,11 @@ import axios from "axios"
             const month = (date.getMonth() + 1).toString().padStart(2, '0');
             const dayOfMonth = date.getDate().toString().padStart(2, '0');
 
-            // Format time to 'HH:mm'
             const startTime = `${year}-${month}-${dayOfMonth} ${startHour}:${startMinute}`;
             const endTime = `${year}-${month}-${dayOfMonth} ${endHour}:${endMinute}`;
 
             return [startTime, endTime];
         }
-
     }
-  }
+}
 </script>
