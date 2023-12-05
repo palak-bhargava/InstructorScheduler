@@ -18,10 +18,10 @@
         <v-row>
             <v-col cols="7">
                 <div class="text-h5 mb-2">My Preferences</div>
-                
                 <v-card
                 color="#5C9970"
                 class="rounded-xl"
+                height="90%"
                 > 
                     <v-container class="spacing-playground pa-5">
                         <v-row>         
@@ -69,6 +69,7 @@
                 <v-card
                     color="#5C9970"
                     class="rounded-xl"
+                    height="90%"
                 > 
                     <v-container class="spacing-playground pa-5">
                         <v-btn
@@ -77,6 +78,7 @@
                         rounded
                         block
                         outlined
+                        
                         @click="goToPastSchedules"
                         >
                             Fall 2022
