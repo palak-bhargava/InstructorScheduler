@@ -224,6 +224,7 @@ import axios from "axios"
         this.animatePendingApproval();
         this.getInstructorPreferences();
         this.getInstructorAvailabilities();
+        this.getInstructorScheduleStatus();
     },
 
     methods: {
@@ -297,7 +298,7 @@ import axios from "axios"
         async getCoursesArray(){
             const instructor_name = "Pushpa%20Kumar";
             try {
-                const response = await axios.get(`http://localhost:3000/instructorschedules/${instructor_name}`);
+                const response = await axios.get(`http://localhost:3000/instructorschedules/${instructor_name}/courses`);
                 this.instructorScheduleArray = response.data;
             } 
             catch (error) {
@@ -354,6 +355,17 @@ import axios from "axios"
             const endTime = `${year}-${month}-${dayOfMonth} ${endHour}:${endMinute}`;
 
             return [startTime, endTime];
+        },
+
+        async getInstructorScheduleStatus(){
+            const instructor_name = "Pushpa%20Kumar";
+            try {
+                const response = await axios.get(`http://localhost:3000/instructorschedules/${instructor_name}/approved_schedule`);
+                console.log("Approved or not:", response.data);
+            } 
+            catch (error) {
+                console.error(error.message);
+            }
         },
 
         deleteSchedule(){
