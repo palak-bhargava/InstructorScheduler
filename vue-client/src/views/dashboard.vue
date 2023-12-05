@@ -18,6 +18,7 @@
         <v-row>
             <v-col cols="7">
                 <div class="text-h5 mb-2">My Preferences</div>
+                
                 <v-card
                 color="#5C9970"
                 class="rounded-xl"
@@ -25,20 +26,21 @@
                     <v-container class="spacing-playground pa-5">
                         <v-row>         
                             <v-col>
-                                <v-card class="rounded-xl">
-                                    <v-container>
-                                        <div class="subtitle-1 font-weight-bold">Preferred Courses</div>
-                                        CS 4384 - Automata Theory<br>CS 4875 - Machine Learning
-                                    </v-container>
+                                <v-card class="rounded-xl" >
+                                    <div class="pa-3 font-weight-bold subtitle-1">Preferred Courses</div>
+                                    <v-row v-for="(preference, index) in generalpreferencesarray" :key="index">
+                                        <div class="pl-6 pt-2 text-body-2"><b>{{ preference.course_prefix }}{{ preference.course_number }}</b> {{ preference.title }}</div>
+                                    </v-row>
+                                    <br>
                                 </v-card>
                             </v-col>
 
                             <v-col>
-                                <v-card class="rounded-xl">
-                                    <v-container>
-                                        <div class="subtitle-1 font-weight-bold">Time Frames</div>
-                                        MW  12:00 PM - 4:00 PM<br>TTH  10:00 AM - 2:00 PM
-                                    </v-container>
+                                <v-card class="rounded-xl"> 
+                                    <div class="pa-3 font-weight-bold subtitle-1">Time Frames</div>
+                                    <v-row v-for="(availability, index) in availabilitiesArray" :key="index">
+                                        <div class="pl-6 pt-2 text-body-2"><b>{{ availability.day }}</b> | {{ displayTimes(availability.times) }}</div>
+                                    </v-row> <br>
                                 </v-card>
                             </v-col>
                         </v-row>
@@ -191,6 +193,8 @@ import axios from "axios"
         events: [],
         isApproved: null,
         isAnimatingDots: false,
+        generalpreferencesarray: [],
+        availabilitiesArray: [],
         displayDots: '',
         dotCount: 0,
         maxDots: 4,
@@ -216,6 +220,8 @@ import axios from "axios"
         this.getCoursesArray();
         this.getAvailableCourses();
         this.animatePendingApproval();
+        this.getInstructorPreferences();
+        this.getInstructorAvailabilities();
     },
 
     methods: {
@@ -245,6 +251,32 @@ import axios from "axios"
 
         delay(ms) {
             return new Promise(resolve => setTimeout(resolve, ms));
+        },
+
+        async getInstructorPreferences(){
+            const instructor_name = "Pushpa%20Kumar";
+            try {
+                const response = await axios.get(`http://localhost:3000/instructorpreferences/${instructor_name}`);
+                this.generalpreferencesarray = response.data[0].general_preferences;
+                console.log('instructor preferences:', response.data[0].general_preferences);
+            } catch (error) {
+                console.error('Error:', error.message);
+            }
+        },
+
+        async getInstructorAvailabilities(){
+            const instructor_name = "Pushpa%20Kumar";
+            try {
+                const response = await axios.get(`http://localhost:3000/instructorpreferences/${instructor_name}`);
+                this.availabilitiesArray = response.data[0].availabilities;
+                console.log('instructor avail:', response.data[0].availabilities);
+            } catch (error) {
+                console.error('Error:', error.message);
+            }
+        },
+
+        displayTimes(times) {
+            return times.join(', ');
         },
 
         async getAvailableCourses() {

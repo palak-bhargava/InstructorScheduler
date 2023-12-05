@@ -146,6 +146,7 @@
             <v-btn
               class="mt-2 mb-5 ml-12"
               color="#FFB86F"
+              rounded
               @click="sendAvailability(events)"
             >
               Save Preferences
