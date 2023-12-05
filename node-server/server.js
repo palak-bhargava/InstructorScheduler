@@ -222,6 +222,25 @@ app.get('/pastcourses/instructors', async (req, res) => {
 
 
 //----------------------API FOR CURRENT COURSES----------------------
+
+app.get('/currentcourses/:class_assigned/:course_number', async (req, res) => {
+  try {
+      const class_assigned = req.params.class_assigned;
+      const course_number = req.params.course_number;
+
+      const current_courses = await CurrentCourses.find(
+        { 
+          class_assigned: class_assigned,
+          course_number: course_number
+        });
+
+      // Send the filtered entries as a response
+      res.status(200).json(current_courses);
+  } catch (error) {
+      res.status(500).json({ message: error.message });
+  }
+});
+
 app.post('/currentcourses', async(req, res) => {
     try{
         const current_courses = await CurrentCourses.create(req.body)
@@ -308,6 +327,19 @@ app.get('/instructorpreferences/:instructor_name', async(req, res) =>{
         res.status(500).json({message: error.message})
     }
 });
+
+app.get('/currentcourses/:class_assigned', async(req, res) =>{
+  try {
+      const current_courses = await CurrentCourses.find(
+          {
+            class_assigned: class_assigned,
+          });
+      res.status(200).json(current_courses);
+  } catch (error) {
+      res.status(500).json({message: error.message})
+  }
+});
+
 
 app.put('/instructorpreferences/:instructor_name/newCourses', async (req, res) => {
     try {
