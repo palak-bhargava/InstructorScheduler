@@ -16,8 +16,8 @@
             width="40"
           />
           </v-app-bar-nav-icon>
-         <v-toolbar-title class="flex text-center">
-          Available Courses
+          <v-toolbar-title class="flex text-center">
+            Available Courses
           </v-toolbar-title>
         </div>
         <v-spacer></v-spacer>
@@ -99,6 +99,7 @@
 
     data () {
       return {
+        instructorName: '',
         page: 1,
         pageCount: 0,
         itemsPerPage: 9,
@@ -123,16 +124,15 @@
     },
     created() {
       this.getAvailableCourses();
+      this.instructorName = this.$route.params.instructorName;
     },
     methods: {
       goToDashboard() {
-      this.$router.push({ name: 'Dashboard' });
+      this.$router.push({ name: 'Dashboard', params: { instructorName: this.instructorName } });
     },
       addToPreferences() {
         const updatedCoursesArray = [];
-        //console.log(this.selected)
         this.selected.forEach((course) => {
-            // Create a new courseObj for each iteration
             const courseObj = {
                 "course_prefix": course.course_prefix,
                 "course_number": course.course_number,
@@ -147,7 +147,7 @@
       },
 
       async putAddedPreferences(selectedCourseArray){
-        let instructor_name = "Pushpa%20Kumar"; //this.instructor_name.trim();
+        let instructor_name = "Pushpa%20Kumar";
 
         const newCourses = selectedCourseArray;
 
@@ -171,7 +171,6 @@
         catch (error) {
           console.error(error);
         }
-        console.log("available courses array:", this.available_classes);
       },
     }
   }

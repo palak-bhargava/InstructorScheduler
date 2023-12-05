@@ -17,7 +17,7 @@
           />
           </v-app-bar-nav-icon>
         <v-toolbar-title class="flex text-center">
-          My Preferences
+          {{ instructorName }}'s Preferences
         </v-toolbar-title>
         </div>
         <v-spacer></v-spacer>
@@ -167,6 +167,7 @@ export default {
   name: 'MyPreferences',
 
   data: () => ({
+    instructorName: '',
     selectedEvent: {},
     selectedElement: null,
     selectedOpen: false,
@@ -187,6 +188,7 @@ export default {
     this.$refs.calendar.checkChange();
     this.getCourseArray();
     this.getInstructorPreferences();
+    this.instructorName = this.$route.params.instructorName;
   },
   computed: {
     // Compute an array of course titles
@@ -197,7 +199,7 @@ export default {
 
   methods: {
     goToDashboard() {
-      this.$router.push({ name: 'Dashboard' });
+      this.$router.push({ name: 'Dashboard', params: { instructorName: this.instructorName } });
     },
     startDrag({ event, timed }) {
       if (event && timed) {

@@ -17,7 +17,7 @@
           />
           </v-app-bar-nav-icon>
          <v-toolbar-title class="flex text-center">
-          Past Schedules
+          {{ instructorName }}'s Past Schedules
           </v-toolbar-title>
         </div>
         <v-spacer></v-spacer>
@@ -126,6 +126,7 @@ import axios from "axios"
 export default {
   data() {
     return {
+      instructorName: '',
       buttonColor: '#ffffff',
       name: '',
       preference: '',
@@ -135,24 +136,20 @@ export default {
   },
   created() {
     this.getCourses();
+    this.instructorName = this.$route.params.instructorName;
   },
   methods: {
     goToDashboard() {
-      this.$router.push({ name: 'Dashboard' });
+      this.$router.push({ name: 'Dashboard', params: { instructorName: this.instructorName } });
     },
     changeColor(item, buttonType) {
-      // Update the active button for a specific card
       item.activeButton = buttonType;
 
-      // Update the button colors based on the active button within the card
       item.yes = buttonType === 'yes' ? '#5C9970' : '#ffffff';
       item.maybe = buttonType === 'maybe' ? '#5C9970' : '#ffffff';
       item.no = buttonType === 'no' ? '#5C9970' : '#ffffff';
 
-      //this.updatePreferences(item.activeButton, item.class_number);
-      //check if active button is yes, add to schedule else ignore
       if(item.activeButton === 'yes'){
-        //update schedule
         this.addToInstructorSchedule(item);
         const assigned = "true";
         this.updateCurrentCoursesClassStatus(item.class_number, assigned);
@@ -251,7 +248,6 @@ export default {
       console.error('Error:', error.message);
     }
   },
-  
 
     async updatePreferences(activeButton, classNum){
       let preference = activeButton; //this.preference.trim();

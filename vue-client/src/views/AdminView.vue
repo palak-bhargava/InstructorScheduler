@@ -14,7 +14,7 @@
             width="40"
           />
          <v-toolbar-title class="flex text-center">
-          Admin View
+          {{ instructorName }}'s Dashboard
           </v-toolbar-title>
         </div>
         <v-spacer></v-spacer>
@@ -111,9 +111,13 @@
 
     data() {
       return {
+        instructorName: '',
         allSchedules: [],
         instructorSchedule: [],
       };
+    },
+    mounted() {
+        this.instructorName = this.$route.params.instructorName;
     },
     created() {
       this.getAllSchedules();
