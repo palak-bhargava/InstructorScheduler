@@ -6,13 +6,16 @@
         color="f5f5f5"
       >
         <div class="d-flex align-center justify-center" style="width: 100%">
-          <v-img
+          <v-app-bar-nav-icon
+            @click="goToDashboard"
+          ><v-img
             class="shrink mr-2"
             contain
             :src="require('../assets/IS-logo.png')"
             transition="scale-transition"
             width="40"
           />
+          </v-app-bar-nav-icon>
         <v-toolbar-title class="flex text-center">
           My Preferences
         </v-toolbar-title>
@@ -193,6 +196,9 @@ export default {
   },
 
   methods: {
+    goToDashboard() {
+      this.$router.push({ name: 'Dashboard' });
+    },
     startDrag({ event, timed }) {
       if (event && timed) {
         this.dragEvent = event;
