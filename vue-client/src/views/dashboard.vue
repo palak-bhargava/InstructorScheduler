@@ -21,7 +21,6 @@
                 <v-card
                 color="#5C9970"
                 class="rounded-xl"
-                height="90%"
                 > 
                     <v-container class="spacing-playground pa-5">
                         <v-row>         
@@ -69,7 +68,6 @@
                 <v-card
                     color="#5C9970"
                     class="rounded-xl"
-                    height="90%"
                 > 
                     <v-container class="spacing-playground pa-5">
                         <v-btn
@@ -134,7 +132,7 @@
                 elevation="0"
                 style="height: 36px; width: 250px;"
             >
-                <span v-if="isApproved==null" style="color: black; font-size: 14px; margin-right: 5px;">
+                <span v-if="isApproved === 'waiting'" style="color: black; font-size: 14px; margin-right: 5px;">
                     <b>Schedule Pending Approval.<span v-html="displayDots"></span></b>
                 </span>
                 <span v-else-if="!isApproved" style="color: red; font-size: 14px; display: flex; align-items: center;">
@@ -193,7 +191,7 @@ import axios from "axios"
     data: () => ({
         instructorScheduleArray: [],
         events: [],
-        isApproved: null,
+        isApproved: "",
         isAnimatingDots: false,
         generalpreferencesarray: [],
         availabilitiesArray: [],
@@ -361,6 +359,7 @@ import axios from "axios"
             const instructor_name = "Pushpa%20Kumar";
             try {
                 const response = await axios.get(`http://localhost:3000/instructorschedules/${instructor_name}/approved_schedule`);
+                this.isApproved = response.data;
                 console.log("Approved or not:", response.data);
             } 
             catch (error) {
@@ -368,8 +367,17 @@ import axios from "axios"
             }
         },
 
-        deleteSchedule(){
-            console.log("delete schedule");
+        async deleteSchedule(){
+            //console.log("delete schedule");
+            const instructor_name = "Pushpa%20Kumar";
+            try {
+                const response = await axios.delete(`http://localhost:3000/instructorschedules/${instructor_name}/deleteSchedule`);
+                this.events = [];
+                console.log("deleteSchedule:", response.data);
+            } 
+            catch (error) {
+                console.error(error.message);
+            }
         }
 
     }

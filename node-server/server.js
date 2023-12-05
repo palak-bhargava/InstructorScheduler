@@ -507,7 +507,7 @@ app.put('/instructorschedules/:instructor_name', async (req, res) => {
       if (!instructor_schedule) {
         instructor_schedule = new InstructorSchedule({
           instructor_name: instructor_name,
-          approved_schedule: "false",
+          approved_schedule: "waiting",
           courses: [],
         });
         await instructor_schedule.save();
@@ -554,7 +554,7 @@ app.put('/instructorschedules/:instructor_name', async (req, res) => {
     }
   });
   
-  app.delete('/instructorschedules/:instructor_name/:class_number', async (req, res) => {
+  app.delete('/instructorschedules/:instructor_name/:class_number/removeClass', async (req, res) => {
     const instructor_name = req.params.instructor_name;
     const class_number = req.params.class_number;
   
@@ -611,6 +611,29 @@ app.put('/instructorschedules/:instructor_name', async (req, res) => {
           res.status(500).json({message: error.message})
       }
   });
+
+  app.delete('/instructorschedules/:instructor_name/deleteSchedule', async (req, res) => {
+    const instructor_name = req.params.instructor_name;
+  
+    try {
+      let instructor_schedule = await InstructorSchedule.findOne({ instructor_name: instructor_name });
+  
+      if (!instructor_schedule) {
+        return res.status(404).json({ message: 'Instructor schedule not found' });
+      }
+      // Clear the courses array
+      instructor_schedule.courses = [];
+
+      // Save the updated schedule
+      await instructor_schedule.save();
+  
+      res.status(200).json({ message: 'Instructor schedule cleared successfully' });
+    } catch (error) {
+      console.error('Error:', error);
+      res.status(500).json({ message: 'Internal server error' });
+    }
+  });
+  
 
   //----------------------API FOR COURSE ARRAY OBJECT----------------------
   app.post('/coursearrayobj', async(req, res) => {
