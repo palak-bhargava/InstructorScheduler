@@ -26,14 +26,15 @@ async function getCurrentAvailableCoursesArray(course_number) {
 
 async function getFinalArray() {
     const general_preferences_array = await getInstructorGeneralPreferences();
-    //console.log(general_preferences_array);
+    console.log(general_preferences_array);
     const final_array = [];
 
     const promises = general_preferences_array.map(async (preference) => {
         //console.log(preference);
         const availableCourses = await getCurrentAvailableCoursesArray(preference.course_number);
         //console.log(availableCourses);
-        final_array.push(course_array);
+        final_array.push(availableCourses);
+        console.log("General preference available courses: " , final_array);
     });
 
     await Promise.all(promises);
@@ -41,5 +42,19 @@ async function getFinalArray() {
     return final_array;
 }
 
-const all_avaiable_courses = getFinalArray();
-console.log(all_avaiable_courses);
+getFinalArray();
+
+async function getGivenClasses() {
+    const class_assigned = "false";
+    const courseNumbers = "1134,3305,4485";
+    try {
+        const response = await axios.get(`http://localhost:3000/currentcourses/${class_assigned}/${courseNumbers}/getAvailClass`);
+        console.log("Multi class search: ",response.data[0]);
+        return response.data[0];
+    } catch (error) {
+        console.log(error);
+        return [];
+    }
+}
+
+getGivenClasses();
