@@ -88,7 +88,6 @@
             rounded
             dense
           ></v-text-field>
-          
           <div class="text-center">
             <v-btn
               rounded
@@ -115,31 +114,32 @@
   </v-container>
 </template>
 
-
-
 <script>
-import axios from "axios"
-  export default {
+import axios from "axios";
+import bcryptjs from 'bcryptjs';
+
+export default {
   data() {
     return {
       email: '',
       password: '',
       show: false,
-      loginSuccess: false
+      loginSuccess: false,
+      post: null,
+      error: null,
     };
   },
-  
+
   methods: {
     goToAdminLogin() {
       this.$router.push({ name: 'AdminLogin' });
     },
     async getUserEmail(email, password) {
       return new Promise(async (resolve, reject) => {
-        const bcryptjs = require('bcryptjs');
+
         try {
           const response = await axios.get(`http://localhost:3000/users/email/${email}`);
           
-          // Check if response.data[0] is defined
           if (response.data && response.data.length > 0) {
             const hashedPassword = response.data[0].password;
             const type = response.data[0].type;
@@ -148,10 +148,10 @@ import axios from "axios"
               bcryptjs.compare(password, hashedPassword).then(result => {
                 if (result) {
                   console.log("SUCCESS");
-                  resolve(true);
+                  resolve(response.data[0].name); // Resolve the instructor name
                 } else {
                   console.log("FAILURE");
-                  resolve(false); // Return false if password doesn't match
+                  resolve(false);
                 }
               });
             } else {
@@ -174,17 +174,15 @@ import axios from "axios"
         let email = this.email?.trim();
         let password = this.password?.trim();
 
-        // Assuming getUserEmail returns a promise
-        const loginSuccess = await this.getUserEmail(email, password);
-        console.log('Response:', loginSuccess);
-        if (loginSuccess) {
-          this.$router.push({ name: 'Dashboard' });
+        const instructorName = await this.getUserEmail(email, password);
+
+        if (instructorName) {
+          console.log("instructorName: ", instructorName)
+          this.$router.push({ name: 'Dashboard', params: { instructorName } });
         }
       } catch (error) {
-        // Handle errors
         console.error('Error:', error);
       }
-      
     }
   }
 };

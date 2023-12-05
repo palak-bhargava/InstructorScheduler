@@ -6,6 +6,8 @@
         color="f5f5f5"
       >
         <div class="d-flex align-center justify-center" style="width: 100%">
+          <v-app-bar-nav-icon
+          @click="goToDashboard">
           <v-img
             class="shrink mr-2"
             contain
@@ -13,6 +15,7 @@
             transition="scale-transition"
             width="40"
           />
+           </v-app-bar-nav-icon>
          <v-toolbar-title class="flex text-center">
           Available Courses
           </v-toolbar-title>
@@ -96,6 +99,7 @@
 
     data () {
       return {
+        instructorName: '',
         page: 1,
         pageCount: 0,
         itemsPerPage: 9,
@@ -120,8 +124,12 @@
     },
     created() {
       this.getAvailableCourses();
+      this.instructorName = this.$route.params.instructorName;
     },
     methods: {
+      goToDashboard() {
+      this.$router.push({ name: 'Dashboard', params: { instructorName: this.instructorName } });
+    },
       addToPreferences() {
         const updatedCoursesArray = [];
         //console.log(this.selected)

@@ -94,7 +94,7 @@
               rounded
               color="#5C9970"
               dark
-              @click="login"
+              @click="adminLogin"
             >
               LOGIN
             </v-btn>
@@ -116,74 +116,74 @@
 
 
 <script>
-import axios from "axios"    
-export default {
-  data() {
-    return {
-      email: '',
-      password: '',
-      show: false,
-      loginSuccess: false,
-    };
-  },
-  
-  methods: {
-    goToLoginPage() {
-      this.$router.push({ name: 'Login' });
-    },
-    async getAdminEmail(email, password) {
-    return new Promise(async (resolve, reject) => {
-      const bcryptjs = require('bcryptjs');
-      try {
-        const response = await axios.get(`http://localhost:3000/users/email/${email}`);
-        
-        // Check if response.data[0] is defined
-        if (response.data && response.data.length > 0) {
-          const hashedPassword = response.data[0].password;
-          const type = response.data[0].type;
+  import axios from "axios"  
+  import bcryptjs from 'bcryptjs';
 
-          if (type === "admin") {
-            bcryptjs.compare(password, hashedPassword).then(result => {
-              if (result) {
-                console.log("SUCCESS");
-                resolve(true);
-              } else {
-                console.log("FAILURE");
-                resolve(false); // Return false if password doesn't match
-              }
-            });
+  export default {
+    data() {
+      return {
+        email: '',
+        password: '',
+        show: false,
+        loginSuccess: false,
+        post: null,
+        error: null,
+      };
+    },
+  
+    methods: {
+      goToLoginPage() {
+        this.$router.push({ name: 'Login' });
+      },
+      async getAdminEmail(email, password) {
+      return new Promise(async (resolve, reject) => {
+        try {
+          const response = await axios.get(`http://localhost:3000/users/email/${email}`);
+          
+          if (response.data && response.data.length > 0) {
+            const hashedPassword = response.data[0].password;
+            const type = response.data[0].type;
+
+            if (type === "admin") {
+              bcryptjs.compare(password, hashedPassword).then(result => {
+                if (result) {
+                  console.log("SUCCESS");
+                  resolve(response.data[0].name);
+                } else {
+                  console.log("FAILURE");
+                  resolve(false); // Return false if password doesn't match
+                }
+              });
+            } else {
+              console.log("FAILURE");
+              reject("Must be an admin to log in.");
+            }
           } else {
             console.log("FAILURE");
-            reject("Must be an admin to log in.");
+            reject("User not found");
           }
-        } else {
-          console.log("FAILURE");
-          reject("User not found");
+        } catch (error) {
+          console.log(error);
+          reject(error);
         }
-      } catch (error) {
-        console.log(error);
-        reject(error);
-      }
-    });
-  },
-  async login() {
-    try {
-      let email = this.email?.trim();
-      let password = this.password?.trim();
+      });
+    },
 
-      // Assuming getUserEmail returns a promise
-      const loginSuccess = await this.getAdminEmail(email, password);
-      // Handle the response
-      console.log('Response:', loginSuccess);
-      if (loginSuccess) {
-        this.$router.push({ name: 'AdminView'});
-      }
-    } catch (error) {
-      // Handle errors
-      console.error('Error:', error);
+    async adminLogin() {
+      try {
+        let email = this.email?.trim();
+        let password = this.password?.trim();
+
+        const instructorName = await this.getAdminEmail(email, password);
+
+          if (instructorName) {
+            console.log("instructorName: ", instructorName)
+            this.$router.push({ name: 'AdminView', params: { instructorName } });
+          }
+        } catch (error) {
+          console.error('Error:', error);
+        }
     }
   }
-
-}
 };
 </script>

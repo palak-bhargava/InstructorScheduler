@@ -18,36 +18,43 @@ const routes = [
     path: '/',
     component: LoginPage,
     name: 'Login',
+    props: true,
   },
   {
     path: '/admin-login',
     component: AdminLogin,
     name: 'AdminLogin',
+    props: true,
   },
   {
     path:'/dashboard',
     component: Dashboard,
     name: 'Dashboard',
+    props: true,
   },
   {
     path: '/available-courses',
     component: AvailableCourses,
     name: 'AvailableCourses',
+    props: true,
   },
   {
     path: '/past-schedules',
     component: PastSchedules,
     name: 'PastSchedules',
+    props: true,
   },
   {
     path: '/admin-view',
     component: AdminView,
     name: 'AdminView',
+    props: true,
   },
   {
     path: '/my-preferences',
     component: Preferences,
     name: 'Preferences',
+    props: true,
   },
 ];
 
