@@ -135,11 +135,7 @@ export default {
     };
   },
   created() {
-    // Check if instructorName exists in localStorage, if not use default value
-    this.instructorName = localStorage.getItem('instructorName') || this.$route.params.instructorName;
-
-    // Save instructorName in localStorage
-    localStorage.setItem('instructorName', this.instructorName);
+    this.instructorName = this.$route.params.instructorName;
     this.getCourses();
   },
 
@@ -211,7 +207,7 @@ export default {
         "course_number": parseInt(course.course_number, 10),
         "section": course.section,
         "class_number": parseInt(course.class_number, 10),
-        "title": "Advanced Computer Science Laboratory",
+        "title": course.title,
         "session": course.session,
         "days": course.days,
         "times": course.times,

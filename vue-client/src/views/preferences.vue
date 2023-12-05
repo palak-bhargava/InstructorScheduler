@@ -186,11 +186,7 @@ export default {
   }),
 
   mounted() {
-    // Check if instructorName exists in localStorage, if not use default value
-    this.instructorName = localStorage.getItem('instructorName') || this.$route.params.instructorName;
-
-    // Save instructorName in localStorage
-    localStorage.setItem('instructorName', this.instructorName);
+    this.instructorName = this.$route.params.instructorName;
     this.$refs.calendar.checkChange();
     this.getCourseArray();
     this.getInstructorPreferences();
