@@ -35,8 +35,22 @@ async function getGivenClasses(courseNumbers) {
     }
 }
 
+async function putFinalPossibleCourses(finalPossibleCourses, instructor_name){
+  const data_update = {
+    finalPossibleCourses: finalPossibleCourses,
+  }
+  try {
+      const response = await axios.put(`http://localhost:3000/instructorschedules/${instructor_name}/fromAlgorithm`, data_update);
+      console.log("updated schedule",response.data);
+      return response.data;
+  } catch (error) {
+      console.log(error);
+      return [];
+  }
+}
+
 //getGivenClasses();
 
-module.exports = {getInstructorSchedule, getGivenClasses};
+module.exports = {getInstructorSchedule, getGivenClasses, putFinalPossibleCourses};
 
 

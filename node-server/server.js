@@ -601,6 +601,53 @@ app.put('/instructorschedules/:instructor_name', async (req, res) => {
     }
   });
 
+  app.put('/instructorschedules/:instructor_name/fromAlgorithm', async (req, res) => {
+    const instructor_name = req.params.instructor_name;
+    const finalPossibleCourses = req.body.finalPossibleCourses;
+
+    console.log("finalPossibleCourses", finalPossibleCourses)
+    
+    try {
+        let instructor_schedule = await InstructorSchedule.findOne({ instructor_name: instructor_name });
+    
+        if (!instructor_schedule) {
+            instructor_schedule = new InstructorSchedule({
+                instructor_name: instructor_name,
+                approved_schedule: "false",
+                courses: [],
+            });
+            await instructor_schedule.save();
+        }
+    
+        const addedCourses = [];
+
+        // Loop through each new course and add it if it doesn't exist
+        for (const course of finalPossibleCourses) {
+            const exists = instructor_schedule.courses.some(existingCourse =>
+                existingCourse.class_number === course.class_number
+            );
+
+            if (!exists) {
+                // Only push the new course if it doesn't already exist
+                instructor_schedule.courses.push(course);
+                addedCourses.push(course);
+            }
+        }
+
+        // Save the changes if any new courses were added
+        if (addedCourses.length > 0) {
+            await instructor_schedule.save();
+            res.status(200).json({ message: 'Courses added to instructor schedule successfully', addedCourses });
+        } else {
+            res.status(400).json({ message: 'All courses already exist in the schedule' });
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+});
+
+
   app.put('/instructorschedules/:instructor_name/:approved_schedule', async (req, res) => {
     const instructor_name = req.params.instructor_name;
     const approved_schedule = req.params.approved_schedule;

@@ -710,6 +710,12 @@ async function populateHelper(instructorPreference, instructorSchedule){
        return updatedAvailabilities
     }
 
+    async function putFinalPossibeCoursesInSchedule(finalPossibleCourses, instructor_name){
+        const response = await instructor_sched.putFinalPossibleCourses(finalPossibleCourses, instructor_name);
+        console.log(response.data)
+        return response.data
+    }
+
     // async function updateAvail(courseToAdd, updatedAvailabilities){
     //     updatedAvailabilities = await updateInstructorAvailabiltities(courseToAdd, updatedAvailabilities);
     //     return updatedAvailabilities
@@ -755,11 +761,12 @@ Promise.all([getPreference(), getSchedule()])
                 //     //console.log(chosenAvailableCourses[0][0])
                 //     //console.log('POSSIBLE COURSES BY PREF: ', possibleCoursesByPref)
                 
-                processCourses(courseOptions, updatedAvailabilities, finalPossibleCourses)
-                           
+                processCourses(courseOptions, updatedAvailabilities, finalPossibleCourses)   
                
                 //  //TODO: ADD IN A POST TO INSTRUCTOR SCHEDULE_________________________________________________________________________________________
                 // //lastly, post the final course list to the instructor schedule!
+                putFinalPossibeCoursesInSchedule(finalPossibleCourses, "Karen%20Mazidi");
+                
                 }).catch((error)=> {
                     console.error("Error:", error);
                 });
