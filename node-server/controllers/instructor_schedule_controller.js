@@ -22,20 +22,21 @@ try {
 module.exports = {getInstructorSchedule};
 
 
-// async function getGivenClasses(courseNumbers) {
-//     const class_assigned = "false";
-//     //const courseNumbers = "1134,3305,4485";
-//     try {
-//         const response = await axios.get(`http://localhost:3000/currentcourses/${class_assigned}/${courseNumbers}/getAvailClass`);
-//         //console.log("Multi class search: ",response.data[0]);
-//         return response.data[0];
-//     } catch (error) {
-//         console.log(error);
-//         return [];
-//     }
-// }
+async function getGivenClasses(courseNumbers) {
+    const class_assigned = "false";
+    //const courseNumbers = "1134,3305,4485";
+    try {
+        const response = await axios.get(`http://localhost:3000/currentcourses/${class_assigned}/${courseNumbers}/getAvailClass`);
+        //console.log("Multi class search: ",response.data[0]);
+        return response.data;
+    } catch (error) {
+        console.log(error);
+        return [];
+    }
+}
 
-// //getGivenClasses();
+//getGivenClasses();
 
-// module.exports = {getGivenClasses};
+module.exports = {getInstructorSchedule, getGivenClasses};
+
 

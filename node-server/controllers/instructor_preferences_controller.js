@@ -66,5 +66,31 @@ async function getFinalArray() {
 
 //getFinalArray();
 
+// async function getCourseByClassNumber(classNumbers) {
+//     const class_assigned = "false";
+//     //const courseNumbers = "1134,3305,4485";
+//     try {
+//         const response = await axios.get(`http://localhost:3000/currentcourses/${class_assigned}/${classNumbers}/getAvailClassByClassNumber`);
+//         //console.log("Multi class search: ",response.data[0]);
+//         return response.data;
+//     } catch (error) {
+//         console.log(error);
+//         return [];
+//     }
+// }
 
-module.exports = {getInstructorPreference, getCurrentAvailableCoursesArray, getFinalArray };
+async function getCourseByClassNumber(classNumbers) {
+    const class_assigned = "false";
+    //const courseNumbers = "1134,3305,4485";
+    try {
+        const response = await axios.get(`http://localhost:3000/currentcourses/${class_assigned}/${classNumbers}/getAvailClassByClassNumber`);
+        //console.log("Multi class search: ",response.data[0]);
+        return response.data;
+    } catch (error) {
+        console.log(error);
+        return [];
+    }
+}
+
+
+module.exports = {getInstructorPreference, getCurrentAvailableCoursesArray, getFinalArray, getCourseByClassNumber};

@@ -122,7 +122,7 @@ const classes = instructorSchedule;
 // // Iterate through classes and remove times from corresponding days
 classes.forEach((course) => {
   const unavailableDay = course.days;
-  console.log(course.days)
+  //console.log(course.days)
   const unavailableTime = [course.times_12h]
 
   for (i in unavailableDay){
@@ -145,7 +145,7 @@ classes.forEach((course) => {
 
             const newTimes = (removeOverlap(availRange, courseRange));
             // console.log("NEW TIMES: ",newTimes)
-            console.log(instructorAvailabilities[unavailableDay[i]])
+            //console.log(instructorAvailabilities[unavailableDay[i]])
             instructorAvailabilities[unavailableDay[i]][j] = convertDatetimeArrayToStrings(newTimes)[0]
             
         }
@@ -379,14 +379,21 @@ async function isScheduleOverlap(course, scheduleArray) {
 
 
 
-async function getPreferenceCourses(preferredCourses){
-    //const response = await 
-    return tempPreferenceCourses
+async function getSpecificPreferenceCourse(courseParamString){
+     console.log("FINAL PARAM: ", courseParamString)
+     const response = await instructor_pref.getCourseByClassNumber(courseParamString)
+     //const response = await instructor_sched.getGivenClasses(courseParamString)
+    console.log("FINAL RESPONSE: ", response)
+    return response
+    //return tempPreferenceCourses
 }
 
-async function getGeneralPreference(){
-    //const response = await
-    return course_objs
+async function getGeneralPreference(generalParamString){
+   // console.log("PARAMS FOR GENERAL PREF: ", generalParamString)
+     const response = await instructor_sched.getGivenClasses(generalParamString)
+    //console.log("CLASSES BASED OFF GENERAL PREFERENCE: ", response)
+    return response
+    //return course_objs
 }
 
 async function getScheduleOverlap(chosenAvailableCourses, instructorCourses, updatedAvailabilities){
@@ -395,7 +402,7 @@ async function getScheduleOverlap(chosenAvailableCourses, instructorCourses, upd
             //const canAdd = await isScheduleOverlap(chosenAvailableCourses[i], instructorCourses)
         //if (canAdd){
             finalPossibleCourses.push(chosenAvailableCourses[i]);
-            console.log(finalPossibleCourses);
+            //console.log(finalPossibleCourses);
             updatedAvailabilities = await updateInstructorAvailabiltities(chosenAvailableCourses[i], updatedAvailabilities);
         //}
         }catch (error) {
@@ -493,16 +500,18 @@ async function populateHelper(instructorPreference, instructorSchedule){
     var finalPossibleCourses = []
 
     async function checkTimes(course, updatedAvailabilities){
-        // console.log(updatedAvailabilities)
         
-           for (i in course){
+        if (course.length != 0){
+            for (i in course){
                 timeOfClass = course[i].times_12h
                 courseTemp = course[i]
                 daysOfClass = courseTemp.days
                 // console.log(timeOfClass)
                 // console.log(courseTemp)
-                // console.log(daysOfClass)
+                console.log(daysOfClass)
                 console.log(courseTemp.course_prefix, " ", courseTemp.course_number)
+    
+
                 
                 if (daysOfClass.length == 1){
                     switch(daysOfClass[0]) {
@@ -567,6 +576,7 @@ async function populateHelper(instructorPreference, instructorSchedule){
                                 //add to possible courses
                                 if (count == 1){
                                     // allPossibleCourses.push(courseTemp)
+                                    console.log("IN CASE MONDAY CONFIRMED")
                                     return course[i]
                                 } else {
                                     count++
@@ -593,6 +603,7 @@ async function populateHelper(instructorPreference, instructorSchedule){
                                     //add to possible courses
                                     if (count == 1){
                                         // allPossibleCourses.push(courseTemp)
+                                        console.log("IN CASE WEDNESDAY CONFIRMED")
                                         console.log(course[i])
                                         return course[i]
                                     } else {
@@ -657,12 +668,32 @@ async function populateHelper(instructorPreference, instructorSchedule){
                         }
                     }
            }
+
+        }    
     }
 
-    async function processCourses(chosenAvailableCourses, updatedAvailabilities) {
-        for (let i = 0; i < chosenAvailableCourses.length; i++) {
+    async function getFormattedGeneralPref(instructorPreference){
+
+        var formattedCourses = []
+        for (let i = 0; i < instructorPreference[0].general_preferences.length; i++){
             try {
-                const courseToAdd = await checkTimes(chosenAvailableCourses[i], updatedAvailabilities);
+                console.log("CALLING GET FOR THIS CLASS: ", instructorPreference[0].general_preferences[i].course_number)
+                 const courseOptions = await getGeneralPreference(instructorPreference[0].general_preferences[i].course_number)
+                 formattedCourses.push(courseOptions)
+            }catch (error) {
+                 console.error("Error:", error);
+             }
+        }
+        console.log("FORMATTED COURSES: ", formattedCourses)
+        return formattedCourses;
+    }
+
+    async function processCourses(courseOptions, updatedAvailabilities, finalPossibleCourses) {
+        console.log("PROCESS COURSES: ")
+        for (let i = 0; i < courseOptions.length; i++) {
+            try {
+                const courseToAdd = await checkTimes(courseOptions[i], updatedAvailabilities);
+                console.log("COURSE TO ADD: ", courseToAdd)
                 
                 if ([courseToAdd].length == 1) {
                     console.log("solution found: ", courseToAdd.section_address);
@@ -697,24 +728,38 @@ Promise.all([getPreference(), getSchedule()])
         populateHelper(instructorPreference, instructorSchedule)
         .then((updatedAvailabilities) => {
             //AT THIS POINT, WE HAVE UPDATED AVAILABILITIES BASED OFF COURSES
+            var courseParam = []
+            instructorPreference[0].courses.forEach(course => {
+                courseParam.push(course.class_number)
+            })
+            var coursesParamString = courseParam.join(",")
 
             //GET FUNCTION TO GET COURSES FROM COURSE PREFERENCES:
-            getPreferenceCourses(instructorPreference[0].courses).then((chosenAvailableCourses) => {
-                //only proceed if those courses are not assigned
-                // console.log(chosenAvailableCourses)
+            getSpecificPreferenceCourse(coursesParamString).then((chosenAvailableCourses) => {
+                console.log("CHOSEN AVAILABLE COURSES", chosenAvailableCourses)
                 if (Object.keys(chosenAvailableCourses).length != 0){
                     getScheduleOverlap(chosenAvailableCourses, instructorSchedule, updatedAvailabilities)
 
                 }   
+
+                getFormattedGeneralPref(instructorPreference).then((courseOptions) => {
+
+                // var generalParam = []
+                // instructorPreference[0].general_preferences.forEach(course => {
+                //     generalParam.push(course.course_number)
+                // })
+                // var generalParamString = generalParam.join(",")
                 
-                 //GET COURSES FROM CURRENT COURSES
-                getGeneralPreference().then((chosenAvailableCourses) => {
-                    //console.log(chosenAvailableCourses[0][0])
-                    processCourses(chosenAvailableCourses, updatedAvailabilities)
+                //  //GET COURSES FROM CURRENT COURSES
+                // getGeneralPreference(generalParamString).then((possibleCoursesByPref) => {
+                //     //console.log(chosenAvailableCourses[0][0])
+                //     //console.log('POSSIBLE COURSES BY PREF: ', possibleCoursesByPref)
+                
+                processCourses(courseOptions, updatedAvailabilities, finalPossibleCourses)
                            
                
-                 //TODO: ADD IN A POST TO INSTRUCTOR SCHEDULE_________________________________________________________________________________________
-                //lastly, post the final course list to the instructor schedule!
+                //  //TODO: ADD IN A POST TO INSTRUCTOR SCHEDULE_________________________________________________________________________________________
+                // //lastly, post the final course list to the instructor schedule!
                 }).catch((error)=> {
                     console.error("Error:", error);
                 });
