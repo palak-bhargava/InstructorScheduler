@@ -107,6 +107,7 @@
             Login as instructor?
             </v-btn>
           </div>
+          <div v-if="error" class="error-text">&nbsp;&nbsp;&nbsp;{{ error }}</div>
         </v-card>
       </v-col>
     </v-row>
@@ -182,8 +183,13 @@
             console.log("instructorName: ", instructorName)
             this.$router.push({ name: 'AdminView', params: { instructorName } });
           }
+          // If instructorName is not retrieved, set the error message
+          if (!instructorName) {
+            this.error = 'Incorrect email or password. Please try again.';
+          }
         } catch (error) {
           console.error('Error:', error);
+          this.error = 'Incorrect email or password. Please try again.';
         }
     }
   }

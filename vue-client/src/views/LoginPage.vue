@@ -106,8 +106,8 @@
               @click="goToAdminLogin">
             Login as admin?
           </v-btn>
-        
         </div>
+        <div v-if="error" class="error-text">&nbsp;&nbsp;&nbsp;{{ error }}</div>
         </v-card>
       </v-col>
     </v-row>
@@ -182,10 +182,21 @@ export default {
           console.log("instructorName: ", instructorName)
           this.$router.push({ name: 'Dashboard', params: { instructorName } });
         }
+        // If instructorName is not retrieved, set the error message
+        if (!instructorName) {
+          this.error = 'Incorrect email or password. Please try again.';
+        }
       } catch (error) {
         console.error('Error:', error);
+        this.error = 'Incorrect email or password. Please try again.';
       }
     }
   }
 };
 </script>
+
+<style>
+.error-text {
+  color: red; /* Define your red color */
+}
+</style>

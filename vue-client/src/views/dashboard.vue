@@ -135,7 +135,7 @@
                 <span v-if="isApproved === 'waiting'" style="color: black; font-size: 14px; margin-right: 5px;">
                     <b>Schedule Pending Approval.<span v-html="displayDots"></span></b>
                 </span>
-                <span v-else-if="!isApproved" style="color: red; font-size: 14px; display: flex; align-items: center;">
+                <span v-else-if="isApproved === 'no'" style="color: red; font-size: 14px; display: flex; align-items: center;">
                     <v-icon color="red">mdi-alert-circle</v-icon>
                     &nbsp;&nbsp;<b>Schedule Not Approved</b>
                 </span>
@@ -424,7 +424,7 @@ import axios from "axios"
             try {
                 const response = await axios.get(`http://localhost:3000/instructorschedules/${instructor_name}/approved_schedule`);
                 this.isApproved = response.data;
-                console.log("Approved or not:", response.data);
+                console.log("Approved or not:", this.isApproved);
             } 
             catch (error) {
                 console.error(error.message);
@@ -438,6 +438,7 @@ import axios from "axios"
                 const response = await axios.delete(`http://localhost:3000/instructorschedules/${instructor_name}/deleteSchedule`);
                 this.events = [];
                 console.log("deleteSchedule:", response.data);
+                this.getInstructorScheduleStatus();
             } 
             catch (error) {
                 console.error(error.message);
