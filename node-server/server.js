@@ -760,6 +760,7 @@ app.put('/instructorschedules/:instructor_name', async (req, res) => {
       }
       // Clear the courses array
       instructor_schedule.courses = [];
+      instructor_schedule.approved_schedule = "waiting";
 
       // Save the updated schedule
       await instructor_schedule.save();
