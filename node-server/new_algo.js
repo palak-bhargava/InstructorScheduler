@@ -688,7 +688,7 @@ const instructor_name = "Karen%20Mazidi"
 generateSchedule(instructor_name);
 
 
-
+module.exports = {generateSchedule};
 
 
 
