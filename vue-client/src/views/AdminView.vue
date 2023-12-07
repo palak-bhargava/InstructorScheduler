@@ -39,16 +39,16 @@
             rounded
             light
             style="max-width: 230px;"
-            @click="showInstructorSchedule(schedule)"
+            @click="toggleGenerateSchedule(schedule)"
           >
-            Generate Schedule
+            {{ schedule.generateBtnText }}
           </v-btn> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
         </v-expansion-panel-header>
       <v-expansion-panel-content color="#5C9970" rounded> <br>
          <v-row v-if="schedule.showContent">
           <v-col cols="9" class="spacing-playground pa-0">
             <v-card class="mx-auto" color="#ffffff" light outlined>
-              <v-list-item three-line v-for="(course, index) in schedule.courses" :key="index">
+              <v-list-item three-line v-for="(course, index) in generatedSchedule" :key="index">
                 <v-list-item-content>
                   <v-list-item-title class="text-h7">
                     <div v-if="course">
@@ -114,6 +114,10 @@
         allSchedules: [],
         instructorSchedule: [],
         finalPossibleCourses: [],
+        generatedSchedule: [],
+        generateBtnText: 'Generate Schedule',
+        generateBtnColor: '#FFB86F',
+        generateBtnClickCount: 0,
       };
     },
     created() {
@@ -123,6 +127,22 @@
       displayDays(days) {
         return days.join(', ');
       },
+
+      toggleGenerateSchedule(schedule) {
+      if (!schedule.generateBtnClickCount) {
+        this.$set(schedule, 'generateBtnText', 'View Schedule');
+        // first click to populate schedule
+        this.showInstructorSchedule(schedule);
+        schedule.generateBtnClickCount = 1;
+      } 
+      else {
+        schedule.showContent = true; // Set flag to true when button is clicked
+        this.$set(schedule, 'generateBtnText', 'Generate Schedule');
+        // second click to display schedule
+        this.showInstructorSchedule(schedule);
+        schedule.generateBtnClickCount = 0;
+      }
+    },
 
       changeColor(schedule, isApproved) {
         // Update the active button for a specific card
@@ -151,6 +171,9 @@
             ...item,
             yes: '#FFB86F', // Initialize unique button colors for each item
             no: '#FFB86F',
+            generateBtnText: 'Generate Schedule',
+            generateBtnColor: '#FFB86F',
+            generateBtnClickCount: 0,
             isApproved: null, // strores which button is pressed
             showContent: false,
           })); // Assign the data to the pastClasses property // Assign the data to the pastClasses property
@@ -161,14 +184,17 @@
         console.log("all schedules array:", this.allSchedules);
       },
 
-      showInstructorSchedule(schedule) {
-        //generate schedule function here
-        schedule.showContent = true; // Set flag to true when button is clicked
+      async showInstructorSchedule(schedule) {
         // You can also fetch and assign data specific to this schedule here
-        
-        this.generateSchedule(schedule.instructor_name);
-        this.putFinalPossibleCourses(schedule.instructor_name);
+        await this.generateSchedule(schedule.instructor_name);
+        await this.putFinalPossibleCourses(schedule.instructor_name);
+        this.finalPossibleCourses = [];
+        console.log("EMPTYYYYY:", this.finalPossibleCourses);
+        this.generatedSchedule = [];
+        console.log("EMPTYYYYY2:", this.generatedSchedule);
+        await this.getInstructorSchedule(schedule.instructor_name);
       },
+      
       async updateApprovedStatus(schedule){
         const instructor_name = schedule.instructor_name;
         const isApproved = schedule.isApproved;
@@ -204,28 +230,8 @@
         }
       },
 
-      // async getFinalArray() {
-      //   const preferences = await this.getInstructorPreference("Karen%20Mazidi");
-      //   const general_preferences_array = preferences[0].general_preferences;
-      //   console.log(general_preferences_array);
-      //   const final_array = [];
-
-      //   const promises = general_preferences_array.map(async (preference) => {
-      //       //console.log(preference);
-      //       const availableCourses = await this.getCurrentAvailableCoursesArray(preference.course_number);
-      //       //console.log(availableCourses);
-      //       final_array.push(availableCourses);
-      //       //console.log("General preference available courses: " , final_array);
-      //   });
-
-      //   await Promise.all(promises);
-
-      //   return final_array;
-      // },
-
       async getCourseByClassNumber(classNumbers) {
         const class_assigned = "false";
-        //const courseNumbers = "1134,3305,4485";
         try {
             const response = await axios.get(`http://localhost:3000/currentcourses/${class_assigned}/${classNumbers}/getAvailClassByClassNumber`);
             //console.log("Multi class search: ",response.data[0]);
@@ -240,6 +246,8 @@
         try {
             const response = await axios.get(`http://localhost:3000/instructorschedules/${instructor_name}`);
             console.log(response.data)
+            this.generatedSchedule = response.data;
+            console.log("HIIIIIIIII", this.generatedSchedule);
             return response.data;
           } catch (error) {
             console.error(error);
@@ -249,7 +257,6 @@
 
       async getGivenClasses(courseNumbers) {
         const class_assigned = "false";
-        //const courseNumbers = "1134,3305,4485";
         try {
             const response = await axios.get(`http://localhost:3000/currentcourses/${class_assigned}/${courseNumbers}/getAvailClass`);
             console.log("Multi class search: ",response.data[0]);
