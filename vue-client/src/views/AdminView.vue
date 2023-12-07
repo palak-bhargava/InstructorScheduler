@@ -31,7 +31,7 @@
         v-for="(schedule, index) in allSchedules" :key="index" 
         rounded
       >
-        <v-expansion-panel-header color="#5C9970" rounded>
+        <v-expansion-panel-header color="#5C9970" rounded expand-icon="" disable-icon-rotate>
           <h3>{{ schedule.instructor_name }}</h3>
           <v-btn
             color="#FFB86F"
@@ -137,7 +137,6 @@
       } 
       else {
         schedule.showContent = true; // Set flag to true when button is clicked
-        this.$set(schedule, 'generateBtnText', 'Generate Schedule');
         // second click to display schedule
         this.showInstructorSchedule(schedule);
         schedule.generateBtnClickCount = 0;
