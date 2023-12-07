@@ -603,9 +603,9 @@ app.put('/instructorschedules/:instructor_name', async (req, res) => {
 
   app.put('/instructorschedules/:instructor_name/fromAlgorithm', async (req, res) => {
     const instructor_name = req.params.instructor_name;
-    const finalPossibleCourses = req.body.finalPossibleCourses;
+    const putCourse = req.body.putCourse;
 
-    console.log("finalPossibleCourses", finalPossibleCourses)
+    console.log("putCourse", putCourse)
     
     try {
         let instructor_schedule = await InstructorSchedule.findOne({ instructor_name: instructor_name });
@@ -618,34 +618,25 @@ app.put('/instructorschedules/:instructor_name', async (req, res) => {
             });
             await instructor_schedule.save();
         }
-    
-        const addedCourses = [];
 
-        // Loop through each new course and add it if it doesn't exist
-        for (const course of finalPossibleCourses) {
-            const exists = instructor_schedule.courses.some(existingCourse =>
-                existingCourse.class_number === course.class_number
-            );
+        // Check if the course already exists in the schedule
+        const exists = instructor_schedule.courses.some(existingCourse =>
+            existingCourse.class_number === putCourse.class_number
+        );
 
-            if (!exists) {
-                // Only push the new course if it doesn't already exist
-                instructor_schedule.courses.push(course);
-                addedCourses.push(course);
-            }
-        }
-
-        // Save the changes if any new courses were added
-        if (addedCourses.length > 0) {
+        if (!exists) {
+            // Only push the new course if it doesn't already exist
+            instructor_schedule.courses.push(putCourse);
             await instructor_schedule.save();
-            res.status(200).json({ message: 'Courses added to instructor schedule successfully', addedCourses });
-        } else {
-            res.status(400).json({ message: 'All courses already exist in the schedule' });
-        }
-    } catch (error) {
-        console.error('Error:', error);
-        res.status(500).json({ message: 'Internal server error' });
-    }
-});
+            res.status(200).json({ message: 'Course added to instructor schedule successfully', putCourse });
+            }else {
+                res.status(400).json({ message: 'The course already exists in the schedule' });
+            }
+            } catch (error) {
+                console.error('Error:', error);
+                res.status(500).json({ message: 'Internal server error' });
+            }
+        });
 
 
   app.put('/instructorschedules/:instructor_name/:approved_schedule', async (req, res) => {

@@ -185,16 +185,10 @@
       },
 
       async showInstructorSchedule(schedule) {
-        // You can also fetch and assign data specific to this schedule here
-        await this.generateSchedule(schedule.instructor_name);
-        await this.putFinalPossibleCourses(schedule.instructor_name);
-        this.finalPossibleCourses = [];
-        console.log("EMPTYYYYY:", this.finalPossibleCourses);
-        this.generatedSchedule = [];
-        console.log("EMPTYYYYY2:", this.generatedSchedule);
-        await this.getInstructorSchedule(schedule.instructor_name);
+        this.generateSchedule(schedule.instructor_name);
+        //PUT GETS CALLED INSIDE THE GENERATE PER COURSE ADDED
       },
-      
+
       async updateApprovedStatus(schedule){
         const instructor_name = schedule.instructor_name;
         const isApproved = schedule.isApproved;
@@ -247,7 +241,7 @@
             const response = await axios.get(`http://localhost:3000/instructorschedules/${instructor_name}`);
             console.log(response.data)
             this.generatedSchedule = response.data;
-            console.log("HIIIIIIIII", this.generatedSchedule);
+            //console.log("HIIIIIIIII", this.generatedSchedule);
             return response.data;
           } catch (error) {
             console.error(error);
@@ -259,7 +253,7 @@
         const class_assigned = "false";
         try {
             const response = await axios.get(`http://localhost:3000/currentcourses/${class_assigned}/${courseNumbers}/getAvailClass`);
-            console.log("Multi class search: ",response.data[0]);
+            //console.log("Multi class search: ",response.data[0]);
             return response.data;
         } catch (error) {
             console.log(error);
@@ -267,12 +261,10 @@
         }
       },
 
-      async putFinalPossibleCourses(instructor_name){
-        const data_update = {
-          finalPossibleCourses: this.finalPossibleCourses,
-        }
+      async putFinalPossibleCourses(instructor_name, course){
+        console.log("IN THE PUT, course array from generate", course.putCourse)
         try {
-            const response = await axios.put(`http://localhost:3000/instructorschedules/${instructor_name}/fromAlgorithm`, data_update);
+            const response = await axios.put(`http://localhost:3000/instructorschedules/${instructor_name}/fromAlgorithm`, course);
             console.log("updated schedule",response.data);
             return response.data;
         } catch (error) {
@@ -324,7 +316,7 @@
 
     //function to update the instructor availabilities based off a new course added to the schedule
     async updateInstructorAvailabiltities(course, updatedAvailabilities) {
-      console.log("UPDATING AVAILABILITIES")
+      //console.log("UPDATING AVAILABILITIES")
       const unavailableDay = course.days;
       // console.log(course.days)
       const unavailableTime = [course.times_12h]
@@ -453,11 +445,11 @@
     //function to check time ranges and identify overlap
     compareRanges(availRange, courseRange) {
       if (availRange.endDate < courseRange.startDate || courseRange.endDate < availRange.startDate) {
-          console.log("No Overlap found, will not update availabilities")
+          //console.log("No Overlap found, will not update availabilities")
           return false
       }
       else {
-          console.log("Overlap found: will update availabilities")
+          //console.log("Overlap found: will update availabilities")
           return true
       }
     },
@@ -475,14 +467,14 @@
                   const overlapStart = range2.startDate > range1.startDate ? range2.startDate : range1.startDate;
                   const overlapEnd = range2.endDate < range1.endDate ? range2.endDate : range1.endDate;
 
-                  console.log('RANGE1 START: ', range1.startDate.toLocaleTimeString())
-                  console.log('RANGE1 END: ', range1.endDate.toLocaleTimeString())
-                  console.log('RANGE2 START: ', range2.startDate.toLocaleTimeString())
-                  console.log('RANGE2 END: ', range2.endDate.toLocaleTimeString())
+                  // console.log('RANGE1 START: ', range1.startDate.toLocaleTimeString())
+                  // console.log('RANGE1 END: ', range1.endDate.toLocaleTimeString())
+                  // console.log('RANGE2 START: ', range2.startDate.toLocaleTimeString())
+                  // console.log('RANGE2 END: ', range2.endDate.toLocaleTimeString())
 
 
-                  console.log('OVERLAP START: ', overlapStart.toLocaleTimeString())
-                  console.log('OVERLAP END: ', overlapEnd.toLocaleTimeString())
+                  // console.log('OVERLAP START: ', overlapStart.toLocaleTimeString())
+                  // console.log('OVERLAP END: ', overlapEnd.toLocaleTimeString())
                   // Add the non-overlapping part before the overlap
                   if (overlapStart > range1.startDate) {
                       // console.log(range1.startDate.toLocaleTimeString(), " ", overlapStart.toLocaleTimeString())
@@ -504,7 +496,7 @@
               }
           }
       }
-      console.log("RESULT", result)
+      //console.log("RESULT", result)
       return result;
     },
 
@@ -522,10 +514,10 @@
     //function to make axios call based of requested available courses in instructorPreferences
     //to get the full course information
     async getSpecificPreferenceCourse(courseParamString) {
-        console.log("FINAL PARAM: ", courseParamString)
+        //console.log("FINAL PARAM: ", courseParamString)
         const response = await this.getCourseByClassNumber(courseParamString)
         //const response = await this.getGivenClasses(courseParamString)
-        console.log("FINAL RESPONSE: ", response)
+        //console.log("FINAL RESPONSE: ", response)
         return response
         //return tempPreferenceCourses
     },
@@ -540,12 +532,12 @@
     },
 
     //function that adds specific available courses from instructor preferences to the generated instructor schedule
-    async getScheduleOverlap(chosenAvailableCourses, instructorCourses, updatedAvailabilities) {
+    async getScheduleOverlap(chosenAvailableCourses, instructorCourses, updatedAvailabilities, finalPossibleCourses) {
         for (let i = 0; i < chosenAvailableCourses.length; i++) {
             try {
                 //const canAdd = await isScheduleOverlap(chosenAvailableCourses[i], instructorCourses)
                 //if (canAdd){
-                this.finalPossibleCourses.push(chosenAvailableCourses[i]);
+                finalPossibleCourses.push(chosenAvailableCourses[i]);
                 //console.log(this.finalPossibleCourses);
                 updatedAvailabilities = await this.updateInstructorAvailabiltities(chosenAvailableCourses[i], updatedAvailabilities);
                 //}
@@ -756,8 +748,8 @@
           return formattedCourses;
       },
       //function to 
-      //async processCourses(courseOptions, updatedAvailabilities, finalPossibleCourses) {
-      async processCourses(courseOptions, updatedAvailabilities) {
+      async processCourses(courseOptions, updatedAvailabilities, finalPossibleCourses) {
+      //async processCourses(courseOptions, updatedAvailabilities) {
           console.log("PROCESS COURSES: ")
           for (let i = 0; i < courseOptions.length; i++) {
               try {
@@ -766,7 +758,7 @@
 
                   if (typeof courseToAdd !== "undefined") {
                       console.log("solution found: ", courseToAdd.section_address);
-                      this.finalPossibleCourses.push(courseToAdd);
+                      finalPossibleCourses.push(courseToAdd);
                       //console.log(this.finalPossibleCourses);
 
                       updatedAvailabilities = await this.updateInstructorAvailabiltities(courseToAdd, updatedAvailabilities);
@@ -775,11 +767,13 @@
                   console.error("Error:", error);
               }
           }
-          console.log(this.finalPossibleCourses);
-          return this.finalPossibleCourses
+          console.log(finalPossibleCourses);
+          return finalPossibleCourses
       },
 
     generateSchedule(instructor_name){
+      const finalPossibleCourses = []
+      var courseToPut = {}
         //get function to get the instructorPreferences and instructorSchedule
         Promise.all([this.getPreference(instructor_name), this.getSchedule(instructor_name)])
         .then(([instructorPreference, instructorSchedule]) => {
@@ -805,14 +799,35 @@
                         //if those classes are available (if length != 0)
                         if (Object.keys(chosenAvailableCourses).length != 0) {
                             //add the classes to the generated schedule
-                            this.getScheduleOverlap(chosenAvailableCourses, instructorSchedule, updatedAvailabilities)
+                            this.getScheduleOverlap(chosenAvailableCourses, instructorSchedule, updatedAvailabilities, finalPossibleCourses)
                         }
                         //get the possible courses based off the instructor's general preferences
                         this.getFormattedGeneralPref(instructorPreference).then((courseOptions) => {
                             //process the courses to get a possible schedule
-                            this.processCourses(courseOptions, updatedAvailabilities)
-                                //put possible schedule in database
-                                console.log('COURSES TO BE ADDED TO SCHEDULE DATABASE: ', this.finalPossibleCourses)
+                            this.processCourses(courseOptions, updatedAvailabilities, finalPossibleCourses).then((finalPossibleCourses) =>{
+                              console.log("FINAL POSSIBLE COURSES FROM PROCESS COURSES", finalPossibleCourses)
+                              finalPossibleCourses.forEach((course) => {
+                                console.log("MUST ADD", course);
+                                courseToPut = {
+                                  "section_address": course.section_address,
+                                  "course_prefix": course.course_prefix,
+                                  "course_number": course.course_number,
+                                  "section": course.section,
+                                  "class_number": course.class_number,
+                                  "title": course.title,
+                                  "session":course.session,
+                                  "days":course.days,
+                                  "times": course.times,
+                                  "times_12h": course.times_12h,
+                                  "location": course.location
+                                }
+                                console.log("MUST ADD OBJ", courseToPut);
+                                //call put method here
+                                this.putFinalPossibleCourses(instructor_name, {putCourse: courseToPut})
+                              })
+                              }).catch((error) => {
+                                console.error("Error:", error);
+                              });     
                         }).catch((error) => {
                             console.error("Error:", error);
                         });
