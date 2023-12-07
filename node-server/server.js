@@ -225,6 +225,24 @@ app.get('/pastcourses/instructors', async (req, res) => {
 
 
 //----------------------API FOR CURRENT COURSES----------------------
+app.get('/currentcourses/:class_assigned/:course_number', async (req, res) => {
+  try {
+      const class_assigned = req.params.class_assigned;
+      const course_number = req.params.course_number;
+
+      const current_courses = await CurrentCourses.find(
+        { 
+          class_assigned: class_assigned,
+          course_number: course_number
+        });
+
+      // Send the filtered entries as a response
+      res.status(200).json(current_courses);
+  } catch (error) {
+      res.status(500).json({ message: error.message });
+  }
+});
+
 app.post('/currentcourses', async(req, res) => {
     try{
         const current_courses = await CurrentCourses.create(req.body)
@@ -285,6 +303,57 @@ app.put('/currentcourses/:class_number', async (req, res) => {
         res.status(500).json({message: error.message})
     }
 });
+
+app.get('/currentcourses/:class_assigned/:courseNumbers/getAvailClass', async(req, res) =>{
+  try {
+      const class_assigned = req.params.class_assigned; 
+      const courseNumbers = req.params.courseNumbers.split(',');
+
+      const current_courses = await CurrentCourses.find(
+        { 
+          course_number: { $in: courseNumbers },
+          class_assigned: class_assigned,
+        }
+      );
+      res.status(200).json(current_courses);
+  } catch (error) {
+      res.status(500).json({message: error.message})
+  }
+});
+
+app.get('/currentcourses/:class_assigned/:classNumbers/getAvailClassByClassNumber', async(req, res) =>{
+    try {
+        const class_assigned = req.params.class_assigned; 
+        const classNumbers = req.params.classNumbers.split(',');
+
+        const current_courses = await CurrentCourses.find(
+          { 
+            class_number: { $in: classNumbers },
+            class_assigned: class_assigned,
+          }
+        );
+        res.status(200).json(current_courses);
+    } catch (error) {
+        res.status(500).json({message: error.message})
+    }
+  });
+
+// app.get('/currentcourses/:class_assigned/:classNumber/getAvailClassByClassNumber', async(req, res) =>{
+//     try {
+//         const class_assigned = req.params.class_assigned; 
+//         const classNumber = req.params.classNumber.split(',');
+
+//         const current_courses = await CurrentCourses.find(
+//           { 
+//             class_number: { $in: classNumbers },
+//             class_assigned: class_assigned,
+//           }
+//         );
+//         res.status(200).json(current_courses);
+//     } catch (error) {
+//         res.status(500).json({message: error.message})
+//     }
+//   });
   
 
 //----------------------API FOR INSTRUCTOR PREFERENCES----------------------
@@ -551,6 +620,43 @@ app.put('/instructorschedules/:instructor_name', async (req, res) => {
     }
   });
 
+  app.put('/instructorschedules/:instructor_name/fromAlgorithm', async (req, res) => {
+    const instructor_name = req.params.instructor_name;
+    const putCourse = req.body.putCourse;
+
+    console.log("putCourse", putCourse)
+
+    try {
+        let instructor_schedule = await InstructorSchedule.findOne({ instructor_name: instructor_name });
+
+        if (!instructor_schedule) {
+            instructor_schedule = new InstructorSchedule({
+                instructor_name: instructor_name,
+                approved_schedule: "false",
+                courses: [],
+            });
+            await instructor_schedule.save();
+        }
+
+        // Check if the course already exists in the schedule
+        const exists = instructor_schedule.courses.some(existingCourse =>
+            existingCourse.class_number === putCourse.class_number
+        );
+
+        if (!exists) {
+            // Only push the new course if it doesn't already exist
+            instructor_schedule.courses.push(putCourse);
+            await instructor_schedule.save();
+            res.status(200).json({ message: 'Course added to instructor schedule successfully', putCourse });
+            }else {
+                res.status(400).json({ message: 'The course already exists in the schedule' });
+            }
+            } catch (error) {
+                console.error('Error:', error);
+                res.status(500).json({ message: 'Internal server error' });
+            }
+        });
+
   app.put('/instructorschedules/:instructor_name/:approved_schedule', async (req, res) => {
     const instructor_name = req.params.instructor_name;
     const approved_schedule = req.params.approved_schedule;
@@ -621,6 +727,17 @@ app.put('/instructorschedules/:instructor_name', async (req, res) => {
             res.status(500).json({message: error.message})
         }
     });
+
+    app.get('/instructorschedules/:instructor_name/displaySchedule', async(req, res) =>{
+      const instructor_name = req.params.instructor_name;
+      //console.log("SERVER JS CALLED", instructor_name)
+      try {
+          const response = await InstructorSchedule.find({instructor_name: instructor_name});
+          res.status(200).json(response[0].courses);
+      } catch (error) {
+          res.status(500).json({message: error.message})
+      }
+  });
 
     app.get('/instructorschedules/:instructor_name/approved_schedule', async(req, res) =>{
       const instructor_name = req.params.instructor_name;
