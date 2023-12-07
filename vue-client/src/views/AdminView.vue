@@ -14,7 +14,7 @@
             width="40"
           />
          <v-toolbar-title class="flex text-center">
-          Admin View
+           {{ instructorName }}'s Dashboard
           </v-toolbar-title>
         </div>
         <v-spacer></v-spacer>
@@ -118,10 +118,14 @@
         generateBtnText: 'Generate Schedule',
         generateBtnColor: '#FFB86F',
         generateBtnClickCount: 0,
+        instructorName: '',
       };
     },
     created() {
       this.getAllSchedules();
+      // Check if instructorName exists in localStorage, if not use default value
+      this.instructorName = localStorage.getItem("instructorName") || this.$route.params.instructorName;
+      console.log("LOCAL STORAGE:", localStorage.getItem("instructorName"));
     },
     methods: {
       displayDays(days) {
