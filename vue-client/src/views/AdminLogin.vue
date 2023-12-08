@@ -107,7 +107,7 @@
             Login as instructor?
             </v-btn>
           </div>
-          <div v-if="error" class="error-text">&nbsp;&nbsp;&nbsp;{{ error }}</div>
+          <div v-if="error" class="error-text">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ error }}</div>
         </v-card>
       </v-col>
     </v-row>
